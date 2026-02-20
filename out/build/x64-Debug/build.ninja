@@ -370,7 +370,7 @@ build cmake_object_order_depends_target_main: phony || .
 build src\CMakeFiles\main.dir\main.cpp.obj: CXX_COMPILER__main_unscanned_Debug C$:\Framework\src\main.cpp || cmake_object_order_depends_target_main
   DEFINES = -DDISABLE_RGA
   FLAGS = /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17
-  INCLUDES = -IC:\Framework\src\include\presentation_layer -IC:\Framework\src\include\business_layer\serialPort -IC:\Framework\src\include\business_layer\video -IC:\Framework\src\include\business_layer\ai -IC:\Framework\src\include\business_layer\publisher -IC:\Framework\src\include\business_layer\lobby -IC:\Framework\src\include\business_layer\command -IC:\Framework\src\include\data_layer\video -IC:\Framework\src\include\common\config
+  INCLUDES = -IC:\Framework\src\include\presentation_layer -IC:\Framework\src\include\business_layer\serialPort -IC:\Framework\src\include\business_layer\video -IC:\Framework\src\include\business_layer\ai -IC:\Framework\src\include\business_layer\publisher -IC:\Framework\src\include\business_layer\lobby -IC:\Framework\src\include\data_layer\video -IC:\Framework\src\include\common\config
   OBJECT_DIR = src\CMakeFiles\main.dir
   OBJECT_FILE_DIR = src\CMakeFiles\main.dir
   TARGET_COMPILE_PDB = src\CMakeFiles\main.dir\

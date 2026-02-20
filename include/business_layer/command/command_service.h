@@ -1,14 +1,20 @@
 #pragma once
-#include "../lobby/lobby_service.h"
 #include "command_status.h"
+#include <memory>
+#include <queue>
 
 // command_status.h 定义了 CommandStatus 类，包含状态码和消息
-// TODO: 调用 LobbyService 的方法来执行具体的命令，并根据结果返回 CommandStatus
+// TODO: 
+// 1.调用 LobbyService 的方法来执行具体的命令，并根据结果返回 CommandStatus, 发布到 MQTT 主题上
+// 2. 给大厅服务提供一个接口，让它能够上传盒子的状态
 
+// 前向声明，避免循环依赖
+class ILobbyService;
+class MqttService;
 
 class ICommandService {
 public:
-	virtual CommandResult executeCommand(const Command& command) = 0;
+	virtual void executeCommand(const Command& command) = 0;
 	virtual ~ICommandService() = default;
 };
 
@@ -18,10 +24,19 @@ public:
 	CommandService(ILobbyService& lobbyService);
 	~CommandService() = default;
 
-	CommandStatus executeCommand(const Command& command) override;
+	// 这个方法会被 MqttService 调用，当接收到 MQTT 消息时，MqttService 会解析消息并调用这个方法来执行命令
+	void executeCommand(const Command& command) override;
+
+	// 大厅定时器定期触发这个方法，如果CommandStatus的状态不是 InProgress，将结果发布到 MQTT 主题上
+	void reportCommandStatus();
+
+	// 大厅服务调用这个方法来上传盒子的状态，CommandService 将状态发布到 MQTT 主题上
+	//void uploadBoxStatus(const BoxStatus& status);
 
 private:
 	ILobbyService& _lobbyService;
+	std::unique_ptr<MqttService> _mqttService;
+	CommandQueue _commandQueue;
 };
 
 

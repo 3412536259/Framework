@@ -1,5 +1,6 @@
 #pragma once
-#include "command_service.h"
+#include "command.h"
+#include <queue>
 
 enum class Status {
 	Success,
@@ -15,11 +16,32 @@ enum class Status {
 class CommandStatus {
 public:
 
-	CommandStatus(Status status, const std::string& message = "")
-		: status_(status), message_(message) {}
-	Status getStatus() const { return status_; }
-	std::string getMessage() const { return message_; }
+	CommandStatus(Command cmd, Status status, const std::string& message = "")
+		: _command(cmd), _status(status), _message(message) {}
+	Status getStatus() const { return _status; }
+	std::string getMessage() const { return _message; }
 private:
-	Status status_;
-	std::string message_;
+	Command _command;
+	Status _status;
+	std::string _message;
+};
+
+class CommandQueue {
+public:
+	void addCommandStatus(const CommandStatus& commandStatus) {
+		_queue.push(commandStatus);
+	}
+	bool hasNext() const {
+		return !_queue.empty();
+	}
+	CommandStatus getNext() {
+		if (_queue.empty()) {
+			return CommandStatus(Command("empty"), Status::NotFound, "No command status available");
+		}
+		CommandStatus next = _queue.front();
+		_queue.pop();
+		return next;
+	}
+private:
+	std::queue<CommandStatus> _queue;
 };

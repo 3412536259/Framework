@@ -1,17 +1,17 @@
 #pragma once 
-#include "task_service.h"
+//#include "task_service.h"
 
 class ILobbyService {
 public:
-    // Êü•ËØ¢
+    // ≤È—Ø
     virtual LobbyResult retrieveDeviceStatus(const DeviceStatusQuery& query) = 0;
     virtual LobbyResult retrieveLiveCameraFrame(const FrameQuery& query) = 0;
     virtual LobbyResult retrieveHistoricalCameraFootage(const HistoricalVideoQuery& query) = 0;
 
-    // ‰∏ãËΩΩ
+    // œ¬‘ÿ
     virtual LobbyResult downloadHistoricalCameraFootage(const DownloadHistoricalVideo& download) = 0;
 
-    // ÊéßÂà∂
+    // øÿ÷∆
     virtual LobbyResult operateSolenoidValve(const SolenoidValveOperation& operation) = 0;
 
     virtual LobbyResult controlTrolleyRotation(const TrolleyOperation& operation) = 0;
@@ -20,10 +20,10 @@ public:
 
     virtual LobbyResult configureCamera(const CameraConfiguration& config) = 0;
 
-    // ÈÖçÁΩÆ
+    // ≈‰÷√
     virtual LobbyResult updateBoxConfiguration(const BoxConfiguration& configuration) = 0;
 
-    // AI Ê®°Âûã
+    // AI ƒ£–Õ
     virtual LobbyResult deployAIModel(const AIModelDeploy& deploy) = 0;
     virtual LobbyResult enableAIModel(const AIModelEnable& enable) = 0;
     virtual LobbyResult disableAIModel(const AIModelDisable& disable) = 0;
@@ -45,10 +45,10 @@ public:
 
     LobbyResult retrieveHistoricalCameraFootage(const HistoricalVideoQuery& query) override;
 
-    // ‰∏ãËΩΩ
+    // œ¬‘ÿ
     LobbyResult downloadHistoricalCameraFootage(const DownloadHistoricalVideo& download) override;
 
-    // ÊéßÂà∂
+    // øÿ÷∆
     LobbyResult operateSolenoidValve(const SolenoidValveOperation& operation) override;
    
     LobbyResult controlTrolleyRotation(const TrolleyOperation& operation) override;
@@ -57,17 +57,17 @@ public:
 
     LobbyResult configureCamera(const CameraConfiguration& config) override;
 
-    // ÈÖçÁΩÆ
+    // ≈‰÷√
     LobbyResult updateBoxConfiguration(const BoxConfiguration& configuration) override;
 
-    // AI Ê®°Âûã
+    // AI ƒ£–Õ
     LobbyResult deployAIModel(const AIModelDeploy& deploy) override;
     LobbyResult enableAIModel(const AIModelEnable& enable) override;
     LobbyResult disableAIModel(const AIModelDisable& disable) override;
     LobbyResult updateAIModel(const AIModelUpdate& update) override;
 
 private:
-    void TimingProcessing(); //ÂÆöÊó∂‰∏ä‰º†
+    void TimingProcessing(); //∂® ±…œ¥´
 
     void TimingUpload();
 
@@ -78,13 +78,13 @@ private:
 
 private:
 
-    IDeviceService& m_deviceService; // ËÆæÂ§á
+    IDeviceService& m_deviceService; // …Ë±∏
 
-    ISafetyService& m_safetykService; // ÂÆâÂÖ®
+    ISafetyService& m_safetykService; // ∞≤»´
      
-    ICommandService& m_commandService; //ÂëΩ‰ª§
+    ICommandService& m_commandService; //√¸¡Ó
 
-    IDetectionService& m_detectionService; // Ê£ÄÊµã
+    IDetectionService& m_detectionService; // ºÏ≤‚
 
 
 
