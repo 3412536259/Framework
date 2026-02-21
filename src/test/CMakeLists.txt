@@ -17,8 +17,10 @@ add_executable(mqtt_test
 target_include_directories(mqtt_test PRIVATE
     ${FRAMEWORK_ROOT}/include
     ${FRAMEWORK_ROOT}/include/business_layer/command
-    #${FRAMEWORK_ROOT}/include/business_layer/lobby
+    ${FRAMEWORK_ROOT}/include/business_layer/lobby
+    ${FRAMEWORK_ROOT}/src/test
     ${PAHO_MQTT_DIR}/include
+    
 )
 
 target_link_directories(mqtt_test PRIVATE
