@@ -3,3 +3,21 @@
 ################################################################################
 
 /.vs
+# CMake 编译目录
+/build/
+cmake-build-debug/
+CMakeCache.txt
+CMakeFiles/
+Makefile
+*.cmake
+*.vcxproj
+*.sln
+*.user
+
+# 编译产物
+*.exe
+*.pdb
+*.obj
+*.lib
+*.dll
+*.log

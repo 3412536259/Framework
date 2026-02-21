@@ -22,9 +22,9 @@ public:
 		// 当接收到 MQTT 消息时，这个方法会被调用
         // TODO: 解析消息并创建 Command 对象
         // Command command = parseMessage(msg->get_payload_str());
+        std::cout << "Message arrived: " << msg->get_topic() << " - " << msg->get_payload_str() << std::endl;
 		Command command(msg->get_payload_str());
         _commandService.executeCommand(command);
-        std::cout << "Message arrived: " << msg->get_topic() << " - " << msg->get_payload_str() << std::endl;
     }
 
     void connected(const std::string& /*cause*/) override{
@@ -93,8 +93,11 @@ bool MqttService::publish(const std::string& topic, const std::string& message) 
 
     try {
         mqtt::message_ptr pubMsg = mqtt::make_message(topic, message);
+		// QoS 0：最多一次; QoS 1：至少一次; QoS 2：只有一次
+        // publish(pubMsg)不可以设置->wait(),会造成死锁
         pubMsg->set_qos(1);
-        _client->publish(pubMsg)->wait();
+        _client->publish(pubMsg);
+		std::cerr << "MQTT published message to topic: " << topic << " - " << message << std::endl;
         return true;
     } catch (const mqtt::exception& exc) {
         std::cerr << "MQTT publish error: " << exc.what() << std::endl;

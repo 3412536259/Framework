@@ -21,10 +21,14 @@ public:
 class CommandService : public ICommandService
 {
 public:
-	CommandService(ILobbyService& lobbyService);
+	CommandService(ILobbyService* lobbyService);
 	~CommandService() = default;
 
-	// 这个方法会被 MqttService 调用，当接收到 MQTT 消息时，MqttService 会解析消息并调用这个方法来执行命令
+	// 大厅服务调用这个方法来设置 MQTT 服务的引用，CommandService 将通过这个引用发布命令状态到 MQTT 主题上
+	void setMqttService(MqttService& mqttService);
+
+	// 这个方法会被 MqttService 回调
+	// 收到消息后发送 Command is being processed 到 MQTT 主题上，表示命令正在处理
 	void executeCommand(const Command& command) override;
 
 	// 大厅定时器定期触发这个方法，如果CommandStatus的状态不是 InProgress，将结果发布到 MQTT 主题上
@@ -34,8 +38,8 @@ public:
 	//void uploadBoxStatus(const BoxStatus& status);
 
 private:
-	ILobbyService& _lobbyService;
-	std::unique_ptr<MqttService> _mqttService;
+	ILobbyService* _lobbyService = nullptr;
+	MqttService* _mqttService = nullptr;
 	CommandQueue _commandQueue;
 };
 

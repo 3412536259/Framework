@@ -1,3 +1,0 @@
-C:/Framework/build/test/CMakeFiles/MqttTest.dir
-C:/Framework/build/test/CMakeFiles/ALL_BUILD.dir
-C:/Framework/build/test/CMakeFiles/ZERO_CHECK.dir
