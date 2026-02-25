@@ -5,6 +5,7 @@
 /.vs
 # CMake 编译目录
 /build/
+/out/
 cmake-build-debug/
 CMakeCache.txt
 CMakeFiles/

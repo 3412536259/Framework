@@ -65,3 +65,6 @@ target_link_directories(main PUBLIC
 target_link_libraries(main PUBLIC
 
 )
+
+# ========== 测试（必要时注释掉） ==========
+add_subdirectory(test/)

@@ -5,7 +5,7 @@
 enum class Status {
 	Success,
 	Failure,
-	//InProgress,
+	InProgress,
 	Timeout,
 	InvalidCommand,
 	Unauthorized,

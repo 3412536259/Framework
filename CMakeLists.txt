@@ -10,7 +10,7 @@ message(STATUS "⚠️ 已强制禁用 RGA，使用 CPU 处理图像")
 add_definitions(-DDISABLE_RGA)
 
 
-add_subdirectory(lib/rknn/3rdparty)
+#add_subdirectory(lib/rknn/3rdparty)
 # 再添加其他子模块
-add_subdirectory(lib/rknn/utils)
+#add_subdirectory(lib/rknn/utils)
 add_subdirectory(src)  # src 会自动继承顶层的变量

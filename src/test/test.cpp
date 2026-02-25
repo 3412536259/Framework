@@ -38,3 +38,7 @@ int main() {
 // cd build
 // cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Debug
 // cmake --build . --config Debug
+
+// mosquitto开启MQTT Broker和MQTT客户端测试命令示例：
+// mosquitto -v
+// mosquitto_pub -t "test/topic" -m "这是发送给test/topic的第一条消息"
