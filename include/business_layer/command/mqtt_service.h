@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 #include "command.h"
 #include <string>
 #include <memory>
 
-// Ç°ÏòÉùÃ÷£¬±ÜÃâÑ­»·ÒÀÀµ
+// å‰å‘å£°æ˜ï¼Œé¿å…å¾ªç¯ä¾èµ–
 class CommandService;
 class MqttCallback;
 
@@ -25,7 +25,7 @@ public:
 	bool subscribe(const std::string& topic);
 	bool unsubscribe(const std::string& topic);
 
-	// ¸ø MqttCallback Ìá¹©µÄ½Ó¿Ú£º»ñÈ¡ CommandService ÊµÀı
+	// ç»™ MqttCallback æä¾›çš„æ¥å£ï¼šè·å– CommandService å®ä¾‹
 	CommandService& getCommandService() { return _commandService; }
 private:
 	CommandService& _commandService;

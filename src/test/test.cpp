@@ -1,4 +1,4 @@
-ï»¿#include "mqtt_service.h"
+#include "mqtt_service.h"
 #include "command_service.h"
 //#include "lobby_service.h"
 #include "MockLobby.h" // only for testing, not part of the actual implementation
@@ -8,42 +8,56 @@
 #include <stdlib.h>
 
 #include "spdlog/spdlog.h"
-#include "spdlog/sinks/basic_file_sink.h" // ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Í·ï¿½Ä¼ï¿½
+#include "spdlog/sinks/basic_file_sink.h" // »ù´¡ÎÄ¼þÊä³öµÄÍ·ÎÄ¼þ
 
 int main() {
-	MockLobbyService lobbyService;
+	//MockLobbyService lobbyService;
 
-    //MqttService mqttService(lobbyService.getCommandService());
+ //   MqttService mqttService(lobbyService.getCommandService());
 
-	lobbyService.setMqttService(mqttService);
+	//lobbyService.setMqttService(mqttService);
 
-    std::cout << "Connecting to MQTT broker..." << std::endl;
-    if (mqttService.connect("localhost", 1883)) {
-        std::cout << "Connected successfully!" << std::endl;
-        
-        mqttService.subscribe("test/topic");
-        while(1){}
-        /*mqttService.publish("test/topic", "Hello, MQTT!");
-        
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        mqttService.disconnect();
-        std::cout << "Disconnected." << std::endl;*/
-    } else {
-        std::cerr << "Failed to connect!" << std::endl;
+ //   std::cout << "Connecting to MQTT broker..." << std::endl;
+ //   if (mqttService.connect("localhost", 1883)) {
+ //       std::cout << "Connected successfully!" << std::endl;
+ //       
+ //       mqttService.subscribe("test/topic");
+ //       while(1){}
+ //       /*mqttService.publish("test/topic", "Hello, MQTT!");
+ //       
+ //       std::this_thread::sleep_for(std::chrono::seconds(2));
+ //       mqttService.disconnect();
+ //       std::cout << "Disconnected." << std::endl;*/
+ //   } else {
+ //       std::cerr << "Failed to connect!" << std::endl;
+ //   }
+
+    // 1. ¿ØÖÆÌ¨ÈÕÖ¾£¨×î¼òµ¥ÓÃ·¨£©
+    spdlog::info("ÕâÊÇÒ»Ìõinfo¼¶±ðµÄÈÕÖ¾");
+    spdlog::warn("ÕâÊÇÒ»Ìõwarn¼¶±ðµÄÈÕÖ¾£¬´ø²ÎÊý£º{}", 123);
+    spdlog::error("ÕâÊÇÒ»Ìõerror¼¶±ðµÄÈÕÖ¾");
+
+    // 2. ÎÄ¼þÈÕÖ¾£¨Êä³öµ½ÎÄ¼þ£¬Ö§³Ö°´´óÐ¡/ÈÕÆÚ·Ö¸î£©
+    try {
+        auto file_logger = spdlog::basic_logger_mt("file_logger", "app.log");
+        file_logger->info("Ð´ÈëÎÄ¼þµÄÈÕÖ¾");
+        file_logger->set_level(spdlog::level::debug); // ÉèÖÃÈÕÖ¾¼¶±ð
     }
-
+    catch (const spdlog::spdlog_ex& ex) {
+        spdlog::error("ÈÕÖ¾³õÊ¼»¯Ê§°Ü: {}", ex.what());
+    }
 
     system("pause");
 
     return 0;
 }
 
-// ï¿½ï¿½WindowsÏµÍ³ï¿½ï¿½Ê¹ï¿½ï¿½Visual Studio 2022ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿
+// ÔÚWindowsÏµÍ³ÖÐÊ¹ÓÃVisual Studio 2022±àÒëÏîÄ¿
 // cd build
 // cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Debug
 // cmake --build . --config Debug
 
-// Mosquittoï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Broker ï¿½Í·ï¿½ï¿½ï¿½ MQTT ï¿½ï¿½Ï¢
+//  MosquittoÓÃÓÚÆô¶¯ Broker ºÍ·¢²¼ MQTT ÏûÏ¢
 // mosquitto -v
 // mosquitto_pub -t "test/topic" -m "message for test/topic"
 // sudo pkill -9 mosquitto
