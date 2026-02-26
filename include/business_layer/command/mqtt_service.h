@@ -24,6 +24,9 @@ public:
 	bool publish(const std::string& topic, const std::string& message);
 	bool subscribe(const std::string& topic);
 	bool unsubscribe(const std::string& topic);
+
+	// 给 MqttCallback 提供的接口：获取 CommandService 实例
+	CommandService& getCommandService() { return _commandService; }
 private:
 	CommandService& _commandService;
 	std::unique_ptr<mqtt::async_client> _client;
