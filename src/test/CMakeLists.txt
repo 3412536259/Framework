@@ -23,6 +23,7 @@ add_executable(mqtt_test
     test.cpp
     ../business_layer/command/mqtt_service.cpp
     ../business_layer/command/command_service.cpp
+    ../business_layer/command/command_status.cpp
 )
 
 target_include_directories(mqtt_test PRIVATE

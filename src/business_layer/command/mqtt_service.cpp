@@ -9,7 +9,8 @@
 #include <memory>
 #include <ctime>
 
-// 继承自 mqtt::callback 的回调类，必须实现的回调方法包括 message_arrived、connected、connection_lost 和 delivery_complete
+// 继承自 mqtt::callback 的回调类
+// 必须实现的回调方法包括 message_arrived、connected、connection_lost 和 delivery_complete
 class MqttCallback : public mqtt::callback {
 private:
 	MqttService& _mqttService;
@@ -34,6 +35,8 @@ public:
 
     void connection_lost(const std::string& cause) override {
 		// 连接丢失回调
+		// 由于在 connect() 方法中启用了自动重连connOpts.set_automatic_reconnect(1, 10);
+        // 这里不需要手动重连逻辑，MQTT 客户端会自动尝试重新连接
 		std::cerr << "MQTT connection lost, auto reconnecting... " << cause << std::endl;
     }
 
