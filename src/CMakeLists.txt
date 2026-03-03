@@ -1,67 +1,34 @@
 cmake_minimum_required(VERSION 3.10)
-project(video_ai_system LANGUAGES CXX C)
 
-# ========== 核心配置（全局） ==========
+# ========== 核心配置（继承全局） ==========
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-
-
-# ========== 变量定义 ==========
+# ========== 源文件列表 ==========
 set(SRC_FILES
-   
-
-
+    text/text.cpp
+    business_layer/lobby/lobby_service.cpp  # 你的业务层代码
+    # 如果有main函数，添加：main.cpp
 )
-
-# ========== 依赖查找 ==========
-
-
-
 
 # ========== 生成可执行文件 ==========
-add_executable(main ${SRC_FILES}
-    main.cpp
+add_executable(main ${SRC_FILES})
 
-
-)
-
-
-# ========== 编译宏定义 ==========
-target_compile_definitions(main PUBLIC
-    DISABLE_RGA  # 禁用RGA，强制CPU转换
-)
-
-# ========== 头文件路径 ==========
+# ========== 头文件路径（关键修复） ==========
 target_include_directories(main PUBLIC
-    #表现层
-    ${PROJECT_SOURCE_DIR}/include/presentation_layer 
-
-    #业务层
-    ${PROJECT_SOURCE_DIR}/include/business_layer/serialPort # 串口模块
-    ${PROJECT_SOURCE_DIR}/include/business_layer/video  # 视频模块
-    ${PROJECT_SOURCE_DIR}/include/business_layer/ai  # AI模块
-    ${PROJECT_SOURCE_DIR}/include/business_layer/publisher # 消息发布模块（客服端）
-    ${PROJECT_SOURCE_DIR}/include/business_layer/lobby
-
-    # 数据层
-    ${PROJECT_SOURCE_DIR}/include/data_layer/video 
-
-    # 公共模块
-    ${PROJECT_SOURCE_DIR}/include/common/config
-    
+    ${ROOT_INCLUDE_DIRS}  # 继承顶层定义的全局头文件路径
+    # 补充：如果头文件还有其他路径，在这里添加
+    # 例如：${CMAKE_CURRENT_SOURCE_DIR}/other_include
 )
 
-# ========== 库搜索路径（调整优先级：海康库优先） ==========
+# ========== 库搜索与链接 ==========
 target_link_directories(main PUBLIC
-    # 1. 海康SDK库（最高优先级）
-
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/rknn/3rdparty
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/rknn/utils
 )
 
-
-
-# ========== 链接库（核心调整） ==========
 target_link_libraries(main PUBLIC
-
+    pthread  # 示例：链接线程库（根据需要添加）
+    # 你的其他库：如 rknn_utils、hcnetsdk 等
 )

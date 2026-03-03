@@ -7,10 +7,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <iostream>
+#include "controller.h"
 
 using nlohmann::json;
-// 前置声明（避免头文件循环依赖）
-class ITaskService;
+
 
 /**
  * @brief Web服务接口类
@@ -23,7 +23,7 @@ public:
  
      * @param ITaskResultPublisher 任务调度接口指针
      */
-    WebService(const std::string& httpPath, HTTPCommandController& controller);
+    WebService(const std::string& httpPath,short port, HTTPCommandController& controller);
 
     /**
      * @brief 析构函数
@@ -86,40 +86,6 @@ private:
 };
 
 
-/**
- * @brief Web控制器接口类
- * 处理JSON请求的业务逻辑，与WebService解耦
- */
-
-class HTTPCommandController{
-public:
-    
-    explicit HTTPCommandController(ITaskService& scheduler);
-
-    
-    /**
-     * @brief 处理JSON请求
-     * @param topic 处理请求
-     * @return payload 响应数据
-     */
-    void onMessage(const std::string& topic, const std::string& payload);
-
-private:
-    ITaskService& scheduler_;
-
-    void handleGetRealImage(const nlohmann::json& j);
-
-    void handleGetSensorData(const nlohmann::json& j);
-
-    void handleGetAllDeviceStatus(const nlohmann::json& j);
-
-    void handVideoHistory(const nlohmann::json& j);
-    
-    void handVideoHistoryFile(const nlohmann::json& j);
-
-
-    // void
-};
 
 
 #endif // WEB_SERVICE_H
