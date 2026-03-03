@@ -32,3 +32,6 @@ target_link_libraries(main PUBLIC
     pthread  # 示例：链接线程库（根据需要添加）
     # 你的其他库：如 rknn_utils、hcnetsdk 等
 )
+
+# ========== 测试（必要时注释掉） ==========
+add_subdirectory(test/)

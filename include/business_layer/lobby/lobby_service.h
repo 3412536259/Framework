@@ -68,7 +68,7 @@ public:
     LobbyResult updateAIModel(const AIModelUpdate& update) override;
 
 private:
-    void TimingProcessing(); //定时上传
+    void TimingProcessing(); //��ʱ�ϴ�
 
     void TimingUpload();
 
