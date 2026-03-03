@@ -1,23 +1,29 @@
 # Framework
 
-¹¹½¨ Paho C++ ºÍ Paho C ¿â£º
+## æ„å»º Paho C++ å’Œ Paho C åº“ï¼š
 
 ```bash
 git clone https://github.com/eclipse/paho.mqtt.cpp
-cd paho.mqtt.cpp
-git co v1.6.0
+cd paho.mqtt.cppgit co v1.6.0
 
 git submodule update --init
 
 cmake -Bbuild -H. -DPAHO_WITH_MQTT_C=ON -DPAHO_BUILD_EXAMPLES=ON
 sudo cmake --build build/ --target install
+```
 
-Íê³Éºó¿â»á°²×°µ½ /usr/local/ Ä¿Â¼ÏÂ£º
 
-Í·ÎÄ¼ş (.h/.hpp): /usr/local/include/
 
-¿âÎÄ¼ş (.so/.a): /usr/local/lib/
+#### å®Œæˆååº“ä¼šå®‰è£…åˆ° `/usr/local/` ç›®å½•ä¸‹:
 
-ÔÚcmakeÖĞÁ´½Ó¿â
+###### å¤´æ–‡ä»¶ (.h/.hpp): `/usr/local/include/`
 
+###### Â åº“æ–‡ä»¶ (.so/.a): `/usr/local/lib/`
+
+
+
+#### åœ¨cmakeä¸­é“¾æ¥åº“:
+
+```cmake
 target_link_libraries(${PROJECT_NAME} paho-mqttpp3 paho-mqtt3a paho-mqtt3c)
+```
