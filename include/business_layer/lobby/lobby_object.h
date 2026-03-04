@@ -1,5 +1,5 @@
 #pragma once
-
+#include <nlohmann/json.hpp>
 class LobbyResult{
 public:
     // NoPermission();
@@ -141,3 +141,39 @@ class AIModelUpdate {
 };
 
 
+#include <string>
+#include <memory>
+#include <chrono>
+#include <opencv2/opencv.hpp>
+
+struct VideoFrame {
+    // ===== 视频数据 =====
+    std::shared_ptr<cv::Mat> image;
+
+    // ===== 元数据 =====
+    std::string cameraId;
+    std::string nvrId;
+
+    std::chrono::system_clock::time_point timestamp;
+
+    uint64_t frameIndex{0};
+    bool isKeyFrame{false};
+
+    // ===== 扩展空间 =====
+    // 可扩展AI识别结果、报警标记等
+
+    VideoFrame() = default;
+
+    VideoFrame(std::shared_ptr<cv::Mat> img,
+               std::string camId,
+               std::string nvr,
+               uint64_t index,
+               bool key)
+        : image(std::move(img)),
+          cameraId(std::move(camId)),
+          nvrId(std::move(nvr)),
+          timestamp(std::chrono::system_clock::now()),
+          frameIndex(index),
+          isKeyFrame(key)
+    {}
+};
