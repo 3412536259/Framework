@@ -157,30 +157,6 @@ LobbyResult LobbyService::controlRotateCamera(const CameraOperation& operation)
 }
 
 
-LobbyResult LobbyService::configureCamera(const CameraConfiguration& config)
-{
-    // auto auth = m_safetyService.verify(config.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
-
-    // auto cmdResult = m_commandService.execute(config);
-
-    // return LobbyResult::FromCommandResult(cmdResult);
-}
-
-LobbyResult LobbyService::updateBoxConfiguration(const BoxConfiguration& configuration)
-{
-    // auto auth = m_safetyService.verify(configuration.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
-
-    // auto result = m_commandService.execute(configuration);
-
-    // if (result.success())
-    //     m_deviceService.reloadConfiguration();
-
-    // return LobbyResult::FromCommandResult(result);
-}
 
 LobbyResult LobbyService::deployAIModel(const AIModelDeploy& deploy)
 {

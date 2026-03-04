@@ -1,19 +1,15 @@
 #pragma once
 #include <string>
-#include "lobby_service.h"
-
-
-
+#include "business_layer/lobby/lobby_service.h"
+#include <nlohmann/json.hpp>
+using nlohmann::json;
 class IController{
 public:
 
-    virtual void onMessage(const std::string& topic, const std::string& payload) = 0;
+    virtual void handle(const std::string& topic, const std::string& payload) = 0;
 
     virtual ~IController() = default;
 };
-
-
-
 
 /**
  * @brief Web控制器接口类
@@ -31,7 +27,7 @@ public:
      * @param topic 处理请求
      * @return payload 响应数据
      */
-    void onMessage(const std::string& topic, const std::string& payload) override;
+    void handle(const std::string& topic, const std::string& payload) override;
 private:
     ILobbyService& lobbyService; 
 

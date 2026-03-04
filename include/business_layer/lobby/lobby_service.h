@@ -20,9 +20,9 @@ public:
     virtual LobbyResult controlTrolleyRotation(const TrolleyOperation& operation) = 0;
     virtual LobbyResult controlRotateCamera(const CameraOperation& operation) = 0;
 
-    // ================= 配置 =================
-    virtual LobbyResult configureCamera(const CameraConfiguration& config) = 0;
-    virtual LobbyResult updateBoxConfiguration(const BoxConfiguration& configuration) = 0;
+    // // ================= 配置 =================
+    // virtual LobbyResult configureCamera(const CameraConfiguration& config) = 0;
+    // virtual LobbyResult updateBoxConfiguration(const BoxConfiguration& configuration) = 0;
 
     // ================= AI 模型 =================
     virtual LobbyResult deployAIModel(const AIModelDeploy& deploy) = 0;
@@ -57,9 +57,9 @@ public:
     LobbyResult controlTrolleyRotation(const TrolleyOperation& operation) override;
     LobbyResult controlRotateCamera(const CameraOperation& operation) override;
 
-    // ================= 配置 =================
-    LobbyResult configureCamera(const CameraConfiguration& config) override;
-    LobbyResult updateBoxConfiguration(const BoxConfiguration& configuration) override;
+    // // ================= 配置 =================
+    // LobbyResult configureCamera(const CameraConfiguration& config) override;
+    // LobbyResult updateBoxConfiguration(const BoxConfiguration& configuration) override;
 
     // ================= AI 模型 =================
     LobbyResult deployAIModel(const AIModelDeploy& deploy) override;

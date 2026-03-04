@@ -8,7 +8,11 @@
 #include <netinet/in.h>
 #include <iostream>
 #include "controller.h"
-
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <sstream>
+#include <cstring>
+#include <atomic>
 using nlohmann::json;
 
 
@@ -21,9 +25,13 @@ public:
     /**
      * @brief 构造函数
  
-     * @param ITaskResultPublisher 任务调度接口指针
+     * @param ip 服务绑定的IP地址，默认为""
+
+     *  @param port 服务监听的端口号，默认为8080
+
+     * @param controller 处理HTTP请求的控制器实例引用 这里使用指针好还是引用好 请求下下发
      */
-    WebService(const std::string& httpPath,short port, HTTPCommandController& controller);
+    WebService(const std::string& ip,short port, HTTPCommandController& controller);
 
     /**
      * @brief 析构函数
@@ -43,6 +51,9 @@ public:
      */
     void stop();
 
+
+    bool isRunning() const;
+
     // 禁用拷贝构造和赋值运算符（避免线程和套接字资源拷贝问题）
     WebService(const WebService&) = delete;
     WebService& operator=(const WebService&) = delete;
@@ -52,40 +63,44 @@ public:
     WebService& operator=(WebService&&) = delete;
 
 private:
-    /**
-     * @brief 服务运行循环
-     * 持续监听客户端连接，处理新连接的接收
-     */
-    void run();
 
-    /**
-     * @brief 处理单个客户端连接
-     * @param client_fd 客户端套接字描述符
-     */
-    void handleClient(int client_fd, const char* client_ip, uint16_t client_port);
+    // ================= 生命周期步骤 =================
 
-    std::string parseRequestBody(const std::string& request, size_t content_length, int client_fd);
+    bool initializeServerSocket(); // 初始化服务器套接字，绑定IP和端口，开始监听
 
-    size_t parseContentLength(const std::string& request);
-    
+    bool configureSocket(); //设置复用等选项
 
-    void sendErrorResponse(int client_fd, int status_code, const std::string& message, const json& extra = json{});
+    bool  bindSocket(); // 绑定地址
 
-    void sendSuccessResponse(int client_fd, const json& response_json);
+    bool startListening(); // 开始监听
 
-    std::string getStatusText(int status_code);
-    
-    // 成员变量
+    void acceptLoop(); // 接受连接循环，处理客户端请求
+
+    void handleClient(int client_fd); // 处理单个客户端请求
+
+    // ================= HTTP处理步骤 =================
+
+    bool receiveHttpRequest(int client_fd, std::string& request); // 接收完整HTTP请求，处理分包和超时
+
+    bool parseHttpRequest(const std::string& raw,std::string& outMethod,std::string& outPath,std::string& outBody); // 从HTTP头部解析Content-Length
+
+    bool validateRequest(const std::string& method, const std::string& body); // 验证HTTP方法和请求体格式
+
+    void dispatchRequest(const std::string& path, const std::string& body); // 根据路径分发到控制器处理
+
+    void sendHttpResponse(int clientFd,int statusCode,const std::string& body); //这个可以是把
+
+    void closeConnection(int clientFd);
+
+private:
     std::string m_bind_ip;
-    HTTPCommandController& m_controller;
-    int m_server_fd = -1;                // 服务端套接字描述符（初始化为无效值）
-    std::atomic<bool> m_running;          // 服务运行状态标志
-    std::thread m_thread;                // 服务运行线程
-    uint16_t m_port = 8080;
-    
+    short m_port;
+    int m_server_fd{-1};
+    std::thread acceptThread_;
+
+    std::atomic<bool> running_;
+
+    HTTPCommandController& dispatcher_; // 控制器实例引用
 };
-
-
-
 
 #endif // WEB_SERVICE_H
