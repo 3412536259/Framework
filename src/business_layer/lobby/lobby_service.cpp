@@ -1,42 +1,7 @@
 #include "business_layer/lobby/lobby_service.h"
 
-LobbyResult LobbyService::retrieveDeviceStatus(const DeviceStatusQuery& query)
-{
-    // // 1. 安全验证
-    // auto auth = m_safetyService.verify(query.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
+LobbyResult LobbyService::retrieveDeviceStatus(const DeviceStatusQuery& query){
 
-    // // 2. 查询设备状态
-    // auto result = m_deviceService.getDeviceStatus(query.deviceId);
-
-    // // 3. 返回统一结果
-    // return LobbyResult::FromDeviceResult(result);
-}
-
-
-
-LobbyResult LobbyService::retrieveSensorStatus(const SensorQuery& query)
-{
-    // auto auth = m_safetyService.verify(query.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
-
-    // auto result = m_deviceService.getSensorStatus(query.sensorId);
-
-    // return LobbyResult::FromDeviceResult(result);
-}
-
-
-LobbyResult LobbyService::retrieveEnvironmentData(const EnvironmentQuery& query)
-{
-    // auto auth = m_safetyService.verify(query.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
-
-    // auto result = m_deviceService.getEnvironmentData(query.deviceId);
-
-    // return LobbyResult::FromDeviceResult(result);
 }
 
 
@@ -85,23 +50,6 @@ LobbyResult LobbyService::downloadHistoricalCameraFootage(const DownloadHistoric
     // return LobbyResult::FromCommandResult(result);
 }
 
-LobbyResult LobbyService::operateDoorLock(const DoorLockOperation& operation)
-{
-    // auto auth = m_safetyService.verify(operation.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
-
-    // auto status = m_deviceService.getDeviceStatus(operation.deviceId);
-    // if (!status.canOperate())
-    //     return LobbyResult::InvalidState();
-
-    // auto cmdResult = m_commandService.execute(operation);
-
-    // if (cmdResult.success())
-    //     m_deviceService.updateDeviceStatus(operation.deviceId, cmdResult.newState());
-
-    // return LobbyResult::FromCommandResult(cmdResult);
-}
 
 
 LobbyResult LobbyService::operateSolenoidValve(const SolenoidValveOperation& operation)
@@ -127,78 +75,7 @@ LobbyResult LobbyService::operateSolenoidValve(const SolenoidValveOperation& ope
     // return LobbyResult.FromCommandResult(cmdResult);
 }
 
-LobbyResult LobbyService::controlTrolleyRotation(const TrolleyOperation& operation)
-{
-    // auto auth = m_safetyService.verify(operation.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
-
-    // auto status = m_deviceService.getDeviceStatus(operation.deviceId);
-    // if (!status.canRotate())
-    //     return LobbyResult::InvalidState();
-
-    // auto cmdResult = m_commandService.execute(operation);
-
-    // if (cmdResult.success())
-    //     m_deviceService.updateDeviceStatus(operation.deviceId, cmdResult.newState());
-
-    // return LobbyResult::FromCommandResult(cmdResult);
-}
-
-LobbyResult LobbyService::controlRotateCamera(const CameraOperation& operation)
-{
-    // auto auth = m_safetyService.verify(operation.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
-
-    // auto cmdResult = m_commandService.execute(operation);
-
-    // return LobbyResult::FromCommandResult(cmdResult);
-}
 
 
 
-LobbyResult LobbyService::deployAIModel(const AIModelDeploy& deploy)
-{
-    // auto auth = m_safetyService.verify(deploy.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
 
-    // auto result = m_detectionService.deployModel(deploy);
-
-    // return LobbyResult::FromDetectionResult(result);
-}
-
-LobbyResult LobbyService::enableAIModel(const AIModelEnable& enable)
-{
-    // auto auth = m_safetyService.verify(enable.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
-
-    // auto result = m_detectionService.enableModel(enable);
-
-    // return LobbyResult::FromDetectionResult(result);
-}
-
-
-LobbyResult LobbyService::disableAIModel(const AIModelDisable& disable)
-{
-    // auto auth = m_safetyService.verify(disable.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
-
-    // auto result = m_detectionService.disableModel(disable);
-
-    // return LobbyResult::FromDetectionResult(result);
-}
-
-LobbyResult LobbyService::updateAIModel(const AIModelUpdate& update)
-{
-    // auto auth = m_safetyService.verify(update.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
-
-    // auto result = m_detectionService.updateModel(update);
-
-    // return LobbyResult::FromDetectionResult(result);
-}

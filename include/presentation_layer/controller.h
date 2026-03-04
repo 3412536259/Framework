@@ -1,9 +1,11 @@
 #pragma once
 #include <string>
 #include "business_layer/lobby/lobby_service.h"
+#include "common/topics.h"
+#include "business_layer/lobby/lobby_object.h"
 #include <nlohmann/json.hpp>
 using nlohmann::json;
-class IController{
+class IController{ //适配器 
 public:
 
     virtual void handle(const std::string& topic, const std::string& payload) = 0;
@@ -19,8 +21,7 @@ public:
 class HTTPCommandController : public IController{
 public:
     
-    explicit HTTPCommandController(ILobbyService& lobby);////这样需要改变一下，加上lobby大厅，
-
+    explicit HTTPCommandController(ILobbyService& lobby);
     
     /**
      * @brief 处理JSON请求
@@ -35,11 +36,11 @@ private:
 
     void handleGetRealImage(const nlohmann::json& j);
 
-    void handleGetSensorData(const nlohmann::json& j);
+    // void handleGetSensorData(const nlohmann::json& j);
 
     void handleGetAllDeviceStatus(const nlohmann::json& j);
 
-    void handVideoHistory(const nlohmann::json& j);
+    void handVideoHistoryTime(const nlohmann::json& j);
     
     void handVideoHistoryFile(const nlohmann::json& j);
 

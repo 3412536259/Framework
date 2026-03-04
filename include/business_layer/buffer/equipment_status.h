@@ -1,0 +1,20 @@
+
+
+
+
+class EquipmentStatusBuffer{
+public:
+
+
+
+
+private:
+
+
+
+
+};
+
+
+
+

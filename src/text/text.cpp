@@ -3,17 +3,37 @@
 #include "presentation_layer/http_service.h"
 int main(){
 
-    LobbyService lobbyService;
-    std::cout << "Creating lobby..." << std::endl;
-
-     HTTPCommandController controller = HTTPCommandController(lobbyService); //不允许使用抽象类类型 "IController" 的对象:
-
     
-    WebService webService("0.0.0.0", 8080, controller); // const char [8]
+    // MqttService mqttService("0.0.0.0", 1883);
 
-    webService.start();
+    // MqttCommandPublisher publisher(mqttService);
 
-    while (true) {} 
+    // CommandService commandService(publisher);
+
+    // 4️⃣ 构造其他服务（device / safety / detection）
+    // DeviceService deviceService;
+    // SafetyService safetyService;
+    // DetectionService detectionService;
+
+    // 5️⃣ 构造 LobbyService
+    LobbyService lobbyService(/*deviceService,safetyService,commandService,detectionService*/);
+
+    // 6️⃣ 构造 Controller
+    // MTTPCommandController controller(lobbyService);
+
+    // 7️⃣ 把 controller 注入 mqtt（回调）
+    // mqttService.setController(controller);
+
+    // mqttService.start();
+
+
+    // HTTPCommandController controller = HTTPCommandController(lobbyService); 
+    // WebService webService("0.0.0.0", 8080, controller); 
+
+    // webService.start();
+
+    // while (true) {} 
+    
     
     return 0;
 };
