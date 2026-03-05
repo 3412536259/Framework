@@ -1,0 +1,6 @@
+
+class RealTimeFrameCache {
+
+    RealTimeFrameCache();
+    ~RealTimeFrameCache();
+};
