@@ -25,3 +25,4 @@ Makefile
 
 # 其他
 include/common/mqtt/lib/
+/readme语法.txt
