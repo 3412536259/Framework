@@ -144,11 +144,10 @@ class AIModelUpdate {
 #include <string>
 #include <memory>
 #include <chrono>
-#include <opencv2/opencv.hpp>
 
 struct VideoFrame {
     // ===== 视频数据 =====
-    std::shared_ptr<cv::Mat> image;
+    // std::shared_ptr<cv::Mat> image;
 
     // ===== 元数据 =====
     std::string cameraId;
@@ -164,16 +163,16 @@ struct VideoFrame {
 
     VideoFrame() = default;
 
-    VideoFrame(std::shared_ptr<cv::Mat> img,
-               std::string camId,
-               std::string nvr,
-               uint64_t index,
-               bool key)
-        : image(std::move(img)),
-          cameraId(std::move(camId)),
-          nvrId(std::move(nvr)),
-          timestamp(std::chrono::system_clock::now()),
-          frameIndex(index),
-          isKeyFrame(key)
-    {}
+    // VideoFrame(/*std::shared_ptr<cv::Mat> img,
+    //            std::string camId,
+    //            std::string nvr,
+    //            uint64_t index,
+    //            bool key*/)
+    //     // : image(std::move(img)),
+    //     //   cameraId(std::move(camId)),
+    //     //   nvrId(std::move(nvr)),
+    //     //   timestamp(std::chrono::system_clock::now()),
+    //     //   frameIndex(index),
+    //     //   isKeyFrame(key)
+    // {}
 };

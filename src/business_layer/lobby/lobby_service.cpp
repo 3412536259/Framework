@@ -1,4 +1,11 @@
 #include "business_layer/lobby/lobby_service.h"
+//public
+ LobbyService::LobbyService(ITimer & timer /* IDeviceService& deviceService, ISafetyService& safetyService, ICommandService& commandService, IDetectionService& detectionService */)
+    : m_Timer(timer)/* , m_deviceService(deviceService), m_safetykService(safetyService), m_commandService(commandService), m_detectionService(detectionService) */
+{
+    
+}
+
 
 LobbyResult LobbyService::retrieveDeviceStatus(const DeviceStatusQuery& query){
     // auto auth = m_safetyService.verify(query.token);
@@ -80,7 +87,17 @@ LobbyResult LobbyService::operateSolenoidValve(const SolenoidValveOperation& ope
     // // 5. 返回统一结果
     // return LobbyResult.FromCommandResult(cmdResult);
 }
+//private
+void LobbyService::TimingProcessing(){
+    
 
+
+}
+
+
+void LobbyService::TimingPullVideoFrame(){
+
+}
 
 
 

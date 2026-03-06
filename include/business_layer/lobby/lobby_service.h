@@ -1,5 +1,6 @@
 #pragma once 
 #include "lobby_object.h"
+#include "business_layer/timer.h"
 class ILobbyService {
 public:
     // ================= 查询 =================
@@ -37,7 +38,7 @@ public:
 
 class LobbyService : public ILobbyService{
 public:
-    // LobbyService(IDeviceService& deviceService, ISafetyService& safetyService, ICommandService& commandService, IDetectionService& detectionService);
+    LobbyService( ITimer& timer /* IDeviceService& deviceService, ISafetyService& safetyService, ICommandService& commandService, IDetectionService& detectionService */);
     ~LobbyService() = default;  
 
    // ================= 查询 =================
@@ -84,9 +85,9 @@ private:
 
     // IDetectionService& m_detectionService; // 检测
 
-    //FrameBuffer& m_FrameBuffer         //帧缓冲对象
+    // FrameBuffer& m_FrameBuffer;         //帧缓冲对象
 
-    //EquipmentStatusBuffer& m_EquipmentStatusBuffer //设备状态缓冲对象
+    ITimer& m_Timer; //设备状态缓冲对象
 
 
 

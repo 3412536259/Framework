@@ -7,8 +7,7 @@
 template<typename FrameType>
 class FrameBuffer {
 public:
-    explicit FrameBuffer(size_t capacity)
-        : capacity_(capacity) {}
+    explicit FrameBuffer() {}
 
     // 生产者
     void push(std::shared_ptr<FrameType> frame) {

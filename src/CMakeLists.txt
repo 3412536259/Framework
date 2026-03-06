@@ -13,11 +13,12 @@ link_directories(/usr/local/lib)
 
 # ========== 源文件列表 ==========
 set(SRC_FILES
-    text/text.cpp
+    text/web_test.cpp
+    # text/text.cpp
     #========== 业务层 ==========
 
-    business_layer/lobby/lobby_service.cpp  # 你的业务层代码
-
+    business_layer/lobby/lobby_service.cpp  #大厅
+    business_layer/timer.cpp 
     #========== 数据层 ==========
 
 

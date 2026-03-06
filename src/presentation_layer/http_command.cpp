@@ -5,7 +5,7 @@ HTTPCommandController::HTTPCommandController(ILobbyService& lobby) : lobbyServic
 }
 // public:
 
-void HTTPCommandController::handle(const std::string& topic, const std::string& payload){
+HttpResponse HTTPCommandController::handle(const std::string& topic, const std::string& payload){
     if(topic == GET_REAL_IMAGE_TOPIC){
         nlohmann::json j = nlohmann::json::parse(payload);
         handleGetRealImage(j);  
