@@ -9,6 +9,7 @@ void HTTPCommandController::handle(const std::string& topic, const std::string& 
     if(topic == GET_REAL_IMAGE_TOPIC){
         nlohmann::json j = nlohmann::json::parse(payload);
         handleGetRealImage(j);  
+        
     }
 }
 
