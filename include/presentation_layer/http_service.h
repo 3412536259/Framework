@@ -31,7 +31,7 @@ public:
 
      * @param controller 处理HTTP请求的控制器实例引用 这里使用指针好还是引用好 请求下下发
      */
-    WebService(const std::string& ip,short port, HTTPCommandController& controller);
+    WebService(const std::string& ip,short port, IController& controller);
 
     /**
      * @brief 析构函数
@@ -86,7 +86,7 @@ private:
 
     bool validateRequest(const std::string& method, const std::string& body); // 验证HTTP方法和请求体格式
 
-    void dispatchRequest(const std::string& path, const std::string& body); // 根据路径分发到控制器处理
+    HttpResponse dispatchRequest(const std::string& path, const std::string& body); // 根据路径分发到控制器处理
 
     void sendHttpResponse(int clientFd,int statusCode,const std::string& body); //这个可以是把
 
