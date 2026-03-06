@@ -1,24 +1,23 @@
 #pragma once
 
 #include "acquisition_task.h"
-#include "device_service.h"
+#include "solenoid_acquisition_task.h"
+#include "sensor_acquisition_task.h"
+#include "camera_acquisition_task.h"
+#include <vector>
+#include <memory>
 
 class DeviceAcquisitionTask {
 
     public:
-        DeviceAcquisitionTask(DeviceService& deviceService);
+        DeviceAcquisitionTask(SolenoidAcquisitionTask& solenoidTask,
+                              SensorAcquisitionTask& sensorTask,
+                              CameraAcquisitionTask& cameraTask);
         ~DeviceAcquisitionTask();
-
-        // SolenoidRealTimeDataList SolenoidDataAcquisition();
-        // SensorRealTimeDataList SensorDataAcquisition();
-        // CameraRealTimeDataList CameraDataAcquisition();
 
         const std::vector< std::unique_ptr<AcquisitionTask> >& getTasks() const ;
 
     private:
 
         std::vector< std::unique_ptr<AcquisitionTask> > _acquisitionTasks;
-
-        DeviceService& _deviceService;
-
 };

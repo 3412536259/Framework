@@ -6,7 +6,10 @@
 
 class IDeviceService{
     public:
-        virtual BoxDeviceStatus viewAllDeviceStatus() = 0;
+        virtual BoxDeviceStatus viewAllDeviceStatus(DeviceManageService& deviceManageService,
+                                                    DeviceStatusCache& deviceStatusCache,
+                                                    DeviceAcquisitionTask& deviceAcuqisitionTask,
+                                                    RealTimeFrameCache& realTimeFrameCache) = 0;
         virtual BoxDeviceRealTimeData getBoxDeviceRealTimeData() = 0;
 
         //电磁阀控制
@@ -35,7 +38,10 @@ class IDeviceService{
 
 class DeviceService : public IDeviceService{
     public: 
-        DeviceService() = default;
+        DeviceService(DeviceManageService& deviceManageService,
+                      DeviceStatusCache& deviceStatusCache,
+                      DeviceAcquisitionTask& deviceAcuqisitionTask,
+                      RealTimeFrameCache& realTimeFrameCache) = default;
         virtual ~DeviceService() = default;
         BoxDeviceStatus viewAllDeviceStatus() override;
         BoxDeviceRealTimeData getBoxDeviceRealTimeData() override;
@@ -65,15 +71,15 @@ class DeviceService : public IDeviceService{
         void devicesDataCollection(int deviceType) override;
         void timerLoop();
 
-        DeviceStatusCache _deviceStatusCache;
+        DeviceStatusCache& _deviceStatusCache;
 
-        DeviceManageService _deviceManageService;
+        DeviceManageService& _deviceManageService;
         
-        DeviceAcquisitionTask _deviceAcquisitionTask;
+        DeviceAcquisitionTask& _deviceAcquisitionTask;
 
-        RealTimeFrameCache _realTimeFrameCache;
+        RealTimeFrameCache& _realTimeFrameCache;
 
         std::thread _timerThread;
         std::atomic<bool> _running {false};
         std::mutex _mutex;
-    };
+};

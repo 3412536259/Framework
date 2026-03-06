@@ -3,13 +3,19 @@
 SolenoidAcquisitionTask::SolenoidAcquisitionTask(int type, int sampleIntervalSec) 
     : AcquisitionTask(type, sampleIntervalSec)
 {
-
+    _nextAcquisitionTime = std::chrono::steady_clock::now();
 }
 SolenoidAcquisitionTask::~SolenoidAcquisitionTask() {
 
 }
 
 bool SolenoidAcquisitionTask::isAcquisitionData() {
-    
-    return true;
+
+    auto now = std::chrono::steady_clock::now();
+
+    if(now >= _nextAcquisitionTime) {
+        _nextAcquisitionTime = now + std::chrono::seconds(_sampleIntervalSec);
+        return true;
+    }
+    return false;
 }

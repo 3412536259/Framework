@@ -28,21 +28,24 @@ DeviceOperationResult DeviceManageService::openSolenoidValue( const SolenoidValu
 }
 
 DeviceOperationResult DeviceManageService::closeSolenoidValue( const SolenoidValueInfo& info) {
-
+    int result = _solenoidInstanceSet.closeSolenoidValue(info);
+    if( result == 0 ) return new DeviceOperationResult(0,"关闭成功");
+    return new DeviceOperationResult(result,"关闭失败");
 }
 
 DeviceOperationResult DeviceManageService::controlCarRotation( const CarControl& car) {
-
+    int result = _carInstanceSet.controlCarRotation(car);
+    return new DeviceOperationResult(result, "控制成功" );
 }
 
 CameraHistoryVideo DeviceManageService::getCameraHistoryVideo( const CameraInfo& info) {
-
+    return _cameraInstanceSet.getCameraHistoryVideo(info.getDeviceId());
 }
 
 RadarPointCloudData DeviceManageService::getRadarPointCloudData( const RadarInfo& info) {
-
+    return _radarInstanceSet.getRadarPointCloudData(info.getDeviceId());
 }
 
 BoxConfigResult DeviceManageService::BoxDeviceParamsConfig( const BoxDeviceParams& params) {
-
+    return _boxInstance.configBoxDeviceParams(params);
 }

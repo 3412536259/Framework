@@ -1,37 +1,16 @@
 #include "device_acquisition_task.h"
-#include "device_service.h"
-DeviceAcquisitionTask::DeviceAcquisitionTask(DeviceService& deviceService)
-    : _deviceService(deviceService)
-{    
+DeviceAcquisitionTask::DeviceAcquisitionTask(SolenoidAcquisitionTask& solenoidTask,
+                                             SensorAcquisitionTask& sensorTask,
+                                             CameraAcquisitionTask& cameraTask){
+    _acquisitionTasks.push_back(std::make_unique<SolenoidAcquisitionTask>(solenoidTask));
+    _acquisitionTasks.push_back(std::make_unique<SensorAcquisitionTask>(sensorTask));
+    _acquisitionTasks.push_back(std::make_unique<CameraAcquisitionTask>(cameraTask));
+    //配置各种设备的采集任务    
 }
 
 DeviceAcquisitionTask::~DeviceAcquisitionTask() {
 
 }
-
-// bool DeviceAcquisitionTask::isAcquisitionSolenoidData() {
-//     return _solenoidAcquisitionTask.isAcquisitionData();
-// }
-
-// bool DeviceAcquisitionTask::isAcquisitionSensorData() {
-//     return _sensorAcquisitionTask.isAcquisitionData();
-// }
-
-// bool DeviceAcquisitionTask::isAcuqisitionCameraData() {
-//     return _cameraAcquisitionTask.isAcquisitionData();
-// }
-
-// SolenoidRealTimeDataList DeviceAcquisitionTask::SolenoidDataAcquisition() {
-
-// }
-
-// SensorRealTimeDataList DeviceAcquisitionTask::SensorDataAcquisition() {
-
-// }
-
-// CameraRealTimeDataList DeviceAcquisitionTask::CameraDataAcquisition() {
-
-// }
 
 std::vector< std::unique_ptr<AcquisitionTask> >&  DeviceAcquisitionTask::getTasks() const {
     return _acquisitionTasks;
