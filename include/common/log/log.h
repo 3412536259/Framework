@@ -6,6 +6,7 @@
 #include <ctime>
 
 enum class LogLevel{
+    DEBUG,
     INFO,
     WARNING,
     ERROR,
@@ -20,6 +21,8 @@ public:
     Logger& operator=(const Logger&) = delete;
     //设置日志文件路径
     void setLogPath(const std::string& log_path);
+    //设置日志级别
+	void setLogLevel(LogLevel level);
     //写入日志
     void log(LogLevel level, const std::string& message);
 
@@ -33,11 +36,12 @@ private:
 
     std::ofstream logFile;
     std::string logPath;
+	LogLevel currentLogLevel = LogLevel::INFO;
 };
 
 // 日志宏定义（简化日志调用）
 #define LOG_INFO(msg) Logger::getInstance().log(LogLevel::INFO, msg)
 #define LOG_WARNING(msg) Logger::getInstance().log(LogLevel::WARNING, msg)
 #define LOG_ERROR(msg) Logger::getInstance().log(LogLevel::ERROR, msg)
-
+#define LOG_DEBUG(msg) Logger::getInstance().log(LogLevel::DEBUG, msg)
 #endif

@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include<thread>
 
 class ILobbyService {
 public:
@@ -19,6 +20,7 @@ public:
 
 	void executeCommand(const Command& command) {
 		std::cout << "MockLobbyService executing command: " << command.getCommand() << std::endl;
+		std::this_thread::sleep_for(std::chrono::seconds(2));// 模拟命令执行的耗时
 	}
 
 	CommandService& getCommandService() {
