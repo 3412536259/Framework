@@ -2,15 +2,18 @@
 #include "command_service.h"
 //#include "lobby_service.h"
 #include "MockLobby.h" // only for testing, not part of the actual implementation
+#include "common/log/log.h"
 #include <thread>
 #include <chrono>
 #include <iostream>
 #include <stdlib.h>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/basic_file_sink.h" // 基础文件输出的头文件
+//#include "spdlog/spdlog.h"
+//#include "spdlog/sinks/basic_file_sink.h" // 基础文件输出的头文件
 
 int main() {
+	Logger::getInstance().setLogPath("test.log");
+
 	MockLobbyService lobbyService;
 
     MqttService mqttService(lobbyService.getCommandService());
