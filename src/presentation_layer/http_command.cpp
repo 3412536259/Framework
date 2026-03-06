@@ -21,7 +21,7 @@ void HTTPCommandController::handleGetRealImage(const nlohmann::json& j){
         // 处理无效查询，例如返回错误响应
         return;
     }
-    lobbyService.retrieveLiveCameraFrame(query);
+    auto result = lobbyService.retrieveLiveCameraFrame(query);
 }
 
 // void HTTPCommandController::handleGetSensorData(const nlohmann::json& j){
@@ -34,7 +34,7 @@ void HTTPCommandController::handleGetAllDeviceStatus(const nlohmann::json& j){
         // 处理无效查询，例如返回错误响应
         return;
     }
-    lobbyService.retrieveDeviceStatus(query);   
+    auto result = lobbyService.retrieveDeviceStatus(query);   
 }
 
 void HTTPCommandController::handVideoHistoryTime(const nlohmann::json& j){
@@ -43,7 +43,7 @@ void HTTPCommandController::handVideoHistoryTime(const nlohmann::json& j){
         // 处理无效查询，例如返回错误响应
         return;
     }
-    lobbyService.retrieveHistoricalCameraFootage(query);    
+    auto result = lobbyService.retrieveHistoricalCameraFootage(query);    
 }
     
 void HTTPCommandController::handVideoHistoryFile(const nlohmann::json& j){
@@ -52,5 +52,5 @@ void HTTPCommandController::handVideoHistoryFile(const nlohmann::json& j){
         // 处理无效查询，例如返回错误响应
         return;
     }
-    lobbyService.downloadHistoricalCameraFootage(download);     
+    auto result = lobbyService.downloadHistoricalCameraFootage(download);     
 }

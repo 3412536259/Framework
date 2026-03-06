@@ -26,11 +26,12 @@ int main() {
     Timer timer;
     LobbyService lobbyService(timer /*deviceService,safetyService,commandService,detectionService*/);
     HTTPCommandController controller = HTTPCommandController(lobbyService);
-    WebService webService("0.0.0.0", 8080, controller);
+    WebService webService("192.168.1.104", 8080, controller);
     webService.start();
 
     std::cout << std::endl;
     std::cout << ">>> 系统启动成功！服务已就绪 (进程(pid) ID: " << getpid() << ")" << std::endl; 
+    
     std::cout << ">>> 按 Ctrl+C 停止服务" << std::endl;
     std::cout << "=============================================" << std::endl;
 
