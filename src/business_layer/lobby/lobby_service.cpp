@@ -1,7 +1,13 @@
 #include "business_layer/lobby/lobby_service.h"
 
 LobbyResult LobbyService::retrieveDeviceStatus(const DeviceStatusQuery& query){
+    // auto auth = m_safetyService.verify(query.token);
+    // if (!auth.success())
+    //     return LobbyResult::NoPermission();
 
+    // auto status = m_deviceService.getDeviceStatus(query.deviceId);
+
+    // return LobbyResult::FromDeviceResult(status);    
 }
 
 

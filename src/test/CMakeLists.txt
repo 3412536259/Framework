@@ -24,10 +24,12 @@ add_executable(mqtt_test
     ../business_layer/command/mqtt_service.cpp
     ../business_layer/command/command_service.cpp
     ../business_layer/command/command_status.cpp
+    ../common/log/log.cpp
 )
 
 target_include_directories(mqtt_test PRIVATE
     ${FRAMEWORK_ROOT}/include
+    ${FRAMEWORK_ROOT}/include/common/log
     ${FRAMEWORK_ROOT}/include/business_layer/command
     ${FRAMEWORK_ROOT}/include/business_layer/lobby
     ${FRAMEWORK_ROOT}/src/test

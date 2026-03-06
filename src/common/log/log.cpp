@@ -45,6 +45,10 @@ void Logger::setLogPath(const std::string& log_path) {
 }
 
 void Logger::log(LogLevel level, const std::string& message) {
+    if (level < currentLogLevel) {
+        return; // 当前日志级别过低，忽略日志
+	}
+
     std::string timeStr = getCurrentTime();
     std::string levelStr = logLevelToString(level);
     std::string logMsg = "[" + timeStr + "] [" + levelStr + "] " + message + "\n";

@@ -151,9 +151,9 @@ void WebService::handleClient(int client_fd)
         return;
     }
 
-    dispatchRequest(path, body);
+    HttpResponse response = dispatchRequest(path, body);//这个应该是需要返回值出来
 
-    sendHttpResponse(client_fd, 200, R"({"success":true})"); //
+    sendHttpResponse(client_fd, response.status, response.body);
 
     closeConnection(client_fd);
 }
@@ -209,14 +209,10 @@ bool WebService::validateRequest(const std::string& method,
     return true;
 }
 
-void WebService::dispatchRequest(const std::string& path,
+HttpResponse WebService::dispatchRequest(const std::string& path,
                                  const std::string& body)
 {
-    std::string topic = path;
-    if (!topic.empty() && topic[0] == '/')
-        topic = topic.substr(1);
-
-    dispatcher_.handle(topic, body);
+    return dispatcher_.handle(path, body);
 }
 
 void WebService::sendHttpResponse(int clientFd,
