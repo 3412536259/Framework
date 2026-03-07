@@ -3,7 +3,7 @@
 CameraAcquisitionTask::CameraAcquisitionTask(int type, int sampleIntervalSec)
     : AcquisitionTask(type, sampleIntervalSec)
 {
-
+    _nextAcquisitionTime = std::chrono::steady_clock::now();
 }
 
 CameraAcquisitionTask::~CameraAcquisitionTask()
@@ -13,5 +13,11 @@ CameraAcquisitionTask::~CameraAcquisitionTask()
 
 bool CameraAcquisitionTask::isAcquisitionData()
 {
-    return true;
+    auto now = std::chrono::steady_clock::now();
+
+    if( now >= _nextAcquisitionTime) {
+        _nextAcquisitionTime = now + std::chrono::seconds(_sampleIntervalSec);
+        return true;
+    }
+    return false;
 }

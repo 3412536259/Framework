@@ -1,11 +1,19 @@
 #include "device_service.h"
 #include<optional>
-DeviceService::DeviceService() {
-    
+DeviceService::DeviceService(DeviceManageService& deviceManageService,
+                             DeviceStatusCache& deviceStatusCache,
+                             DeviceAcquisitionTask& deviceAcuqisitionTask,
+                             RealTimeFrameCache& realTimeFrameCache) 
+    :_deviceManageService(deviceManageService),
+     _deviceStatusCache(deviceStatusCache),
+     _deviceAcquisitionTask(deviceAcuqisitionTask),
+     _realTimeFrameCache(realTimeFrameCache)
+{
+    startTimer();
 }
 
 DeviceService::~DeviceService() {
-    
+    stopTimer();
 }
 
 BoxDeviceStatus DeviceService::viewAllDeviceStatus() {
@@ -22,7 +30,7 @@ BoxDeviceStatus DeviceService::viewAllDeviceStatus() {
 BoxDeviceRealTimeData DeviceService::getBoxDeviceRealTimeData() {
     if(_deviceStatusCache.isBoxRealTimeDataEmpty()) {
         const BoxDeviceRealTimeData& realTimeData = _deviceManageService.getBoxDeviceRealTimeData();
-        _deviceStatusCache.updateBoxDeviceStatus(realTimeData);
+        _deviceStatusCache.updateBoxDeviceRealTimeData(realTimeData);
         return realTimeData;
     }
     const BoxDeviceRealTimeData& realTimeData = _deviceStatusCache.getBoxDeviceRealTimeData();
@@ -48,7 +56,7 @@ DeviceOperationResult DeviceService::controlCarRotation( const CarControl& car) 
 }
 
 CameraRealTimeFrame DeviceService::getCameraRealTimeFrame( const CameraInfo& info) {
-    return _realTimeFrameCache.getCameraRealTimePhoto(info);
+    return _realTimeFrameCache.getCameraRealTimeFrame(info);
 }
 
 CameraHistoryVideo DeviceService::viewCameraHistoryVideo( const CameraInfo& info) {
@@ -78,8 +86,10 @@ void DeviceService::stopTimer() {
 void DeviceService::devicesDataCollection(int deviceType) {
     
     // 设备数据采集 DeviceData 父类
-    DeviceData deviceData = _deviceManageService.deviceDataAcquisition(deviceType);
+    std::vector<std::unique_ptr<DeviceData> > deviceData = _deviceManageService.deviceDataAcquisition(deviceType);
+    //更新一种设备的状态和实时数据
     _deviceStatusCache.updateDeviceStatus(deviceData);
+    _deviceStatusCache.updateDeviceRealTimeData(deviceData);
 }
 
 void DeviceService::timerLoop() {
@@ -90,15 +100,16 @@ void DeviceService::timerLoop() {
 
         for(auto& task : _deviceAcquisitionTask.getTasks()) {
             if(task->isAcquisitionData()) 
-                devicesDataCollection(task->getType()));
+                devicesDataCollection(task->getType());
         }
+        std::this_thread::sleep_for(seconds(1));
 
-        auto endTime = steady_clock::now();
-        auto elapsed = duration_cast<milliseconds>(endTime - startTime);
+        // auto endTime = steady_clock::now();
+        // auto elapsed = duration_cast<milliseconds>(endTime - startTime);
 
-        auto sleepTime = milliseconds(1000) - elapsed;
+        // auto sleepTime = milliseconds(1000) - elapsed;
 
-        if(sleepTime > milliseconds(0)) std::this_thread::sleep_for(sleepTime);
+        // if(sleepTime > milliseconds(0)) std::this_thread::sleep_for(sleepTime);
     }
 }
 // void DeviceService::timerLoop() {

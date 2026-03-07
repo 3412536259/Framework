@@ -3,7 +3,7 @@
 SensorAcquisitionTask::SensorAcquisitionTask(int type, int sampleIntervalSec) 
     : AcquisitionTask(type,sampleIntervalSec)
 {
-
+    _nextAcquisitionTime = std::chrono::steady_clock::now();
 }
 
 SensorAcquisitionTask::~SensorAcquisitionTask() {
@@ -11,6 +11,11 @@ SensorAcquisitionTask::~SensorAcquisitionTask() {
 }
 
 bool SensorAcquisitionTask::isAcquisitionData() {
-    return true;
+    auto now = std::chrono::steady_clock::now();
+    if(now >= _nextAcquisitionTime) {
+        _nextAcquisitionTime = now + _sampleIntervalSec;
+        return true;
+    }
+    return false;
 
 }

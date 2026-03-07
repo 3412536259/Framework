@@ -38,6 +38,9 @@ class DeviceManageService : public IDeviceManageService {
         BoxConfigResult BoxDeviceParamsConfig( const BoxDeviceParams& params) override;
 
     private:
+
+        BoxInstance _boxInstance;
+
         SolenoidInstanceSet _solenoidInstances;
 
         CameraInstanceSet _cameraInstances;
