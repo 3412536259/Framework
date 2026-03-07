@@ -11,7 +11,7 @@ public:
      * @param topic 处理请求
      * @return payload 响应数据
      */
-    void handle(const std::string& topic, const std::string& payload) override;
+    HttpResponse handle(const std::string& topic, const std::string& payload) override;
 private:
     ILobbyService& lobbyService; 
 
