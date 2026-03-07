@@ -5,15 +5,15 @@
 #include <iostream>
 
 CommandService::CommandService(ILobbyService* lobbyService)
-	: _lobbyService(lobbyService), _mqttService(nullptr)
+	: _lobbyService(lobbyService)//, _mqttService(nullptr)
 {
 	_lobbyService = dynamic_cast<MockLobbyService*>(_lobbyService);
 }
 
-void CommandService::setMqttService(MqttService& mqttService)
-{
-	_mqttService = &mqttService;
-}
+//void CommandService::setMqttService(MqttService& mqttService)
+//{
+//	_mqttService = &mqttService;
+//}
 
 void CommandService::executeCommand(const Command& command)
 {

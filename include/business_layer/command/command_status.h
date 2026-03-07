@@ -34,6 +34,7 @@ private:
 	void logStatusChange();
 };
 
+// warning£ºÒÔºó»á·ÏÆú
 class CommandQueue {
 public:
 	CommandQueue();

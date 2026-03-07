@@ -12,6 +12,7 @@
 //#include "spdlog/sinks/basic_file_sink.h" // 基础文件输出的头文件
 
 int main() {
+	std::cout << "Starting MQTT Service Test..." << std::endl;
 	Logger::getInstance().setLogPath("test.log");
 
 	MockLobbyService lobbyService;

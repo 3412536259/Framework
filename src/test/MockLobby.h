@@ -15,7 +15,7 @@ public:
 	MockLobbyService() : m_commandService(this) {}
 
 	void setMqttService(MqttService& mqttService) {
-		m_commandService.setMqttService(mqttService);
+		//m_commandService.setMqttService(mqttService);
 	}
 
 	void executeCommand(const Command& command) {
