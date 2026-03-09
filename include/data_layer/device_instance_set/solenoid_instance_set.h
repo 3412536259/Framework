@@ -4,10 +4,10 @@
 #include "solenoid_value.h"
 #include <unordered_map>
 #include <memory>
-
+#include <vector>
 class SolenoidInsatnceSet {
     public:
-        SolenoidInsatnceSet() = default;
+        SolenoidInsatnceSet();
         ~SolenoidInsatnceSet();
 
         const std::vector<SolenoidValue>& getSolenoidValues() const;

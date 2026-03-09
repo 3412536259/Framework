@@ -7,29 +7,32 @@
 }
 
 
-LobbyResult LobbyService::retrieveDeviceStatus(const DeviceStatusQuery& query){
-    // auto auth = m_safetyService.verify(query.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
+LobbyResult<SensorQuery> LobbyService::retrieveDeviceStatus(const DeviceStatusQuery& query){
+    auto auth = m_safetykService.authenticate();
+    if (!auth)return LobbyResult<SensorQuery>::Error(ErrorCode::Code::AUTH_PERMISSION_DENIED);   
+    // 获取设备状态的逻辑 
+    //1.正确
+    return LobbyResult<SensorQuery>::Ok(SensorQuery());
+    //2.错误
+    // return LobbyResult<SensorQuery>::Error(ErrorCode::Code::SERVER_INTERNAL_ERROR);
+    //3.异常错误
 
-    // auto status = m_deviceService.getDeviceStatus(query.deviceId);
-
-    // return LobbyResult::FromDeviceResult(status);    
 }
 
 
-LobbyResult LobbyService::retrieveLiveCameraFrame(const FrameQuery& query)
+LobbyResult<SensorQuery> LobbyService::retrieveLiveCameraFrame(const FrameQuery& query)
 {
-    // auto auth = m_safetyService.verify(query.token);
-    // if (!auth.success())
-    //     return LobbyResult::NoPermission();
-
-    // auto frame = m_deviceService.getLiveFrame(query.cameraId);
-
-    // return LobbyResult::FromDeviceResult(frame);
+    auto auth = m_safetykService.authenticate();
+    if (!auth)return LobbyResult<SensorQuery>::Error(ErrorCode::Code::AUTH_PERMISSION_DENIED);
+    // 获取视频帧的逻辑 
+    //1.正确
+    return LobbyResult<SensorQuery>::Ok(SensorQuery());
+    //2.错误
+    // return LobbyResult<SensorQuery>::Error(ErrorCode::Code::SERVER_INTERNAL_ERROR);
+    //3.异常错误
 }
 
-LobbyResult LobbyService::retrieveHistoricalCameraFootage(const HistoricalVideoQuery& query)
+LobbyResult<SensorQuery> LobbyService::retrieveHistoricalCameraFootage(const HistoricalVideoQuery& query)
 {
     // auto auth = m_safetyService.verify(query.token);
     // if (!auth.success())
@@ -40,7 +43,7 @@ LobbyResult LobbyService::retrieveHistoricalCameraFootage(const HistoricalVideoQ
     // return LobbyResult::FromDeviceResult(result);
 }
 
-LobbyResult LobbyService::retrieveAlarmRecords(const AlarmQuery& query)
+LobbyResult<SensorQuery> LobbyService::retrieveAlarmRecords(const AlarmQuery& query)
 {
     // auto auth = m_safetyService.verify(query.token);
     // if (!auth.success())
@@ -52,7 +55,7 @@ LobbyResult LobbyService::retrieveAlarmRecords(const AlarmQuery& query)
 }
 
 
-LobbyResult LobbyService::downloadHistoricalCameraFootage(const DownloadHistoricalVideo& download)
+LobbyResult<SensorQuery> LobbyService::downloadHistoricalCameraFootage(const DownloadHistoricalVideo& download)
 {
     // auto auth = m_safetyService.verify(download.token);
     // if (!auth.success())
@@ -65,7 +68,7 @@ LobbyResult LobbyService::downloadHistoricalCameraFootage(const DownloadHistoric
 
 
 
-LobbyResult LobbyService::operateSolenoidValve(const SolenoidValveOperation& operation)
+LobbyResult<SensorQuery> LobbyService::operateSolenoidValve(const SolenoidValveOperation& operation)
 {
     // // 1. 安全验证
     // auto auth = m_safetyService.verify(operation.token);
@@ -98,6 +101,7 @@ void LobbyService::TimingProcessing(){
 void LobbyService::TimingPullVideoFrame(){
 
 }
+
 
 
 

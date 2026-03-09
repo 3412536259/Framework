@@ -1,23 +1,26 @@
 #pragma once 
 #include "lobby_object.h"
 #include "business_layer/timer.h"
+#include "business_layer/safety/safety_service.h"
+#include "business_layer/command/command_service.h"
+
 class ILobbyService {
 public:
     // ================= 查询 =================
-    virtual LobbyResult retrieveDeviceStatus(const DeviceStatusQuery& query) = 0;
+    virtual LobbyResult<SensorQuery> retrieveDeviceStatus(const DeviceStatusQuery& query) = 0;
     // virtual LobbyResult retrieveSensorStatus(const SensorQuery& query) = 0;
     // virtual LobbyResult retrieveEnvironmentData(const EnvironmentQuery& query) = 0;
     
-    virtual LobbyResult retrieveLiveCameraFrame(const FrameQuery& query) = 0;//查看当前的视频帧                
-    virtual LobbyResult retrieveHistoricalCameraFootage(const HistoricalVideoQuery& query) = 0;////查看当前的历史视频时间段
-    virtual LobbyResult retrieveAlarmRecords(const AlarmQuery& query) = 0;//查看报警记录
+    virtual LobbyResult<SensorQuery> retrieveLiveCameraFrame(const FrameQuery& query) = 0;//查看当前的视频帧                
+    virtual LobbyResult<SensorQuery> retrieveHistoricalCameraFootage(const HistoricalVideoQuery& query) = 0;////查看当前的历史视频时间段
+    virtual LobbyResult<SensorQuery> retrieveAlarmRecords(const AlarmQuery& query) = 0;//查看报警记录
 
     // ================= 下载 =================
-    virtual LobbyResult downloadHistoricalCameraFootage(const DownloadHistoricalVideo& download) = 0;//下载历史视频
+    virtual LobbyResult<SensorQuery> downloadHistoricalCameraFootage(const DownloadHistoricalVideo& download) = 0;//下载历史视频
 
     // ================= 控制 =================
     // virtual LobbyResult operateDoorLock(const DoorLockOperation& operation) = 0;//控制门锁
-    virtual LobbyResult operateSolenoidValve(const SolenoidValveOperation& operation) = 0;//控制电磁阀
+    virtual LobbyResult<SensorQuery> operateSolenoidValve(const SolenoidValveOperation& operation) = 0;//控制电磁阀
     // virtual LobbyResult controlTrolleyRotation(const TrolleyOperation& operation) = 0;//控制小车旋转
     // virtual LobbyResult controlRotateCamera(const CameraOperation& operation) = 0;//控制旋转摄像头
 
@@ -42,19 +45,19 @@ public:
     ~LobbyService() = default;  
 
    // ================= 查询 =================
-    LobbyResult retrieveDeviceStatus(const DeviceStatusQuery& query) override;
+    LobbyResult<SensorQuery> retrieveDeviceStatus(const DeviceStatusQuery& query) override;
     // LobbyResult retrieveSensorStatus(const SensorQuery& query) override;
     // LobbyResult retrieveEnvironmentData(const EnvironmentQuery& query) override;
-    LobbyResult retrieveLiveCameraFrame(const FrameQuery& query) override;
-    LobbyResult retrieveHistoricalCameraFootage(const HistoricalVideoQuery& query) override;
-    LobbyResult retrieveAlarmRecords(const AlarmQuery& query) override;
+    LobbyResult<SensorQuery> retrieveLiveCameraFrame(const FrameQuery& query) override;
+    LobbyResult<SensorQuery> retrieveHistoricalCameraFootage(const HistoricalVideoQuery& query) override;
+    LobbyResult<SensorQuery> retrieveAlarmRecords(const AlarmQuery& query) override;
 
     // ================= 下载 =================
-    LobbyResult downloadHistoricalCameraFootage(const DownloadHistoricalVideo& download) override;
+    LobbyResult<SensorQuery> downloadHistoricalCameraFootage(const DownloadHistoricalVideo& download) override;
 
     // ================= 控制 =================
     // LobbyResult operateDoorLock(const DoorLockOperation& operation) override;
-    LobbyResult operateSolenoidValve(const SolenoidValveOperation& operation) override;
+    LobbyResult<SensorQuery> operateSolenoidValve(const SolenoidValveOperation& operation) override;
     // LobbyResult controlTrolleyRotation(const TrolleyOperation& operation) override;
     // LobbyResult controlRotateCamera(const CameraOperation& operation) override;
 
@@ -79,7 +82,7 @@ private:
 
     // IDeviceService& m_deviceService; // 设备
 
-    // ISafetyService& m_safetykService; // 安全
+    ISafetyService& m_safetykService; // 安全
      
     // ICommandService& m_commandService; //命令
 
