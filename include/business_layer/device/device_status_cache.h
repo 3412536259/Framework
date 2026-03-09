@@ -1,11 +1,10 @@
 #pragma once
 
-#include "solenoid_status.h"
-#include "sensor_status.h"
-#include "camera_status.h"
-#include "solenoid_real_time_data.h"
-#include "sensor_real_time_data.h"
-
+#include "data_layer/plc/solenoid_status.h"
+#include "data_layer/sensor/sensor_status.h"
+#include "data_layer/camera/camera_status.h"
+#include "data_layer/plc/solenoid_real_time_data.h"
+#include "data_layer/sensor/sensor_real_time_data.h"
 #include<unordered_map>
 #include<memory>
 #include<vector>
@@ -55,4 +54,3 @@ class DeviceStatusCache {
 
 };
 
-#endif;

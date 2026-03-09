@@ -1,11 +1,11 @@
 #pragma once
 
-#include "device_manage_service.h"
-#include "device_status_cache.h"
-#include "device_acquisition_task.h"
-#include "real_time_frame_cache.h"
+#include "business_layer/device/device_manage_service.h"
+#include "business_layer/device/device_status_cache.h"
+#include "business_layer/device/device_acquisition_task.h"
+#include "business_layer/device/real_time_frame_cache.h"
 
-#include "camera_real_time_frame.h"
+#include "data_layer/camera/camera_real_time_frame.h"
 
 #include<thread>
 #include<atomic>
@@ -13,10 +13,9 @@
 
 class IDeviceService{
     public:
-        virtual BoxDeviceStatus viewAllDeviceStatus(DeviceManageService& deviceManageService,
-                                                    DeviceStatusCache& deviceStatusCache,
-                                                    DeviceAcquisitionTask& deviceAcuqisitionTask,
-                                                    RealTimeFrameCache& realTimeFrameCache) = 0;
+        virtual ~IDeviceService() = default;
+
+        virtual BoxDeviceStatus viewAllDeviceStatus() = 0;
         virtual BoxDeviceRealTimeData getBoxDeviceRealTimeData() = 0;
 
         //电磁阀控制
@@ -36,20 +35,19 @@ class IDeviceService{
         //盒子配置
         virtual BoxConfigResult configBoxDeviceParams( const BoxDeviceParam& params) = 0;
 
-    private:
-        //数据采集
-        virtual void DevicesDataCollection(int deviceType) = 0;
+    
 
 };
 
 
 class DeviceService : public IDeviceService{
     public: 
-        DeviceService(DeviceManageService& deviceManageService,
+        DeviceService(IDeviceManageService& deviceManageService,
                       DeviceStatusCache& deviceStatusCache,
                       DeviceAcquisitionTask& deviceAcuqisitionTask,
-                      RealTimeFrameCache& realTimeFrameCache) = default;
-        virtual ~DeviceService() = default;
+                      RealTimeFrameCache& realTimeFrameCache);
+
+        ~DeviceService();
         BoxDeviceStatus viewAllDeviceStatus() override;
         BoxDeviceRealTimeData getBoxDeviceRealTimeData() override;
 
@@ -75,7 +73,7 @@ class DeviceService : public IDeviceService{
 
     private:
         //数据采集
-        void devicesDataCollection(int deviceType) override;
+        void devicesDataCollection(int deviceType);
         void timerLoop();
 
         DeviceStatusCache& _deviceStatusCache;

@@ -19,4 +19,4 @@ class AcquisitionTask {
         std::chrono::steady_clock::time_point _nextAcquisitionTime; //下次采集时间
 };
 
-#endif;
+#endif

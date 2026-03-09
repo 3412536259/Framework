@@ -1,9 +1,9 @@
 #pragma once
 
-#include "acquisition_task.h"
-#include "solenoid_acquisition_task.h"
-#include "sensor_acquisition_task.h"
-#include "camera_acquisition_task.h"
+#include "data_layer/device/acquisition_task.h"
+#include "data_layer/plc/solenoid_acquisition_task.h"
+#include "data_layer/sensor/sensor_acquisition_task.h"
+#include "data_layer/camera/camera_acquisition_task.h"
 #include <vector>
 #include <memory>
 

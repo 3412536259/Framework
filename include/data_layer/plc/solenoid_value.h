@@ -7,4 +7,4 @@ class SolenoidValue {
         ~SolenoidValue();
 };
 
-#endif;
+#endif

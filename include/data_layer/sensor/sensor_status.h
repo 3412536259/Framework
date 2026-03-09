@@ -4,7 +4,7 @@
 #include "sensor_types.h"
 
 #include <string>
-class Sensorstatus {
+class SensorStatus {
     public:
         SensorStatus();
         ~SensorStatus();

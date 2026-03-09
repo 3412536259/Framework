@@ -2,8 +2,8 @@
 #define BOX_DEVICE_REAL_TIME_DATA_H
 
 #include <vector>
-#include "solenoid_real_time_data.h"
-#include "sensor_real_time_data.h"
+#include "data_layer/box/box_device_real_time_data.h"
+#include "data_layer/sensor/sensor_real_time_data.h"
 class BoxDeviceRealTimeData {
     public:
         BoxDeviceRealTimeData(std::vector<SolenoidRealTimeData> solenoidRealTimeDataList,

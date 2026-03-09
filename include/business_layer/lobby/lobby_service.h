@@ -3,6 +3,7 @@
 #include "business_layer/timer.h"
 #include "business_layer/safety/safety_service.h"
 #include "business_layer/command/command_service.h"
+#include "business_layer/device/device_service.h"
 
 class ILobbyService {
 public:
@@ -41,7 +42,7 @@ public:
 
 class LobbyService : public ILobbyService{
 public:
-    LobbyService( ITimer& timer /* IDeviceService& deviceService, ISafetyService& safetyService, ICommandService& commandService, IDetectionService& detectionService */);
+    LobbyService( IDeviceService& deviceService, ISafetyService& safetyService, ICommandService& commandService, ITimer& timer /*  IDetectionService& detectionService */);
     ~LobbyService() = default;  
 
    // ================= 查询 =================
@@ -80,11 +81,11 @@ private:
 
 private:
 
-    // IDeviceService& m_deviceService; // 设备
+    IDeviceService& m_deviceService; // 设备
 
     ISafetyService& m_safetykService; // 安全
      
-    // ICommandService& m_commandService; //命令
+    ICommandService& m_commandService; //命令
 
     // IDetectionService& m_detectionService; // 检测
 

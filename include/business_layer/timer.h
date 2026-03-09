@@ -19,6 +19,8 @@ public:
 
 class Timer : public ITimer {
 public:
+    Timer();
+    ~Timer();
     void TimingProcessing() override; //定时更新函数
 
     void TimingUpload() override; //定时上传函数

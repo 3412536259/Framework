@@ -18,4 +18,4 @@ class SolenoidStatus {
         
 };
 
-#endif;
+#endif

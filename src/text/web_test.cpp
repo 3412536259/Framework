@@ -22,9 +22,14 @@ int main(int argc, char* argv[]) {
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
 
- 
-    Timer timer;
-    LobbyService lobbyService(timer /*deviceService,safetyService,commandService,detectionService*/);
+    
+
+    DeviceService deviceService();
+    SafetyService safetyService();
+    CommandService commandService();
+
+    Timer timer();
+    LobbyService lobbyService(deviceService,safetyService,commandService,timer /*deviceService,safetyService,commandService,detectionService*/);
     HTTPCommandController controller = HTTPCommandController(lobbyService);
     WebService webService("192.168.1.104", 8080, controller);
     webService.start();
