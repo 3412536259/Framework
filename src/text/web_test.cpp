@@ -18,7 +18,7 @@ void signalHandler(int signum) {
     g_running = false;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
 
