@@ -24,6 +24,7 @@ add_executable(mqtt_test
     ../business_layer/command/mqtt_service.cpp
     ../business_layer/command/command_service.cpp
     ../business_layer/command/command_status.cpp
+    ../business_layer/command/command_buffer.cpp
     ../common/log/log.cpp
 )
 

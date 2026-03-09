@@ -1,5 +1,22 @@
 #pragma once
 
+#include "box_device_status.h"
+#include "box_device_real_time_data.h"
+#include "device_operation_result.h"
+#include "camera_history_video.h"
+#include "radar_point_cloud.h"
+#include "box_config_result.h"
+#include "solenoid_value_info.h"
+#include "car_control.h"
+#include "camera_info.h"
+#include "radar_info.h"
+#include "box_device_param.h"
+
+#include "box_instance.h"
+#include "solenoid_instance_set.h"
+#include "sensor_instance_set.h"
+#include "camera_instance_set.h"
+
 class IDeviceManageService {
     public: 
 
@@ -13,9 +30,9 @@ class IDeviceManageService {
 
         virtual CameraHistoryVideo getCameraHistoryVideo(const CameraInfo& info) = 0;
 
-        virtual RadarPointCloudData getRadarPointCloudData(const RadarInfo& info) = 0;
+        virtual RadarPointCloud getRadarPointCloudData(const RadarInfo& info) = 0;
 
-        virtual BoxConfigResult BoxDeviceParamsConfig( const BoxDeviceParams& params) = 0;
+        virtual BoxConfigResult BoxDeviceParamsConfig( const BoxDeviceParam& params) = 0;
 
 };
 
@@ -39,15 +56,15 @@ class DeviceManageService : public IDeviceManageService {
 
     private:
 
-        BoxInstance _boxInstance;
+        BoxInstance boxInstance_;
 
-        SolenoidInstanceSet _solenoidInstances;
+        SolenoidInstanceSet solenoidInstances_;
 
-        CameraInstanceSet _cameraInstances;
+        CameraInstanceSet cameraInstances_;
 
-        SensorInsatnceSet _sensorInstances;
+        SensorInstanceSet sensorInstances_;
 
-        RadarInstanceSet _radarInstances;
+        // RadarInstanceSet _radarInstances;
 
-        CarInsatnceSet _carInstances;
+        // CarInstanceSet _carInstances;
 };

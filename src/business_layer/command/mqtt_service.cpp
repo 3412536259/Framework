@@ -4,52 +4,55 @@
 #include "common/mqtt/include/mqtt/message.h"
 #include "common/mqtt/include/mqtt/callback.h"
 #include "business_layer/command/command_service.h"
-#include "business_layer/command/mqtt_service.h" 
+#include "business_layer/command/command_buffer.h"
 #include <iostream>
 #include <memory>
 #include <ctime>
 
-// ¼Ì³Ğ×Ô mqtt::callback µÄ»Øµ÷Àà
-// ±ØĞëÊµÏÖµÄ»Øµ÷·½·¨°üÀ¨ message_arrived¡¢connected¡¢connection_lost ºÍ delivery_complete
+//// ç»§æ‰¿è‡ª mqtt::callback çš„å›è°ƒç±»
+//// å¿…é¡»å®ç°çš„å›è°ƒæ–¹æ³•åŒ…æ‹¬ message_arrivedã€connectedã€connection_lost å’Œ delivery_complete
 class MqttCallback : public mqtt::callback {
 private:
-	MqttService& _mqttService;
+	//MqttService& _mqttService;
 
 public:
-    MqttCallback(MqttService& mqttService) : _mqttService(mqttService){}
+    //MqttCallback(MqttService& mqttService) : _mqttService(mqttService){}
+	MqttCallback() = default;
 	~MqttCallback() = default;
 
     void message_arrived(mqtt::const_message_ptr msg) override {
-		// µ±½ÓÊÕµ½ MQTT ÏûÏ¢Ê±£¬Õâ¸ö·½·¨»á±»µ÷ÓÃ
-        // TODO: ½âÎöÏûÏ¢²¢´´½¨ Command ¶ÔÏó
+		// å½“æ¥æ”¶åˆ° MQTT æ¶ˆæ¯æ—¶ï¼Œè¿™ä¸ªæ–¹æ³•ä¼šè¢«è°ƒç”¨
+        // TODO: è§£ææ¶ˆæ¯å¹¶åˆ›å»º Command å¯¹è±¡
         // Command command = parseMessage(msg->get_payload_str());
         std::cout << "Message arrived: " << msg->get_topic() << " - " << msg->get_payload_str() << std::endl;
 		Command command(msg->get_payload_str());
-		_mqttService.getCommandService().executeCommand(command);
+		//_mqttService.getCommandService().executeCommand(command);
+		CommandBuffer::getInstance().addCommandStatus(CommandStatus(command, Status::InProgress));
+
     }
 
     void connected(const std::string& /*cause*/) override{
-		// Á¬½Ó³É¹¦»Øµ÷
+		// è¿æ¥æˆåŠŸå›è°ƒ
 		std::cerr << "MQTT connected" << std::endl;
     }
 
     void connection_lost(const std::string& cause) override {
-		// Á¬½Ó¶ªÊ§»Øµ÷
-		// ÓÉÓÚÔÚ connect() ·½·¨ÖĞÆôÓÃÁË×Ô¶¯ÖØÁ¬connOpts.set_automatic_reconnect(1, 10);
-        // ÕâÀï²»ĞèÒªÊÖ¶¯ÖØÁ¬Âß¼­£¬MQTT ¿Í»§¶Ë»á×Ô¶¯³¢ÊÔÖØĞÂÁ¬½Ó
+		// è¿æ¥ä¸¢å¤±å›è°ƒ
+		// ç”±äºåœ¨ connect() æ–¹æ³•ä¸­å¯ç”¨äº†è‡ªåŠ¨é‡è¿connOpts.set_automatic_reconnect(1, 10);
+        // è¿™é‡Œä¸éœ€è¦æ‰‹åŠ¨é‡è¿é€»è¾‘ï¼ŒMQTT å®¢æˆ·ç«¯ä¼šè‡ªåŠ¨å°è¯•é‡æ–°è¿æ¥
 		std::cerr << "MQTT connection lost, auto reconnecting... " << cause << std::endl;
     }
 
     void delivery_complete(mqtt::delivery_token_ptr token) override {
-        // ÏûÏ¢·¢ËÍÍê³É»Øµ÷
+        // æ¶ˆæ¯å‘é€å®Œæˆå›è°ƒ
     }
 
 };
 
-// ÊµÏÖ MqttService ÀàµÄ·½·¨
+// å®ç° MqttService ç±»çš„æ–¹æ³•
 
-MqttService::MqttService(CommandService& commandService)  : _commandService(commandService) {
-    // ¹¹Ôìº¯ÊıÊµÏÖ
+MqttService::MqttService(CommandService& commandService){  //: _commandService(commandService) {
+     //æ„é€ å‡½æ•°å®ç°
 }
 
 MqttService::~MqttService() = default;
@@ -64,18 +67,19 @@ bool MqttService::connect(const std::string& brokerAddress, int port) {
         std::string serverAddress = "tcp://" + brokerAddress + ":" + std::to_string(port);
         std::string clientId = "framework-client-" + std::to_string(std::time(nullptr));
 
-        _callback = std::make_unique<MqttCallback>(*this);
+        //_callback = std::make_unique<MqttCallback>(*this);
+        _callback = std::make_unique<MqttCallback>();
         _client = std::make_unique<mqtt::async_client>(serverAddress, clientId);
         _client->set_callback(*_callback);
 
         mqtt::connect_options connOpts;
         connOpts.set_clean_session(true);
-        // ÆôÓÃ×Ô¶¯ÖØÁ¬£¬³õÊ¼ÖØÊÔ¼ä¸ôÎª1Ãë£¬×î´óÖØÊÔ¼ä¸ôÎª10Ãë
+        // å¯ç”¨è‡ªåŠ¨é‡è¿ï¼Œåˆå§‹é‡è¯•é—´éš”ä¸º1ç§’ï¼Œæœ€å¤§é‡è¯•é—´éš”ä¸º10ç§’
 		connOpts.set_automatic_reconnect(1, 10); 
 
         std::cout << "Connecting to MQTT broker: " << serverAddress << std::endl;
         mqtt::token_ptr connToken = _client->connect(connOpts);
-        // µÈ´ıÁ¬½ÓÍê³É,ÉèÖÃ³¬Ê±Ê±¼ä
+        // ç­‰å¾…è¿æ¥å®Œæˆ,è®¾ç½®è¶…æ—¶æ—¶é—´
         if (connToken->wait_for(std::chrono::seconds(5))) {
             std::cout << "Connected to MQTT broker" << std::endl;
             return true;
@@ -92,7 +96,7 @@ void MqttService::disconnect() {
         try {
             std::cout << "Disconnecting from MQTT broker" << std::endl;
             mqtt::token_ptr disconnToken = _client->disconnect();
-			disconnToken->wait();// µÈ´ı¶Ï¿ªÁ¬½ÓÍê³É
+			disconnToken->wait();// ç­‰å¾…æ–­å¼€è¿æ¥å®Œæˆ
             std::cout << "Disconnected from MQTT broker" << std::endl;
         } catch (const mqtt::exception& exc) {
             std::cerr << "MQTT disconnection error: " << exc.what() << std::endl;
@@ -108,8 +112,8 @@ bool MqttService::publish(const std::string& topic, const std::string& message) 
 
     try {
         mqtt::message_ptr pubMsg = mqtt::make_message(topic, message);
-		// QoS 0£º×î¶àÒ»´Î; QoS 1£ºÖÁÉÙÒ»´Î; QoS 2£ºÖ»ÓĞÒ»´Î
-        // publish(pubMsg)²»¿ÉÒÔÉèÖÃ->wait(),»áÔì³ÉËÀËø
+		// QoS 0ï¼šæœ€å¤šä¸€æ¬¡; QoS 1ï¼šè‡³å°‘ä¸€æ¬¡; QoS 2ï¼šåªæœ‰ä¸€æ¬¡
+        // publish(pubMsg)ä¸å¯ä»¥è®¾ç½®->wait(),ä¼šé€ æˆæ­»é”
         pubMsg->set_qos(1);
         _client->publish(pubMsg);
 		std::cerr << "MQTT published message to topic: " << topic << " - " << message << std::endl;

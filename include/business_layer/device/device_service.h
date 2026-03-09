@@ -1,5 +1,12 @@
 #pragma once
 
+#include "device_manage_service.h"
+#include "device_status_cache.h"
+#include "device_acquisition_task.h"
+#include "real_time_frame_cache.h"
+
+#include "camera_real_time_frame.h"
+
 #include<thread>
 #include<atomic>
 #include<mutex>

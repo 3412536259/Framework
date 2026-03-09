@@ -25,7 +25,7 @@ public:
 	~CommandService() = default;
 
 	// 大厅服务调用这个方法来设置 MQTT 服务的引用，CommandService 将通过这个引用发布命令状态到 MQTT 主题上
-	void setMqttService(MqttService& mqttService);
+	//void setMqttService(MqttService& mqttService);
 
 	// 这个方法会被 MqttService 回调
 	// 收到消息后发送 Command is being processed 到 MQTT 主题上，表示命令正在处理

@@ -1,5 +1,6 @@
 #pragma once
 #include "command.h"
+#include "command_buffer.h"
 #include <string>
 #include <memory>
 
@@ -26,9 +27,10 @@ public:
 	bool unsubscribe(const std::string& topic);
 
 	// 给 MqttCallback 提供的接口：获取 CommandService 实例
-	CommandService& getCommandService() { return _commandService; }
+	//CommandService& getCommandService() { return _commandService; }
 private:
-	CommandService& _commandService;
+	//CommandService& _commandService;
+	//CommandBuffer& _commandBuffer;
 	std::unique_ptr<mqtt::async_client> _client;
 	std::unique_ptr<class MqttCallback> _callback;
 };
