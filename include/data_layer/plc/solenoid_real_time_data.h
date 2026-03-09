@@ -8,7 +8,7 @@ class SolenoidRealTimeData {
 
         bool isOpen();
     private:
-        int _openStatus;
+        int openStatus_;
 };
 
 #endif

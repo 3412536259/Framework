@@ -10,10 +10,10 @@ class SolenoidStatus {
 
     private:
 
-        std::string _deviceId;
+        std::string deviceId_;
 
         //电磁阀状态
-        std::string _status;
+        std::string status_;
 
         
 };
