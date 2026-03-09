@@ -30,6 +30,7 @@ public:
 	//CommandService& getCommandService() { return _commandService; }
 private:
 	//CommandService& _commandService;
+	//CommandBuffer& _commandBuffer;
 	std::unique_ptr<mqtt::async_client> _client;
 	std::unique_ptr<class MqttCallback> _callback;
 };
