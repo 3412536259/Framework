@@ -1,4 +1,11 @@
 #pragma once
+
+#include "solenoid_status.h"
+#include "sensor_status.h"
+#include "camera_status.h"
+#include "solenoid_real_time_data.h"
+#include "sensor_real_time_data.h"
+
 #include<unordered_map>
 #include<memory>
 #include<vector>
@@ -37,14 +44,14 @@ class DeviceStatusCache {
         std::unordered_map<std::string, std::unique_ptr<SolenoidStatus> > _solenoidStatusMap;
         std::unordered_map<std::string, std::unique_ptr<SensorStatus> > _sensorStatusMap;
         std::unordered_map<std::string, std::unique_ptr<CameraStatus> > _cameraStatusMap;
-        std::unordered_map<std::string, std::unique_ptr<RadarStatus> > _radarStatusMap;
-        std::unordered_map<std::string, std::unique_ptr<CarStatus> > _carStatusMap;
+        // std::unordered_map<std::string, std::unique_ptr<RadarStatus> > _radarStatusMap;
+        // std::unordered_map<std::string, std::unique_ptr<CarStatus> > _carStatusMap;
 
         std::unordered_map<std::string, std::unique_ptr<SolenoidRealTimeData> > _solenoidRealTimeDataMap;
         std::unordered_map<std::string, std::unique_ptr<SensorRealTimeData> > _sensorRealTimeDataMap;
         // std::unordered_map<std::string, std::unique_ptr<CameraRealTimeData> > _cameraRealTimeDataMap;
-        std::unordered_map<std::string, std::unique_ptr<RadarRealTimeData> > _radarRealTimeDataMap;
-        std::unordered_map<std::string, std::unique_ptr<CarRealTimeData> > _carRealTimeDataMap;
+        // std::unordered_map<std::string, std::unique_ptr<RadarRealTimeData> > _radarRealTimeDataMap;
+        // std::unordered_map<std::string, std::unique_ptr<CarRealTimeData> > _carRealTimeDataMap;
 
 };
 
