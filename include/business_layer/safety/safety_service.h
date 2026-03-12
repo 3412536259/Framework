@@ -18,6 +18,9 @@ class SafetyService : public ISafetyService {
 
 
 public:
+    SafetyService() = default;
+    ~SafetyService() = default;
+    
     bool authenticate() override;
     
     

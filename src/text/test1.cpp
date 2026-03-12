@@ -4,35 +4,33 @@
 int main(){
 
     
-    // MqttService mqttService("0.0.0.0", 1883);
+        /// 1. 底层服务
+    SafetyService safetyService;
+    Timer timer;
 
-    // MqttCommandPublisher publisher(mqttService);
+    // 2. CommandService 构造时只依赖 ICommandPublisher 接口
+    ICommandPublisher* publisher = nullptr;  // 先不绑定
+    CommandService commandService(publisher);
 
-    // CommandService commandService(publisher);
+    // 3. LobbyService
+    LobbyService lobbyService(safetyService, commandService, timer);
 
-    // 4️⃣ 构造其他服务（device / safety / detection）
-    // DeviceService deviceService;
-    // SafetyService safetyService;
-    // DetectionService detectionService;
+    // 4. Controller
+    MQTTCommandController mqttController(lobbyService);
+    HTTPCommandController httpController(lobbyService);
 
-    // 5️⃣ 构造 LobbyService
-    LobbyService lobbyService(/*deviceService,safetyService,commandService,detectionService*/);
+    // 5. Network 层
+    MqttService mqttService("192.168.1.104", 1950, mqttController);
 
-    // 6️⃣ 构造 Controller
-    // MTTPCommandController controller(lobbyService);
+    // 6. 现在 CommandService 可以接收 MqttService 作为 ICommandPublisher
+    // 这里仍然是构造器注入，但通过接口，不破坏对象构造顺序
+    commandService.setPublisher(&mqttService);  // 这里是接口注入，不是 setter逻辑
 
-    // 7️⃣ 把 controller 注入 mqtt（回调）
-    // mqttService.setController(controller);
+    WebService webService("192.168.1.104", 8080, httpController);
 
-    // mqttService.start();
-
-
-    // HTTPCommandController controller = HTTPCommandController(lobbyService); 
-    // WebService webService("0.0.0.0", 8080, controller); 
-
-    // webService.start();
-
-    // while (true) {} 
+    // 7. 启动服务
+    mqttService.start();
+    webService.start();
     
     
     return 0;

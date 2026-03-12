@@ -1,10 +1,18 @@
-#include "presentation_layer/controller.h"
+#pragma once
+#include "business_layer/command/controller.h"
 
 
-class MQTTCommandController : public IController{
+
+
+/**
+ * @brief Web控制器接口类
+ * 处理JSON请求的业务逻辑，与WebService解耦
+ */
+
+class HTTPCommandController : public IController{
 public:
     
-    explicit MQTTCommandController(ILobbyService& lobby);
+    explicit HTTPCommandController(ILobbyService& lobby);
     
     /**
      * @brief 处理JSON请求
@@ -12,6 +20,9 @@ public:
      * @return payload 响应数据
      */
     HttpResponse handle(const std::string& topic, const std::string& payload) override;
+
+    void handleMqtt(const std::string& topic, const std::string& payload) override;
+
 private:
     ILobbyService& lobbyService; 
 

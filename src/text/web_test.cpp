@@ -1,7 +1,9 @@
 #include <csignal>
 #include "business_layer/lobby/lobby_service.h"
 #include "presentation_layer/http_service.h"
-
+#include "business_layer/command/mqtt_command.h"
+#include "business_layer/command/mqtt/mqtt_service.h"
+#include "business_layer/command/command_service.h"
 // 全局标志：控制程序是否继续运行
 bool g_running = true;
 
@@ -24,15 +26,30 @@ int main(int argc, char* argv[]) {
 
     
 
-    DeviceService deviceService();
-    SafetyService safetyService();
-    CommandService commandService();
+    
+    NetworkService* networkService = nullptr; // 先不绑定
+    // DeviceService deviceService();
+    
+    SafetyService safetyService;
+    
+    CommandService commandService(networkService);
 
-    Timer timer();
-    LobbyService lobbyService(deviceService,safetyService,commandService,timer /*deviceService,safetyService,commandService,detectionService*/);
-    HTTPCommandController controller = HTTPCommandController(lobbyService);
-    WebService webService("192.168.1.104", 8080, controller);
-    webService.start();
+    Timer timer;
+    LobbyService lobbyService(safetyService,commandService,timer);
+
+    MQTTCommandController mqttController = MQTTCommandController(lobbyService);
+    HTTPCommandController httpController = HTTPCommandController(lobbyService);
+
+    MqttProtocol mqttProtocol;
+    std::cout << " 1"<< std::endl;
+    MqttService mqttService("192.168.1.150", 8085, mqttController , mqttProtocol);
+    std::cout << " 2"<< std::endl;
+    commandService.immitDependence(mqttService); // 这里是接口注入，不是 setter逻辑
+
+    mqttService.start();
+    std::cout << " 3"<< std::endl;
+    // WebService webService("192.168.1.104", 8080, httpController);
+    // webService.start();
 
     std::cout << std::endl;
     std::cout << ">>> 系统启动成功！服务已就绪 (进程(pid) ID: " << getpid() << ")" << std::endl; 
@@ -53,7 +70,8 @@ int main(int argc, char* argv[]) {
     std::cout << std::endl;
     std::cout << "=============================================" << std::endl;
     std::cout << ">>> 开始关闭服务..." << std::endl;
-    webService.stop(); // 停止Web服务
+    // webService.stop(); // 停止Web服务
+    mqttService.stop(); // 停止MQTT服务
     std::cout << ">>> 服务已关闭，系统退出成功" << std::endl;
     std::cout << "=============================================" << std::endl;
 

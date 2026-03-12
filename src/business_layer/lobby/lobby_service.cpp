@@ -1,7 +1,7 @@
 #include "business_layer/lobby/lobby_service.h"
 //public
- LobbyService::LobbyService(IDeviceService& deviceService, ISafetyService& safetyService, ICommandService& commandService, ITimer & timer /* , IDetectionService& detectionService */)
-    : m_deviceService(deviceService), m_safetykService(safetyService), m_commandService(commandService),m_Timer(timer) /* ,  m_detectionService(detectionService) */
+ LobbyService::LobbyService(ISafetyService& safetyService, ICommandService& commandService, ITimer & timer )/* IDeviceService& deviceService, IDetectionService& detectionService */
+    :  m_safetykService(safetyService), m_commandService(commandService),m_Timer(timer) /* ,m_deviceService(deviceService),  m_detectionService(detectionService) */
 {
     
 }

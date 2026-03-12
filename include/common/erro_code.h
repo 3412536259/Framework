@@ -49,7 +49,7 @@ enum class Code {
 
 // 错误码与描述信息的映射表
 // 优化点：constexpr + inline 提升编译期性能，描述更精准便于前端/日志展示
-static constexpr inline const std::unordered_map<Code, std::string> CodeMessageMap = {
+static inline const std::unordered_map<Code, std::string> CodeMessageMap = {
     {Code::SUCCESS, "操作成功"},
 
     // Web请求错误

@@ -1,4 +1,4 @@
-#include "presentation_layer/controller.h"
+#include "presentation_layer/http_command.h"
 
 HTTPCommandController::HTTPCommandController(ILobbyService& lobby) : lobbyService(lobby) {
     // 构造函数，初始化lobbyService引用
@@ -11,8 +11,11 @@ HttpResponse HTTPCommandController::handle(const std::string& topic, const std::
         handleGetRealImage(j);  
         
     }
+    return HttpResponse{};
 }
+void HTTPCommandController::handleMqtt(const std::string& topic, const std::string& payload){
 
+}
 // private:
 
 void HTTPCommandController::handleGetRealImage(const nlohmann::json& j){

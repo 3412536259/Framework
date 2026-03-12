@@ -17,7 +17,7 @@ public:
     } 
 
     static LobbyResult<T>Error(ErrorCode::Code code){//错误结果，包含错误码和对应的错误信息
-        return {false,code,ErrorCode::Message(code),std::nullopt};
+        return {false,code,ErrorCode::getMessage(code),std::nullopt};
     } 
 };
 
