@@ -62,6 +62,12 @@ LobbyResult<SensorQuery> LobbyService::downloadHistoricalCameraFootage(const Dow
     auto auth = m_safetykService.authenticate();
     if (!auth)return LobbyResult<SensorQuery>::Error(ErrorCode::Code::AUTH_PERMISSION_DENIED);
     // 上传视频的逻辑 
+    //1.去device服务里面去验证这个视频的状态是否可用
+    //2.命令服务创建命令
+    //3.命令调用命令服务，加入到命令服务的接口
+    //4.打开电磁阀
+    //5.根据返回值进行更改命令的状态
+
     //1.正确
     return LobbyResult<SensorQuery>::Ok(SensorQuery());
     //2.错误
@@ -76,6 +82,11 @@ LobbyResult<SensorQuery> LobbyService::operateSolenoidValve(const SolenoidValveO
     auto auth = m_safetykService.authenticate();
     if (!auth)return LobbyResult<SensorQuery>::Error(ErrorCode::Code::AUTH_PERMISSION_DENIED);
     // 打开电磁阀的逻辑 
+    //1.去device服务里面去验证这个设备的状态是否可用
+    //2.命令服务创建命令
+    //3.命令调用命令服务，加入到命令服务的接口
+    //4.打开电磁阀
+    //5.根据返回值进行更改命令的状态
 
     //1.正确
     return LobbyResult<SensorQuery>::Ok(SensorQuery());

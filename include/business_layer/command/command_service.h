@@ -28,20 +28,11 @@ public:
 	// 获取指定设备的所有命令任务状态（按设备ID，文档"获取当前设备任务的状态"）
 	virtual DeviceCommands getDeviceCommandStates(const std::string& deviceId) = 0;
 
-	// 打开电磁阀命令（文档中典型设备控制请求）
-	virtual void openSolenoidValve(const std::string& deviceId, const std::string& cmdId) = 0;
+	//实现接口：查看那种类型的命令状态
+	virtual CommandState getCommandState(const CommandType& type) = 0;
 
-	// 关闭电磁阀命令（文档中典型设备控制请求）
-	virtual void closeSolenoidValve(const std::string& deviceId, const std::string& cmdId) = 0;
-
-	// 查看摄像头历史视频（文档中典型流媒体请求，返回视频存储路径/流信息）
-	virtual std::string getCameraHistoryVideo(const std::string& cameraId, const std::string& timeRange) = 0;
-
-	// MQTT消息接收回调（文档中"mqtt读取消息并构建命令对象"）
-	virtual void onMqttMessageReceived(const std::string& topic, const std::string& msg) = 0;
-
-	// 发送命令结果到MQTT云端（文档中"将消息发送出去，上报执行结果"）
-	virtual void sendCommandResultToMqtt(const std::string& cmdId, CommandState state, const std::string& result) = 0;
+	// 发送命令结果到MQTT（文档中"将消息发送出去，上报执行结果"）
+	virtual void sendCommandResultToMqtt(const std::string& topic, const std::string& msg) = 0;
 
 	// 更新命令状态（执行后同步状态到DAO和内存）
 	virtual void updateCommandState(const std::string& cmdId, CommandState newState) = 0;
@@ -57,33 +48,24 @@ public:
 	// 注入MQTT网络服务（动态替换，适配扩展）
 	void immitDependence(NetworkService& mqttService);
 
-	
     // 实现接口：执行指定命令
     void executeCommand(const Command& cmd) override;
 
     // 实现接口：批量执行待执行命令
     void executePendingCommands() override;
 
-    // 实现接口：查询本地命令任务状态
+    // 实现接口：查询正在执行命令任务状态
     CommandState getCommandState(const std::string& cmdId) override;
 
     // 实现接口：获取指定设备的所有命令状态
     DeviceCommands getDeviceCommandStates(const std::string& deviceId) override;
 
-    // 实现接口：打开电磁阀
-    void openSolenoidValve(const std::string& deviceId, const std::string& cmdId) override;
+    //实现接口：查看那种类型的命令状态
+	CommandState getCommandState(const CommandType& type) override;
 
-    // 实现接口：关闭电磁阀
-    void closeSolenoidValve(const std::string& deviceId, const std::string& cmdId) override;
 
-    // 实现接口：获取摄像头历史视频
-    std::string getCameraHistoryVideo(const std::string& cameraId, const std::string& timeRange) override;
-
-    // 实现接口：MQTT消息接收回调
-    void onMqttMessageReceived(const std::string& topic, const std::string& msg) override;
-
-    // 实现接口：发送命令结果到MQTT云端
-    void sendCommandResultToMqtt(const std::string& cmdId, CommandState state, const std::string& result) override;
+    // 实现接口：发送命令结果到MQTT
+    void sendCommandResultToMqtt(const std::string& topic, const std::string& msg) override;
 
     // 实现接口：更新命令状态
     void updateCommandState(const std::string& cmdId, CommandState newState) override;
@@ -94,7 +76,14 @@ private:
 	// 私有辅助方法：校验命令合法性（联动安全服务，文档中安全验证）
     bool validateCommand(const Command& cmd);
 
+	// 
+    void openSolenoidValve(const CommandType& type) ;
 
+    // 
+    void closeSolenoidValve(const CommandType& type) ;
+
+    // 
+    std::string getCameraHistoryVideo(const CommandType& type) ;
 
 private:
 

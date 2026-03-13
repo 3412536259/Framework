@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-
+#include "business_layer/lobby/lobby_object.h"
 
 enum class CommandState{
 
@@ -31,6 +31,17 @@ public:
           cmdState(CommandState::STATE_PENDING) {}
 
 	~Command();
+
+    //1.打开电磁阀命令
+    Command createOperateSolenoid(SolenoidValveOperation& solenoid);
+
+    //2.下载历史视频命令
+    Command createHistoricalVideo(DownloadHistoricalVideo& download);
+
+    static int increaseCommandId();
+
+    std::string getCmdId() const;
+
 private:
 	std::string cmdId;
 	CommandType cmdType;
@@ -39,8 +50,6 @@ private:
 	std::string cmdContent;
 	long long createTime;
 	long long executeTime;
-
-
 };
 
 class DeviceCommands{

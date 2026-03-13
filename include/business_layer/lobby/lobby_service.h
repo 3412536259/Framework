@@ -75,7 +75,7 @@ public:
     // LobbyResult updateAIModel(const AIModelUpdate& update) override;
 
 private:
-    void TimingProcessing(); //��ʱ�ϴ�
+    void TimingProcessing(); 
 
     void TimingUpload();
 
@@ -89,11 +89,14 @@ private:
      
     ICommandService& m_commandService; //命令
 
-    // IDetectionService& m_detectionService; // 检测
+    // IDetectionService& m_detectionService; // ai检测
 
     // FrameBuffer& m_FrameBuffer;         //帧缓冲对象
 
-    ITimer& m_Timer; //设备状态缓冲对象
+    // EquipmentStatusBuffer& m_equipmentBuffer;//设备状态缓冲对象
+
+    //
+    ITimer& m_Timer; //定时器
 
 
 
