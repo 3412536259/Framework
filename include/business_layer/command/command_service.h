@@ -1,46 +1,102 @@
 #pragma once
-#include "command_status.h"
+
 #include <memory>
 #include <queue>
+#include <unordered_map>
+//ä½¿ç”¨mqttçš„å‘å¸ƒåŠŸèƒ½
+#include "business_layer/command/mqtt/protocol.h"
+#include "data_layer/command/command_dao.h"
+#include "business_layer/command/command_object.h"
 
-// command_status.h ¶¨ÒåÁË CommandStatus Àà£¬°üº¬×´Ì¬ÂëºÍÏûÏ¢
-// TODO: 
-// 1.µ÷ÓÃ LobbyService µÄ·½·¨À´Ö´ĞĞ¾ßÌåµÄÃüÁî£¬²¢¸ù¾İ½á¹û·µ»Ø CommandStatus, ·¢²¼µ½ MQTT Ö÷ÌâÉÏ
-// 2. ¸ø´óÌü·şÎñÌá¹©Ò»¸ö½Ó¿Ú£¬ÈÃËüÄÜ¹»ÉÏ´«ºĞ×ÓµÄ×´Ì¬
-
-// Ç°ÏòÉùÃ÷£¬±ÜÃâÑ­»·ÒÀÀµ
-class ILobbyService;
-class MqttService;
-
+class NetworkService;
+ 
+//å‘½ä»¤æ‰§è¡Œ ï¼Œå‘½ä»¤çŠ¶æ€è·å– ï¼Œå‘½ä»¤ç”Ÿå‘½å‘¨æœŸç®¡ç†
 class ICommandService {
 public:
-	virtual void executeCommand(const Command& command) = 0;
+
 	virtual ~ICommandService() = default;
+	
+	// æ‰§è¡ŒæŒ‡å®šå‘½ä»¤ï¼ˆæ–‡æ¡£ä¸­"æ„å»ºå‘½ä»¤å¯¹è±¡å¹¶æ‰§è¡Œå‘½ä»¤"ï¼‰
+	virtual void executeCommand(const Command& cmd) = 0;
+
+	// æ‰¹é‡æ‰§è¡Œå¾…æ‰§è¡Œå‘½ä»¤ï¼ˆé€‚é…MQTTæ‰¹é‡æ¶ˆæ¯ï¼‰
+	virtual void executePendingCommands() = 0;
+
+	// æŸ¥è¯¢æœ¬åœ°å‘½ä»¤ä»»åŠ¡çŠ¶æ€ï¼ˆæŒ‰å‘½ä»¤IDï¼‰
+	virtual CommandState getCommandState(const std::string& cmdId) = 0; 
+
+	// è·å–æŒ‡å®šè®¾å¤‡çš„æ‰€æœ‰å‘½ä»¤ä»»åŠ¡çŠ¶æ€ï¼ˆæŒ‰è®¾å¤‡IDï¼Œæ–‡æ¡£"è·å–å½“å‰è®¾å¤‡ä»»åŠ¡çš„çŠ¶æ€"ï¼‰
+	virtual DeviceCommands getDeviceCommandStates(const std::string& deviceId) = 0;
+
+	//å®ç°æ¥å£ï¼šæŸ¥çœ‹é‚£ç§ç±»å‹çš„å‘½ä»¤çŠ¶æ€
+	virtual CommandState getCommandState(const CommandType& type) = 0;
+
+	// å‘é€å‘½ä»¤ç»“æœåˆ°MQTTï¼ˆæ–‡æ¡£ä¸­"å°†æ¶ˆæ¯å‘é€å‡ºå»ï¼Œä¸ŠæŠ¥æ‰§è¡Œç»“æœ"ï¼‰
+	virtual void sendCommandResultToMqtt(const std::string& topic, const std::string& msg) = 0;
+
+	// æ›´æ–°å‘½ä»¤çŠ¶æ€ï¼ˆæ‰§è¡ŒååŒæ­¥çŠ¶æ€åˆ°DAOå’Œå†…å­˜ï¼‰
+	virtual void updateCommandState(const std::string& cmdId, CommandState newState) = 0;
 };
+
 
 class CommandService : public ICommandService
 {
 public:
-	CommandService(ILobbyService* lobbyService);
+	CommandService(NetworkService* mqttService, CommandDao& cmdDao);
 	~CommandService() = default;
 
-	// ´óÌü·şÎñµ÷ÓÃÕâ¸ö·½·¨À´ÉèÖÃ MQTT ·şÎñµÄÒıÓÃ£¬CommandService ½«Í¨¹ıÕâ¸öÒıÓÃ·¢²¼ÃüÁî×´Ì¬µ½ MQTT Ö÷ÌâÉÏ
-	void setMqttService(MqttService& mqttService);
+	// æ³¨å…¥MQTTç½‘ç»œæœåŠ¡ï¼ˆåŠ¨æ€æ›¿æ¢ï¼Œé€‚é…æ‰©å±•ï¼‰
+	void immitDependence(NetworkService& mqttService);
 
-	// Õâ¸ö·½·¨»á±» MqttService »Øµ÷
-	// ÊÕµ½ÏûÏ¢ºó·¢ËÍ Command is being processed µ½ MQTT Ö÷ÌâÉÏ£¬±íÊ¾ÃüÁîÕıÔÚ´¦Àí
-	void executeCommand(const Command& command) override;
+    // å®ç°æ¥å£ï¼šæ‰§è¡ŒæŒ‡å®šå‘½ä»¤
+    void executeCommand(const Command& cmd) override;
 
-	// ´óÌü¶¨Ê±Æ÷¶¨ÆÚ´¥·¢Õâ¸ö·½·¨£¬Èç¹ûCommandStatusµÄ×´Ì¬²»ÊÇ InProgress£¬½«½á¹û·¢²¼µ½ MQTT Ö÷ÌâÉÏ
-	void reportCommandStatus();
+    // å®ç°æ¥å£ï¼šæ‰¹é‡æ‰§è¡Œå¾…æ‰§è¡Œå‘½ä»¤
+    void executePendingCommands() override;
 
-	// ´óÌü·şÎñµ÷ÓÃÕâ¸ö·½·¨À´ÉÏ´«ºĞ×ÓµÄ×´Ì¬£¬CommandService ½«×´Ì¬·¢²¼µ½ MQTT Ö÷ÌâÉÏ
-	//void uploadBoxStatus(const BoxStatus& status);
+    // å®ç°æ¥å£ï¼šæŸ¥è¯¢æ­£åœ¨æ‰§è¡Œå‘½ä»¤ä»»åŠ¡çŠ¶æ€
+    CommandState getCommandState(const std::string& cmdId) override;
+
+    // å®ç°æ¥å£ï¼šè·å–æŒ‡å®šè®¾å¤‡çš„æ‰€æœ‰å‘½ä»¤çŠ¶æ€
+    DeviceCommands getDeviceCommandStates(const std::string& deviceId) override;
+
+    //å®ç°æ¥å£ï¼šæŸ¥çœ‹é‚£ç§ç±»å‹çš„å‘½ä»¤çŠ¶æ€
+	CommandState getCommandState(const CommandType& type) override;
+
+
+    // å®ç°æ¥å£ï¼šå‘é€å‘½ä»¤ç»“æœåˆ°MQTT
+    void sendCommandResultToMqtt(const std::string& topic, const std::string& msg) override;
+
+    // å®ç°æ¥å£ï¼šæ›´æ–°å‘½ä»¤çŠ¶æ€
+    void updateCommandState(const std::string& cmdId, CommandState newState) override;
+
 
 private:
-	ILobbyService* _lobbyService = nullptr;
-	MqttService* _mqttService = nullptr;
-	CommandQueue _commandQueue;
+	
+	// ç§æœ‰è¾…åŠ©æ–¹æ³•ï¼šæ ¡éªŒå‘½ä»¤åˆæ³•æ€§ï¼ˆè”åŠ¨å®‰å…¨æœåŠ¡ï¼Œæ–‡æ¡£ä¸­å®‰å…¨éªŒè¯ï¼‰
+    bool validateCommand(const Command& cmd);
+
+	// 
+    void openSolenoidValve(const CommandType& type) ;
+
+    // 
+    void closeSolenoidValve(const CommandType& type) ;
+
+    // 
+    std::string getCameraHistoryVideo(const CommandType& type) ;
+
+private:
+
+
+
+	NetworkService* m_mqttService; // MQTTç½‘ç»œæœåŠ¡ï¼ˆæ–‡æ¡£ä¸­mqttè¿æ¥å°è£…ç±»ï¼‰
+
+	CommandDao& commandDao;	// å‘½ä»¤DAOï¼ˆæ–‡æ¡£ä¸­å‘½ä»¤å­˜å‚¨ï¼ŒæŒä¹…åŒ–ï¼‰
+
+	std::unordered_map<std::string, Command> commandCache;  // å†…å­˜çº§å‘½ä»¤ç¼“å­˜ï¼ˆç»´æŠ¤å½“å‰æ‰§è¡Œ/å¾…æ‰§è¡Œå‘½ä»¤ï¼Œæ–‡æ¡£ä¸­å‘½ä»¤çŠ¶æ€ç»´æŠ¤ï¼‰
+	// æ‰©å±•é¢„ç•™ï¼šç”Ÿäº§è€…æ¶ˆè´¹è€…é˜Ÿåˆ—ï¼ˆæ–‡æ¡£ä¸­"æ‰©å±•å°†åŠ å…¥ç¼“å†²ï¼Œæ„å»ºæ¥æ”¶/å‘é€é˜Ÿåˆ—"ï¼‰
+    std::queue<Command> m_mqttRecvQueue;  // MQTTæ¥æ”¶é˜Ÿåˆ—
+    std::queue<Command> m_mqttSendQueue;  // MQTTå‘é€é˜Ÿåˆ—
 };
 
 

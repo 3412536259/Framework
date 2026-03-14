@@ -1,16 +1,24 @@
 #pragma once
 #include <nlohmann/json.hpp>
+#include "common/erro_code.h"
+#include <optional>
+template <typename T>
 class LobbyResult{
 public:
-    // NoPermission();
+    bool success; // 操作是否成功
+    ErrorCode::Code errorCode; // 错误码，成功时为 ErrorCode::Code::SUCCESS
+    std::string message; // 相关信息的字符串
+    std::optional<T> data; // 可选的数据字段，成功时包含返回数据，失败时为 std::nullopt
 
 
-    // InvalidState();
+public:    
+    static LobbyResult<T> Ok(const T& data){// 成功结果，包含数据
+        return {true,ErrorCode::Code::SUCCESS,"success",data};
+    } 
 
-
-    // FromCommandResult();
-
-
+    static LobbyResult<T>Error(ErrorCode::Code code){//错误结果，包含错误码和对应的错误信息
+        return {false,code,ErrorCode::getMessage(code),std::nullopt};
+    } 
 };
 
 class DeviceStatusQuery{
@@ -144,11 +152,10 @@ class AIModelUpdate {
 #include <string>
 #include <memory>
 #include <chrono>
-#include <opencv2/opencv.hpp>
 
 struct VideoFrame {
     // ===== 视频数据 =====
-    std::shared_ptr<cv::Mat> image;
+    // std::shared_ptr<cv::Mat> image;
 
     // ===== 元数据 =====
     std::string cameraId;
@@ -164,16 +171,16 @@ struct VideoFrame {
 
     VideoFrame() = default;
 
-    VideoFrame(std::shared_ptr<cv::Mat> img,
-               std::string camId,
-               std::string nvr,
-               uint64_t index,
-               bool key)
-        : image(std::move(img)),
-          cameraId(std::move(camId)),
-          nvrId(std::move(nvr)),
-          timestamp(std::chrono::system_clock::now()),
-          frameIndex(index),
-          isKeyFrame(key)
-    {}
+    // VideoFrame(/*std::shared_ptr<cv::Mat> img,
+    //            std::string camId,
+    //            std::string nvr,
+    //            uint64_t index,
+    //            bool key*/)
+    //     // : image(std::move(img)),
+    //     //   cameraId(std::move(camId)),
+    //     //   nvrId(std::move(nvr)),
+    //     //   timestamp(std::chrono::system_clock::now()),
+    //     //   frameIndex(index),
+    //     //   isKeyFrame(key)
+    // {}
 };

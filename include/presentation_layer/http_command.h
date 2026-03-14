@@ -1,18 +1,8 @@
 #pragma once
-#include <string>
-#include "business_layer/lobby/lobby_service.h"
-#include "common/topics.h"
-#include "business_layer/lobby/lobby_object.h"
-#include <nlohmann/json.hpp>
-#include "presentation_layer/http_response.h"
-using nlohmann::json;
-class IController{ //适配器 
-public:
+#include "business_layer/command/controller.h"
 
-    virtual HttpResponse handle(const std::string& topic, const std::string& payload) = 0;
 
-    virtual ~IController() = default;
-};
+
 
 /**
  * @brief Web控制器接口类
@@ -30,6 +20,9 @@ public:
      * @return payload 响应数据
      */
     HttpResponse handle(const std::string& topic, const std::string& payload) override;
+
+    void handleMqtt(const std::string& topic, const std::string& payload) override;
+
 private:
     ILobbyService& lobbyService; 
 

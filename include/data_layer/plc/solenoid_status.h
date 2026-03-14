@@ -26,4 +26,4 @@ class SolenoidStatus : public DeviceStatus{
         std::string openStatus_;
 };
 
-#endif;
+#endif

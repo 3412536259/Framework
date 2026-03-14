@@ -1,21 +1,21 @@
 #pragma once
 
-#include "box_device_status.h"
-#include "box_device_real_time_data.h"
-#include "device_operation_result.h"
-#include "camera_history_video.h"
-#include "radar_point_cloud.h"
-#include "box_config_result.h"
-#include "solenoid_value_info.h"
-#include "car_control.h"
-#include "camera_info.h"
-#include "radar_info.h"
-#include "box_device_param.h"
-#include "device_data.h"
-#include "box_instance.h"
-#include "solenoid_instance_set.h"
-#include "sensor_instance_set.h"
-#include "camera_instance_set.h"
+#include "data_layer/box/box_device_status.h"
+#include "data_layer/box/box_device_real_time_data.h"
+#include "data_layer/device/device_operation_result.h"
+#include "data_layer/camera/camera_history_video.h"
+#include "data_layer/radar/radar_point_cloud.h"
+#include "data_layer/box/box_config_result.h"
+#include "data_layer/plc/solenoid_value_info.h"
+#include "data_layer/car/car_control.h"
+#include "data_layer/camera/camera_info.h"
+#include "data_layer/radar/radar_info.h"
+#include "data_layer/box/box_device_param.h"
+
+#include "data_layer/box/box_instance.h"
+#include "data_layer/plc/solenoid_instance_set.h"
+#include "data_layer/sensor/sensor_instance_set.h"
+#include "data_layer/camera/camera_instance_set.h"
 
 class IDeviceManageService {
     public: 

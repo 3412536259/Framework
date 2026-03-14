@@ -7,12 +7,12 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <iostream>
-#include "controller.h"
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <sstream>
 #include <cstring>
 #include <atomic>
+#include "presentation_layer/http_command.h"
 using nlohmann::json;
 
 
@@ -54,13 +54,14 @@ public:
 
     bool isRunning() const;
 
-    // 禁用拷贝构造和赋值运算符（避免线程和套接字资源拷贝问题）
+// 禁用拷贝构造和赋值运算符（避免线程和套接字资源拷贝问题）
     WebService(const WebService&) = delete;
     WebService& operator=(const WebService&) = delete;
 
     // 禁用移动构造和赋值运算符（可选，根据实际需求）
     WebService(WebService&&) = delete;
     WebService& operator=(WebService&&) = delete;
+    
 
 private:
 
@@ -100,7 +101,7 @@ private:
 
     std::atomic<bool> running_;
 
-    HTTPCommandController& dispatcher_; // 控制器实例引用
+    IController& dispatcher_; // 控制器实例引用
 };
 
 #endif // WEB_SERVICE_H

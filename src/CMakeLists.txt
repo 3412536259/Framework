@@ -11,16 +11,36 @@ link_directories(/usr/local/lib)
 
 # ========== 源文件列表 ==========
 set(SRC_FILES
-    text/text.cpp
+    text/sql_test.cpp
+    # text/text.cpp
+
     #========== 业务层 ==========
 
-    business_layer/lobby/lobby_service.cpp  # 你的业务层代码
+    business_layer/lobby/lobby_service.cpp  #大厅
+    business_layer/safety/safety_service.cpp
+    # business_layer/command/command_service.cpp
+    business_layer/timer.cpp 
+
+    business_layer/command/mqtt/protocol.cpp
+    business_layer/command/mqtt/mqtt_service.cpp
+    business_layer/command/mqtt_command.cpp
+
     #========== 数据层 ==========
 
+
+
+
     #========== 表现层 ==========
+
     presentation_layer/http_command.cpp
     presentation_layer/http_service.cpp
 
+
+
+    #========== 工具 ==========
+    common/log/log.cpp
+    common/sqlite/sqlite3.c
+    # common/sqlite/shell.c //命令行工具的源码
     # main.cpp  # 补充：main函数文件（如果存在，必须添加）
 )
 
@@ -46,7 +66,8 @@ target_link_libraries(main PUBLIC
     paho-mqttpp3   # C++ 库
     paho-mqtt3a    # C 库（异步版）
     paho-mqtt3c    # C 库（同步版）
+    pthread dl     # 动态链接库
 )
 
 # ========== 测试（必要时注释掉） ==========
-add_subdirectory(test/)
+# add_subdirectory(test/)

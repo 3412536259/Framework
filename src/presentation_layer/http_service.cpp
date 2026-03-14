@@ -1,11 +1,12 @@
 #include "presentation_layer/http_service.h"
 
-WebService::WebService(const std::string& ip,short port,HTTPCommandController& controller)
+WebService::WebService(const std::string& ip,short port,IController& controller)
     : m_bind_ip(ip.empty() ? "0.0.0.0" : ip),
       m_port(port <= 0 ? 8080 : port),
       dispatcher_(controller),
       running_(false)
 {
+
 }
 
 WebService::~WebService() {

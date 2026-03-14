@@ -1,11 +1,11 @@
-#include "command_status.h"
+#include "business_layer/command/command_status.h"
 #include <string>
 #include <iostream>
 #include <unordered_map>
 
-// Ã¶¾ÙÖµ×ª×Ö·û´®µÄº¯Êý
+// Ã¶ï¿½ï¿½Öµ×ªï¿½Ö·ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½
 std::string statusToString(Status status) {
-    // ½¨Á¢Ã¶¾ÙÖµºÍ×Ö·û´®µÄÓ³Éä±í
+    // ï¿½ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½Öµï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ï¿½ï¿½
     static const std::unordered_map<Status, std::string> statusMap = {
         {Status::Success, "Success"},
         {Status::Failure, "Failure"},
@@ -17,7 +17,7 @@ std::string statusToString(Status status) {
         {Status::InternalError, "InternalError"}
     };
 
-    // ²éÕÒÓ³Éä£¬ÕÒ²»µ½·µ»ØÄ¬ÈÏÖµ
+    // ï¿½ï¿½ï¿½ï¿½Ó³ï¿½ä£¬ï¿½Ò²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½Öµ
     auto it = statusMap.find(status);
     if (it != statusMap.end()) {
         return it->second;
@@ -25,12 +25,12 @@ std::string statusToString(Status status) {
     return "UnknownStatus";
 }
 
-// ÈÕÖ¾³õÊ¼»¯¹¤¾ßº¯Êý£¨È«¾Ö/µ¥Àý£©
+// ï¿½ï¿½Ö¾ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //void initCommandStatusLogger() {
 //    try {
-//        // Ö»³õÊ¼»¯Ò»´Îlogger£¨spdlog»á×Ô¶¯¹ÜÀíµ¥Àý£¬ÖØ¸´µ÷ÓÃÒ²»á·µ»ØÒÑ´æÔÚµÄlogger£©
+//        // Ö»ï¿½ï¿½Ê¼ï¿½ï¿½Ò»ï¿½ï¿½loggerï¿½ï¿½spdlogï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½Ò²ï¿½á·µï¿½ï¿½ï¿½Ñ´ï¿½ï¿½Úµï¿½loggerï¿½ï¿½
 //        auto logger = spdlog::basic_logger_mt("command_status_logger", "logs/command_status.log");
-//        // ½ûÓÃ»º³å£¬Á¢¼´Ë¢ÅÌ
+//        // ï¿½ï¿½ï¿½Ã»ï¿½ï¿½å£¬ï¿½ï¿½ï¿½ï¿½Ë¢ï¿½ï¿½
 //        logger->flush_on(spdlog::level::info);
 //    }
 //    catch (const spdlog::spdlog_ex& ex) {
@@ -44,19 +44,19 @@ CommandStatus::CommandStatus(Command cmd, Status status, const std::string& mess
     _command = cmd;
     _status = status;
     _message = message;
-	logStatusChange(); // ¹¹ÔìÊ±¼ÇÂ¼³õÊ¼×´Ì¬
+	logStatusChange(); // ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Â¼ï¿½ï¿½Ê¼×´Ì¬
 }
 
 void CommandStatus::setStatus(Status status)
 {
 	_status = status;
-	logStatusChange(); // Ã¿´Î×´Ì¬¸Ä±äÊ±¼ÇÂ¼ÈÕÖ¾
+	logStatusChange(); // Ã¿ï¿½ï¿½×´Ì¬ï¿½Ä±ï¿½Ê±ï¿½ï¿½Â¼ï¿½ï¿½Ö¾
 }
 
 void CommandStatus::logStatusChange()
 {
    // auto logger = spdlog::get("command_status_logger");
-   // if (logger) { // ¼ì²éloggerÊÇ·ñ³õÊ¼»¯³É¹¦
+   // if (logger) { // ï¿½ï¿½ï¿½loggerï¿½Ç·ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½É¹ï¿½
    //     logger->info(
    //         "Command status updated | Command: {}, New Status: {}, Message: {}",
    //         _command.getCommand(),
@@ -82,7 +82,7 @@ void CommandStatus::logStatusChange()
 
 CommandQueue::CommandQueue()
 {
-	//initCommandStatusLogger(); // ³õÊ¼»¯ÈÕÖ¾ÏµÍ³
+	//initCommandStatusLogger(); // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ö¾ÏµÍ³
 }
 
 CommandQueue::~CommandQueue()
@@ -90,7 +90,7 @@ CommandQueue::~CommandQueue()
     //auto logger = spdlog::get("command_status_logger");
     //if (logger) {
     //    logger->info("CommandQueue is being destroyed, flushing logs...");
-    //    logger->flush(); // Ç¿ÖÆË¢ÅÌ£¬±ÜÃâÈÕÖ¾¶ªÊ§
-    //    spdlog::drop("command_status_logger"); // Ïú»Ù¸Ãlogger
+    //    logger->flush(); // Ç¿ï¿½ï¿½Ë¢ï¿½Ì£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾ï¿½ï¿½Ê§
+    //    spdlog::drop("command_status_logger"); // ï¿½ï¿½ï¿½Ù¸ï¿½logger
     //}
 }

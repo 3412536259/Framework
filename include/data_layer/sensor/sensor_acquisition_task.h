@@ -1,7 +1,7 @@
 #ifndef SENSOR_ACQUISITION_TASK_H
 #define SENSOR_ACQUISITION_TASK_H
 
-#include "acquisition_task.h"
+#include "data_layer/device/acquisition_task.h"
 
 class SensorAcquisitionTask : public AcquisitionTask {
     public:
@@ -12,4 +12,4 @@ class SensorAcquisitionTask : public AcquisitionTask {
     
 };
 
-#endif;
+#endif

@@ -44,4 +44,4 @@ class SolenoidValue : public PlcDevice{
         std::string regAddr_;
 };
 
-#endif;
+#endif

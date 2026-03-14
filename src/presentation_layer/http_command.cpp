@@ -1,18 +1,21 @@
-#include "presentation_layer/controller.h"
+#include "presentation_layer/http_command.h"
 
 HTTPCommandController::HTTPCommandController(ILobbyService& lobby) : lobbyService(lobby) {
     // 构造函数，初始化lobbyService引用
 }
 // public:
 
-void HTTPCommandController::handle(const std::string& topic, const std::string& payload){
+HttpResponse HTTPCommandController::handle(const std::string& topic, const std::string& payload){
     if(topic == GET_REAL_IMAGE_TOPIC){
         nlohmann::json j = nlohmann::json::parse(payload);
         handleGetRealImage(j);  
         
     }
+    return HttpResponse{};
 }
+void HTTPCommandController::handleMqtt(const std::string& topic, const std::string& payload){
 
+}
 // private:
 
 void HTTPCommandController::handleGetRealImage(const nlohmann::json& j){
@@ -21,7 +24,7 @@ void HTTPCommandController::handleGetRealImage(const nlohmann::json& j){
         // 处理无效查询，例如返回错误响应
         return;
     }
-    lobbyService.retrieveLiveCameraFrame(query);
+    auto result = lobbyService.retrieveLiveCameraFrame(query);
 }
 
 // void HTTPCommandController::handleGetSensorData(const nlohmann::json& j){
@@ -34,7 +37,7 @@ void HTTPCommandController::handleGetAllDeviceStatus(const nlohmann::json& j){
         // 处理无效查询，例如返回错误响应
         return;
     }
-    lobbyService.retrieveDeviceStatus(query);   
+    auto result = lobbyService.retrieveDeviceStatus(query);   
 }
 
 void HTTPCommandController::handVideoHistoryTime(const nlohmann::json& j){
@@ -43,7 +46,7 @@ void HTTPCommandController::handVideoHistoryTime(const nlohmann::json& j){
         // 处理无效查询，例如返回错误响应
         return;
     }
-    lobbyService.retrieveHistoricalCameraFootage(query);    
+    auto result = lobbyService.retrieveHistoricalCameraFootage(query);    
 }
     
 void HTTPCommandController::handVideoHistoryFile(const nlohmann::json& j){
@@ -52,5 +55,5 @@ void HTTPCommandController::handVideoHistoryFile(const nlohmann::json& j){
         // 处理无效查询，例如返回错误响应
         return;
     }
-    lobbyService.downloadHistoricalCameraFootage(download);     
+    auto result = lobbyService.downloadHistoricalCameraFootage(download);     
 }

@@ -27,4 +27,4 @@ class SolenoidInstanceSet {
         std::unordered_map<std::string, std::unique_ptr<SolenoidValue> > solenoidValues_;
 };
 
-#endif;
+#endif

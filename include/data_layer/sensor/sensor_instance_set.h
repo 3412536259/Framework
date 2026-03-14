@@ -3,7 +3,7 @@
 
 #include "sensor_status.h"
 #include "sensor_real_time_data.h"
-#include <sensor.h>
+#include "data_layer/sensor/sensor.h"
 
 #include <vector>
 #include <unordered_map>
