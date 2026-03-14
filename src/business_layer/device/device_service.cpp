@@ -4,10 +4,10 @@ DeviceService::DeviceService(DeviceManageService& deviceManageService,
                              DeviceStatusCache& deviceStatusCache,
                              DeviceAcquisitionTask& deviceAcuqisitionTask,
                              RealTimeFrameCache& realTimeFrameCache) 
-    :_deviceManageService(deviceManageService),
-     _deviceStatusCache(deviceStatusCache),
-     _deviceAcquisitionTask(deviceAcuqisitionTask),
-     _realTimeFrameCache(realTimeFrameCache)
+    :deviceManageService_(deviceManageService),
+     deviceStatusCache_(deviceStatusCache),
+     deviceAcquisitionTask_(deviceAcuqisitionTask),
+     realTimeFrameCache_(realTimeFrameCache)
 {
     startTimer();
 }
@@ -18,57 +18,57 @@ DeviceService::~DeviceService() {
 
 BoxDeviceStatus DeviceService::viewAllDeviceStatus() {
     if (_deviceStatusCache.isBoxDeviceStatusEmpty()){
-        const BoxDeviceStatus& devicesStatus = _deviceManageService.getBoxDeviceStatus();
-        _deviceStatusCache.updateBoxDeviceStatus(devicesStatus);
+        const BoxDeviceStatus& devicesStatus = deviceManageService_.getDeviceStatus();
+        deviceStatusCache_.updateBoxDeviceStatus(devicesStatus);
         return devicesStatus;
     }
     
-    const BoxDeviceStatus& devicesStatus = _deviceStatusCache.getBoxDeviceStatus();
+    const BoxDeviceStatus& devicesStatus = deviceStatusCache_.getBoxDeviceStatus();
     return devicesStatus;
 }
 
 BoxDeviceRealTimeData DeviceService::getBoxDeviceRealTimeData() {
     if(_deviceStatusCache.isBoxRealTimeDataEmpty()) {
-        const BoxDeviceRealTimeData& realTimeData = _deviceManageService.getBoxDeviceRealTimeData();
-        _deviceStatusCache.updateBoxDeviceRealTimeData(realTimeData);
+        const BoxDeviceRealTimeData& realTimeData = deviceManageService_.getBoxDeviceRealTimeData();
+        deviceStatusCache_.updateBoxDeviceRealTimeData(realTimeData);
         return realTimeData;
     }
-    const BoxDeviceRealTimeData& realTimeData = _deviceStatusCache.getBoxDeviceRealTimeData();
+    const BoxDeviceRealTimeData& realTimeData = deviceStatusCache_.getBoxDeviceRealTimeData();
     return realTimeData;
 }
 
 DeviceOperationResult DeviceService::openSolenoidValue( const SolenoidValueInfo& info) {
-    if(_deviceStatusCache.isSolenoidOpened(info))
+    if(deviceStatusCache_.isSolenoidOpen(info))
         return new DeviceOperationResult(-1,"电磁阀已经打开!");
-    _deviceManageService.openSolenidValue(info);
+    deviceManageService_.openSolenoidValue(info);
     return new DeviceOperationResult(0,"电磁阀打开成功!");
 }
 
 DeviceOperationResult DeviceService::closeSolenoidValue( const SolenoidValueInfo& info) {
-    if(_deviceStatusCache.isSolenoidClosed(info))
+    if(deviceStatusCache_.isSolenoidClose(info))
         return new DeviceOperationResult(-1,"电磁阀已经关闭!");
 
-    return _deviceManageService.closeSolenoidValue(info);
+    return deviceManageService_.closeSolenoidValue(info);
 }
 
 DeviceOperationResult DeviceService::controlCarRotation( const CarControl& car) {
-    return _deviceManageService.controlCarRotation(car);
+    return deviceManageService_.controlCarRotation(car);
 }
 
 CameraRealTimeFrame DeviceService::getCameraRealTimeFrame( const CameraInfo& info) {
-    return _realTimeFrameCache.getCameraRealTimeFrame(info);
+    return realTimeFrameCache_.getCameraRealTimeFrame(info);
 }
 
 CameraHistoryVideo DeviceService::viewCameraHistoryVideo( const CameraInfo& info) {
-    return _deviceManageService.getCameraHistoryVideo(info);
+    return deviceManageService_.getCameraHistoryVideo(info);
 }
 
 RadarPointCloud DeviceService::getRadarPointCloudData( const RadarInfo& info) {
-    return _deviceManageService.getRadarPointCloudData(info);
+    return deviceManageService_.getRadarPointCloudData(info);
 }
 
 BoxConfigResult DeviceService::configBoxDeviceParams( const BoxDeviceParam& params) {
-    return _deviceManageService.BoxDeviceParamConfig(params);
+    return deviceManageService_.boxDeviceParamsConfig(params);
 }
 
 void DeviceService::startTimer() {
@@ -86,10 +86,10 @@ void DeviceService::stopTimer() {
 void DeviceService::devicesDataCollection(int deviceType) {
     
     // 设备数据采集 DeviceData 父类
-    std::vector<std::unique_ptr<DeviceData> > deviceData = _deviceManageService.deviceDataAcquisition(deviceType);
+    std::vector<std::unique_ptr<DeviceData> > deviceData = deviceManageService_.deviceDataAcquisition(deviceType);
     //更新一种设备的状态和实时数据
-    _deviceStatusCache.updateDeviceStatus(deviceData);
-    _deviceStatusCache.updateDeviceRealTimeData(deviceData);
+    deviceStatusCache_.updateDeviceStatus(deviceData);
+    deviceStatusCache_.updateDeviceRealTimeData(deviceData);
 }
 
 void DeviceService::timerLoop() {
@@ -98,7 +98,7 @@ void DeviceService::timerLoop() {
     while(_running) {
         auto startTime = steady_clock::now();
 
-        for(auto& task : _deviceAcquisitionTask.getTasks()) {
+        for(auto& task : deviceAcquisitionTask_.getTasks()) {
             if(task->isAcquisitionData()) 
                 devicesDataCollection(task->getType());
         }

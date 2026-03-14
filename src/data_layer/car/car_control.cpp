@@ -1,9 +1,9 @@
 #include "car_control.h"
 
-CarControl::CarControl() {
+CarControl::CarControl(const std::string& deviceId) const : deviceId_(deviceId) {
 
 }
 
-CarControl::~CarControl() {
-
-}
+const std::string& CarControl::getDeviceId() const {
+    return deviceId_;
+} 

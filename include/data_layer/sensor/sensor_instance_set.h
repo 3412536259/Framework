@@ -14,10 +14,13 @@ class SensorInstanceSet {
         ~SensorInstanceSet();
 
         const std::vector<SensorStatus>& getSensorStatusList() const;
+         //循环获取传感器实时数据
         const std::vector<SensorRealTimeData>& getSensorRealTimeDataList() const;
 
+        std::vector<std::unique_ptr<DeviceData> > acquisitionSensorData();
+
     private:
-        std::unordered_map<std::string,std::unique_ptr<Sensor> > _sensors;
+        std::unordered_map<std::string,std::unique_ptr<Sensor> > sensors_;
 };
 
 #endif

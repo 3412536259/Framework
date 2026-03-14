@@ -6,10 +6,13 @@
 #include "sensor_real_time_data.h"
 class BoxDeviceRealTimeData {
     public:
-        BoxDeviceRealTimeData(std::vector<SolenoidRealTimeData> solenoidRealTimeDataList,
-                              std::vector<SensorRealTimeData> sensorRealTimeDataList);
+        BoxDeviceRealTimeData(const std::vector<SolenoidRealTimeData>& solenoidRealTimeDataList,
+                              const std::vector<SensorRealTimeData>& sensorRealTimeDataList);
         BoxDeviceRealTimeData() = default;
-        ~BoxDeviceRealTimeData();
+        ~BoxDeviceRealTimeData() = default;
+
+        std::vector<SolenoidRealTimeData> getSolenoidRealTimeDataList() const;
+        std::vector<SensorRealTimeData> getSensorRealTimeDataList() const;
 
     private:
         std::vector<SolenoidRealTimeData> solenoidRealTimeDataList_;

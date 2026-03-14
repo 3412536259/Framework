@@ -8,9 +8,9 @@ class CameraInfo {
     public:
         CameraInfo() = default;
         CameraInfo(std::string deviceId);
-        ~CameraInfo();
+        ~CameraInfo() = default
     
-        const std::string getDeviceId() const;
+        const std::string& getDeviceId() const;
     private:
         std::string deviceId_;
 };

@@ -1,18 +1,23 @@
 #include "box_device_status.h"
 
-BoxDeviceStatus::BoxDeviceStatus(std::vector<SolenoidStatus> solenoidStatuses,
-                                 std::vector<CameraStatus> cameraStatuses,
-                                 std::vector<SensorStatus> sensorStatuses)
+BoxDeviceStatus::BoxDeviceStatus(const std::vector<SolenoidStatus>& solenoidStatuses,
+                                 const std::vector<CameraStatus>& cameraStatuses,
+                                 const std::vector<SensorStatus>& sensorStatuses)
     : solenoidStatuses_(solenoidStatuses),
       cameraStatuses_(cameraStatuses),
       sensorStatuses_(sensorStatuses) {
 
 }
 
-BoxDeviceStatus::BoxDeviceStatus() {
-
+std::vector<SolenoidStatus> BoxDeviceStatus::getSolenoidStatusList() const {
+  return solenoidStatuses_;
 }
 
-BoxDeviceStatus::~BoxDeviceStatus() {
-
+std::vector<SensorStatus> BoxDeviceStatus::getSensorStatusList() const {
+  return sensorStatuses_;
 }
+
+std::vector<CameraStatus> BoxDeviceStatus::getCameraStatusList() const {
+  return cameraStatuses_;
+}
+

@@ -8,11 +8,15 @@
 
 class BoxDeviceStatus {
     public:
-        BoxDeviceStatus(std::vector<SolenoidStatus> SolenoidStatuses,
-                        std::vector<CameraStatus> CameraStatuses,
-                        std::vector<SensorStatus> SensorStatuses);
+        BoxDeviceStatus(const std::vector<SolenoidStatus>& solenoidStatuses,
+                        const std::vector<CameraStatus>& cameraStatuses,
+                        const std::vector<SensorStatus>& sensorStatuses);
         BoxDeviceStatus() = default;
-        ~BoxDeviceStatus();
+        ~BoxDeviceStatus() = default;
+
+        std::vector<SolenoidStatus> getSolenoidStatusList() const ;
+        std::vector<SensorStatus> getSensorStatusList() const;
+        std::vector<CameraStatus> getCameraStatusList() const;
 
     private:
         std::vector<SolenoidStatus> solenoidStatuses_;

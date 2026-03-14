@@ -1,0 +1,35 @@
+#ifndef DEVICE_H
+#define DEVICE_H
+
+#include <string>
+#include <any>
+#include <memory>
+
+#include "device_status.h"
+class Device {
+    protected:
+        Device() : type_(0) {};
+        Device(int type,std::string deviceId,std::string name)
+            : type_(type), deviceId_(deviceId),name_(name) {};
+    public:
+        virtual ~Device() = default;
+
+        virtual std::unique_ptr<DeviceStatus> getStatus() const = 0;
+
+        int getType() const { return type_;};
+
+        std::string getDeviceId() const return { return deviceId_;}
+
+        std::string getName() const return { return name_;}
+    private:
+
+        //设备类型
+        int type_;
+
+        std::string deviceId_;
+
+        std::string name_;
+
+};
+
+#endif

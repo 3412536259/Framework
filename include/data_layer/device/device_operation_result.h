@@ -5,9 +5,8 @@
 
 class DeviceOperationResult {
     public:
-        DeviceOperationResult();
+        DeviceOperationResult() = default;
         DeviceOperationResult(int code, const std::string message);
-        ~DeviceOperationResult();
 
     private:
         int code_;
