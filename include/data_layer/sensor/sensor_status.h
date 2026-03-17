@@ -1,19 +1,24 @@
 #ifndef SENSOR_STATUS_H
 #define SENSOR_STATUS_H
 
-#include "sensor_types.h"
-
 #include <string>
-class SensorStatus {
+#include "sensor_types.h"
+#include "device_status.h"
+
+class SensorStatus : DeviceStatus{
     public:
-        SensorStatus();
-        ~SensorStatus();
+        SensorStatus() = default;
+        SensorStatus(const std::string& deviceId,
+                     const int type,
+                     const std::string& name,
+                     const Status& status);
+        ~SensorStatus() override = default;
     
     private:
-        
-        std::string deviceId;
+        //传感器类型(modbus/gpio/custom)
+        // std::string type;
 
-        Status status;
+        Status status_;
 
 
 };

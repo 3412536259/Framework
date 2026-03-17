@@ -112,23 +112,23 @@ bool DeviceStatusCache::isBoxRealTimeDataEmpty() {
 }
 
 bool DeviceStatusCache::isSolenoidOpen( const SolenoidValueInfo& info) {
-    auto it = _solenoidStatusMap.find(info.getDeviceId());
+    auto it = _solenoidRealTimeDataMap.find(info.getDeviceId());
 
-    if(it == _solenoidStatusMap.end())
+    if(it == _solenoidRealTimeDataMap.end())
         throw std::runtime_error("Solenoid device not found in cache");
 
-    SolenoidStatus& status = *(it->second);
-    return status.isOpen();
+    SolenoidRealTimeData& realTimeData = *(it->second);
+    return realTimeData.isOpen();
 }
 
 bool DeviceStatusCache::isSolenoidClose( const SolenoidValueInfo& info) {
-    auto it = _solenoidStatusMap.find(info.getDeviceId());
+    auto it = _solenoidRealTimeDataMap.find(info.getDeviceId());
 
-    if(it == _solenoidStatusMap.end())
+    if(it == _solenoidRealTimeDataMap.end())
         throw std::runtime_error("Solenoid device not found in cache");
 
-    SolenoidStatus& status = *(it->second);
-    return status.isClose();
+    SolenoidRealTimeData& realTimeData = *(it->second);
+    return !realTimeData.isOpen();
 }
 
 void DeviceStatusCache::updateSolenoidStatus( const SolenoidStatus& status ) {

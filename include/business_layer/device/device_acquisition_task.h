@@ -13,6 +13,7 @@ class DeviceAcquisitionTask {
         DeviceAcquisitionTask(SolenoidAcquisitionTask& solenoidTask,
                               SensorAcquisitionTask& sensorTask,
                               CameraAcquisitionTask& cameraTask);
+        DeviceAcquisitionTask() = default;
         ~DeviceAcquisitionTask();
 
         const std::vector< std::unique_ptr<AcquisitionTask> >& getTasks() const ;

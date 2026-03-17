@@ -5,9 +5,8 @@ class RealTimeFrameCache {
 
     public:
 
-        RealTimeFrameCache();
-        ~RealTimeFrameCache();
-
+        RealTimeFrameCache() ;
+        ~RealTimeFrameCache() = default;
         void updateCameraRealTimeFrame();
 
         CameraRealTimeFrame getCameraRealTimeFrame( const CameraInfo& info);

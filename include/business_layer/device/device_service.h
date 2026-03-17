@@ -73,16 +73,17 @@ class DeviceService : public IDeviceService{
 
     private:
         //数据采集
-        void devicesDataCollection(int deviceType);
+        void devicesDataCollection(int deviceType) override;
+        //定时器
         void timerLoop();
 
-        DeviceStatusCache& _deviceStatusCache;
+        DeviceStatusCache& deviceStatusCache_;
 
-        DeviceManageService& _deviceManageService;
+        DeviceManageService& deviceManageService_;
         
-        DeviceAcquisitionTask& _deviceAcquisitionTask;
+        DeviceAcquisitionTask& deviceAcquisitionTask_;
 
-        RealTimeFrameCache& _realTimeFrameCache;
+        RealTimeFrameCache& realTimeFrameCache_;
 
         std::thread _timerThread;
         std::atomic<bool> _running {false};

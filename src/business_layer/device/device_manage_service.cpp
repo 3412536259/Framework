@@ -61,6 +61,16 @@ CameraHistoryVideo DeviceManageService::getCameraHistoryVideo( const CameraInfo&
 //     return radarInstanceSet_.getRadarPointCloudData(info.getDeviceId());
 // }
 
-BoxConfigResult DeviceManageService::BoxDeviceParamsConfig( const BoxDeviceParam& params) {
+BoxConfigResult DeviceManageService::boxDeviceParamsConfig( const BoxDeviceParam& params) {
     return boxInstance_.configBoxDeviceParams(params);
+}
+
+std::vector<std::unique_ptr<DeviceData> > DeviceManageService::deviceDataAcquisition(int deviceType) {
+    if(deviceType == 0) {
+        return solenoidInstanceSet_.acquisitionSolenoidData();
+    }else if(deviceType == 1) {
+        return sensorInstanceSet_.acquisitionSensorData();
+    }else if(deviceType == 2) {
+        return cameraInstanceSet_.acquisitionCameraData();
+    }
 }

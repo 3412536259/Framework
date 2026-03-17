@@ -34,6 +34,9 @@ class IDeviceManageService {
 
         virtual BoxConfigResult BoxDeviceParamsConfig( const BoxDeviceParam& params) = 0;
 
+        // 设备数据采集，返回DeviceData的列表，deviceType: 0-电磁阀, 1-传感器, 2-摄像头
+        virtual std::vector<std::unique_ptr<DeviceData> > deviceDataAcquisition(int deviceType) = 0; 
+
 };
 
 class DeviceManageService : public IDeviceManageService { 
@@ -52,7 +55,9 @@ class DeviceManageService : public IDeviceManageService {
 
         RadarPointCloudData getRadarPointCloudData(const RadarInfo& info) override;
 
-        BoxConfigResult BoxDeviceParamsConfig( const BoxDeviceParams& params) override;
+        BoxConfigResult boxDeviceParamsConfig( const BoxDeviceParams& params) override;
+
+        std::vector<std::unique_ptr<DeviceData> > deviceDataAcquisition(int deviceType) override;
 
     private:
 
