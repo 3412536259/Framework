@@ -7,19 +7,19 @@
 #include "solenoid_real_time_data.h"
 class SolenoidValue : public PlcDevice{
     public:
-        SolenoidValue();
+        SolenoidValue() = default;
         SolenoidValue(const int type,
                       const std::string& deviceId,
                       const std::string& name,
                       const std::string& bindSerialPort,
                       const std::string& slaveAddr,
-                      const std::string& plcId_,
-                      const std::string& plcPort_,
-                      const std::string& regAddr_);
+                      const std::string& plcId,
+                      const std::string& plcPort,
+                      const std::string& regAddr);
         ~SolenoidValue() override = default ;
 
         //获取电磁阀状态
-        SolenoidStatus getStatus() const override;
+        std::unique_ptr<DeviceStatus> getStatus() const override;
         std::string getPlcId() const ;
         // SolenoidRealTimeData getRealTimeData();
 
@@ -33,9 +33,10 @@ class SolenoidValue : public PlcDevice{
         void buildCoilAddress(uint8_t& high,uint8_t& low );    
         //指令7，8字节
         uint16_t buildCalcCRC(const uint8_t* data, size_t length);   
+        std::array<uint8_t,8> buildQueryStatusCommand();
 
-        std::array<unit8_t,8> buildOpenCommand();
-        std::Array<uint8_t,8> buildCloseCommand();
+        std::array<uint8_t,8> buildOpenCommand();
+        std::array<uint8_t,8> buildCloseCommand();
     
         std::string plcId_;
         std::string plcPort_;

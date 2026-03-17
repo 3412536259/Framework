@@ -6,11 +6,11 @@
 class SolenoidStatus : public DeviceStatus{
 
     public:
-        SolenoidStatus(std::string& deviceId,
-                       int type,
-                       std::string& name,
-                       std::string& status,
-                       std::string& openStatus);
+        SolenoidStatus(const std::string& deviceId,
+                       const int type,
+                       const std::string& name,
+                       const std::string& status,
+                       const std::string& openStatus);
         SolenoidStatus() = default;
         ~SolenoidStatus() override = default;
 

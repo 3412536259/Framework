@@ -5,10 +5,13 @@
 class DeviceStatus {
 
     protected:
-        DevcieStatus() : type_(0) {}
+        DeviceStatus() : type_(0) {}
         DeviceStatus(const std::string& deviceId,
                      const int type,
-                     const std::string& name);
+                     const std::string& name)
+            : deviceId_(deviceId),
+              type_(type),
+              name_(name) {}
 
     public:
         virtual ~DeviceStatus() = default;

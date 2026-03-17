@@ -10,8 +10,8 @@ PlcDevice::PlcDevice(const int& type,
 
 }
 
-DeviceStatus PlcDevice::getStatus() const {
-    return new DeviceStatus();
+std::unique_ptr<DeviceStatus> PlcDevice::getStatus() const {
+    return std::make_unique<DeviceStatus> ();
 }
 
 std::string PlcDevice::getSlaveAddr() const {

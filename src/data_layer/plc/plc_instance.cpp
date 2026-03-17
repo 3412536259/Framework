@@ -1,18 +1,18 @@
 #include <termios.h>
 #include <fcntl.h> 
+#include <unistd.h>
 #include "plc_instance.h"
 
 PlcInstance::PlcInstance(const PlcDevice& plcDevice,
                          const std::vector<SolenoidValue>& solenoidValues)
-                         : plcDevice_(plcDevice),
-                           solenoidValues_(solenoidValues){
+                         : plcDevice_(plcDevice){
 
 }
 
 bool PlcInstance::openSolenoidValue(const SolenoidValueInfo& info) {
   auto it = solenoidMap_.find(info.getDeviceId());
 
-  if(it == solneoidMap_.end()) {
+  if(it == solenoidMap_.end()) {
     return false;
   }
   SolenoidValue& solenoid = it -> second;
@@ -34,10 +34,29 @@ SolenoidStatus PlcInstance::getSolenoidValueStatus(const SolenoidValueInfo& info
   auto it = solenoidMap_.find(info.getDeviceId());
 
   if(it == solenoidMap_.end()) {
-    return false;
+    return SolenoidStatus();
   }
   SolenoidValue& solenoid = it -> second;
   return solenoid.queryStatus(serialPortStatus_);
+}
+
+InfraredSensorStatus PlcInstance::getInfraredSensorStatus(const PlcDeviceInfo& info) {
+  auto it = infraredSensorMap_.find(info.getDeviceId());
+
+  if(it == infraredSensorMap_.end()) {
+    return InfraredSensorStatus();
+  }
+  InfraredSensor& sensor = it -> second;
+  return sensor.queryStatus(serialPortStatus_);
+}
+
+PlcSmokeDetectorStatus PlcInstance::getSmokeDetectorStatus(const PlcDeviceInfo& info) {
+  auto it = smokeDetectorMap_.find(info.getDeviceId());
+
+  if(it == smokeDetectorMap_.end())
+    return PlcSmokeDetectorStatus();
+  PlcSmokeDetector& smokeDetector = it -> second;
+  return smokeDetector.queryStatus(serialPortStatus_);
 }
 
 bool PlcInstance::connect() {
@@ -46,7 +65,7 @@ bool PlcInstance::connect() {
     return true;
   }
   //初始化串口
-  serialPortStatus_ = open(getBindSerialPort().c_str(), O_RDWR | O_NOCTTY | O_SYNC);
+  serialPortStatus_ = open( plcDevice_.getBindSerialPort().c_str(), O_RDWR | O_NOCTTY | O_SYNC);
   if(serialPortStatus_ < 0){
     //打开失败
     return false;
@@ -75,9 +94,9 @@ bool PlcInstance::configureSerial() {
     return false;
   }
 
-  speed_t serialConfig_.getBaudRate();
-  cfsetospeed(&tty, speed_t);  // 设置输出波特率为9600
-  cfsetispeed(&tty, speed_t);
+  speed_t speed = serialConfig_.getBaudRate();
+  cfsetospeed(&tty, speed);  // 设置输出波特率为9600
+  cfsetispeed(&tty, speed);
   // 校验位：无校验（PARENB 是奇偶校验使能位，~表示清除该位）
   serialConfig_.setPlcParity(tty);
   // 停止位：1位停止位（CSTOPB 是2位停止位使能位，清除则为1位）

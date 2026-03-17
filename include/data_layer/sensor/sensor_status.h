@@ -11,14 +11,16 @@ class SensorStatus : DeviceStatus{
         SensorStatus(const std::string& deviceId,
                      const int type,
                      const std::string& name,
-                     const Status& status);
+                     const Status& status,
+                     float humidity,
+                     float tempature);
         ~SensorStatus() override = default;
     
     private:
-        //传感器类型(modbus/gpio/custom)
-        // std::string type;
 
         Status status_;
+        float humidity_;
+        float tempature_;
 
 
 };

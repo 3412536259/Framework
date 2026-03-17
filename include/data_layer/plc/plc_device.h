@@ -13,7 +13,7 @@ class PlcDevice : public SerialDevice {
                   const std::string& slaveAddr);
         ~PlcDevice() override = default;
 
-        DeviceStatus getStatus() const override;
+        std::unique_ptr<DeviceStatus> getStatus() const override;
 
         std::string getSlaveAddr() const ;
     
