@@ -4,10 +4,11 @@
 #include <queue>
 #include <unordered_map>
 //使用mqtt的发布功能
-#include "business_layer/command/mqtt/protocol.h"
+#include "business_layer/command/mqtt/network_service.h"
 #include "data_layer/command/command_dao.h"
 #include "business_layer/command/command_object.h"
-
+#include <thread>
+#include <atomic>
 class NetworkService;
  
 //命令执行 ，命令状态获取 ，命令生命周期管理
@@ -32,7 +33,7 @@ public:
 	virtual CommandState getCommandState(const CommandType& type) = 0;
 
 	// 发送命令结果到MQTT（文档中"将消息发送出去，上报执行结果"）
-	virtual void sendCommandResultToMqtt(const std::string& topic, const std::string& msg) = 0;
+	virtual void sendCommandResultToMqtt(const std::string& topic, std::string& msg) = 0;
 
 	// 更新命令状态（执行后同步状态到DAO和内存）
 	virtual void updateCommandState(const std::string& cmdId, CommandState newState) = 0;
@@ -43,7 +44,7 @@ class CommandService : public ICommandService
 {
 public:
 	CommandService(NetworkService* mqttService, CommandDao& cmdDao);
-	~CommandService() = default;
+	~CommandService() ;
 
 	// 注入MQTT网络服务（动态替换，适配扩展）
 	void immitDependence(NetworkService& mqttService);
@@ -65,7 +66,7 @@ public:
 
 
     // 实现接口：发送命令结果到MQTT
-    void sendCommandResultToMqtt(const std::string& topic, const std::string& msg) override;
+    void sendCommandResultToMqtt(const std::string& topic, std::string& msg) override;
 
     // 实现接口：更新命令状态
     void updateCommandState(const std::string& cmdId, CommandState newState) override;
@@ -73,30 +74,35 @@ public:
 
 private:
 	
-	// 私有辅助方法：校验命令合法性（联动安全服务，文档中安全验证）
-    bool validateCommand(const Command& cmd);
 
-	// 
-    void openSolenoidValve(const CommandType& type) ;
+	//轮询的循环，去解决检测命令执行时间，是否是失效的
+	void CommmandPollingCondition();
 
-    // 
-    void closeSolenoidValve(const CommandType& type) ;
 
-    // 
-    std::string getCameraHistoryVideo(const CommandType& type) ;
+	//停止轮询
+	void stopPolling();
 
 private:
 
+	std::mutex commandMutex;
 
+	std::thread cmdPolling;
 
 	NetworkService* m_mqttService; // MQTT网络服务（文档中mqtt连接封装类）
 
 	CommandDao& commandDao;	// 命令DAO（文档中命令存储，持久化）
 
 	std::unordered_map<std::string, Command> commandCache;  // 内存级命令缓存（维护当前执行/待执行命令，文档中命令状态维护）
+
+	std::mutex m_mutex;
+
+	std::atomic<bool> running{false};
+
+
+
 	// 扩展预留：生产者消费者队列（文档中"扩展将加入缓冲，构建接收/发送队列"）
-    std::queue<Command> m_mqttRecvQueue;  // MQTT接收队列
-    std::queue<Command> m_mqttSendQueue;  // MQTT发送队列
+    // std::queue<Command> m_mqttRecvQueue;  // MQTT接收队列
+    // std::queue<Command> m_mqttSendQueue;  // MQTT发送队列
 };
 
 

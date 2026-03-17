@@ -1,6 +1,6 @@
 #include "data_layer/command/command_dao.h"
-
-                 
+#include "common/sqlite/sqlite3.h"
+#include "data_layer/command/command_object.h"            
 
 CommandDao::~CommandDao(){
     if(m_db)
@@ -89,7 +89,8 @@ CommandEntity CommandDao::getCommand(const std::string& cmdId) {
 }                  
 
 CommandEntity CommandDao::getCommandbyType(const CommandType& type) {
-    
+    CommandEntity entity;
+    return entity;
 }                  
 
 std::vector<CommandEntity> CommandDao::getDeviceCommands(const std::string& deviceId) {
@@ -109,11 +110,11 @@ std::vector<CommandEntity> CommandDao::getDeviceCommands(const std::string& devi
     {
         CommandEntity cmd;
 
-        cmd.id = (const char*)sqlite3_column_text(stmt,0);
+        cmd.cmdId = (const char*)sqlite3_column_text(stmt,0);
         cmd.deviceId = (const char*)sqlite3_column_text(stmt,1);
         cmd.type = (CommandType)sqlite3_column_int(stmt,2);
         cmd.state = (CommandState)sqlite3_column_int(stmt,3);
-        cmd.payload = (const char*)sqlite3_column_text(stmt,4);
+        cmd.content = (const char*)sqlite3_column_text(stmt,4);
         cmd.createTime = sqlite3_column_int64(stmt,5);
         cmd.updateTime = sqlite3_column_int64(stmt,6);
 

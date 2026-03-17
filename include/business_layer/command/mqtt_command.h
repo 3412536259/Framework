@@ -30,14 +30,16 @@ private:
 
 private:
 
-    void handleGetRealImage(const nlohmann::json& j);
+    void handleUpdateConfig(const nlohmann::json& j); //更新配置文件
+
+    void handleGetAllDeviceStatus(const nlohmann::json& j);//所有设备状态
+
+    void handleOperateWithVerify(const nlohmann::json& j);//电磁阀操作
 
 
-    void handleGetAllDeviceStatus(const nlohmann::json& j);
-
-    void handVideoHistoryTime(const nlohmann::json& j);
+    // void handVideoHistoryTime(const nlohmann::json& j);
     
-    void handVideoHistoryFile(const nlohmann::json& j);
+    // void handVideoHistoryFile(const nlohmann::json& j);
 
 
     // void

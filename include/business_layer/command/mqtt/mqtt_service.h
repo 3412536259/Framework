@@ -12,6 +12,7 @@ class IMqttProtocol;
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <mutex>
 class MQTTCommandController;
 //优化的角度 1.加上消息队列，这样消息发送下来，不能出现堵塞的情况
          // 2.加上重连机制这样当连接断开时，能够自动尝试重新连接MQTT Broker
@@ -30,17 +31,17 @@ public:
            dispatcher(controller),
            m_protocol(protocol)
     {
-
+        running = false;
     }
     ~MqttService();
     
     void start() override;
 
-    void stop();
+    void stop() override;
 
-    void publish(const std::string& topic,std::string& payload);
+    void publish(const std::string& topic,std::string& payload) override;
       
-    void subscribe(const std::string& topic);
+    void subscribe(const std::string& topic) override;
     
 private:
     void run();
@@ -75,9 +76,11 @@ private:
 
     std::thread mqttThread;
 
-    std::atomic<bool> running;
+    std::atomic<bool> running ;
 
     IController& dispatcher;
 
     IMqttProtocol& m_protocol;
+
+    std::mutex sendMutex;
 };

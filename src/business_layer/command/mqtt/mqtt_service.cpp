@@ -19,6 +19,7 @@ void MqttService::start(){
     if(!connectBroker())
     {
         std::cerr<<"MQTT connect failed\n";
+        std::cout<<"MQTT Service is not"<<std::endl; 
         return;
     } 
     std::cout<<"MQTT Service "<<std::endl;   
@@ -72,6 +73,7 @@ void MqttService::subscribe(const std::string& topic)
     }
     std::cout<<"MQTT Service stopped."<<std::endl;
 }
+
 bool MqttService::connectBroker(){  
     socketFd = socket(AF_INET,SOCK_STREAM,0); //创建socket
     if(socketFd < 0){
@@ -95,11 +97,25 @@ bool MqttService::connectBroker(){
 }
 
 bool MqttService::sendPacket(const std::vector<uint8_t>& data){
+    std::lock_guard<std::mutex> lock(sendMutex);
     if(socketFd < 0) return false;
 
-    ssize_t n = send(socketFd, data.data(), data.size(), 0);
+    size_t total = 0;
 
-    return n == (ssize_t)data.size();
+    while(total < data.size()){
+        ssize_t n = send(socketFd, data.data() + total, data.size() - total, 0);
+
+        if(n <= 0){
+            if(errno == EAGAIN || errno == EWOULDBLOCK){
+                // 需要等待可写（select/epoll）
+            }   
+            return false;
+        }
+
+        total += n;
+    }
+
+    return true;  // ✅ 只要循环发完就是成功
 }
 
 
@@ -129,13 +145,24 @@ void MqttService::handlePacket(const MqttPacket& packet){
     switch(packet.type){
         case MqttPacketType::CONNACK:
         {
+            std::cout << "MQTT Connected!\n";
+            // ✅ 在这里订阅所有主题
+            subscribe(boxId + "OPERATE_PLC_WITH_VERIFY_TOPIC");//电磁阀
+            subscribe(boxId + "UPDATE_CONFIG_TOPIC");//配置更新
+            subscribe(boxId + "GET_ALL_DEVICE_STATUS_TOPI");   //设备的状态
+            break;
+        }
+        case MqttPacketType::PUBLISH:
+        {   
+            std::cout << "recv topic: " << packet.topic << std::endl;
+            std::cout << "payload: " << packet.payload << std::endl;
             dispatcher.handleMqtt(packet.topic, packet.payload);
-
             break;
         }
 
         case MqttPacketType::PINGRESP:
         {
+           
             break;
         }
 

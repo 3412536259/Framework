@@ -5,12 +5,18 @@ class DatabaseManager {
 public:
     static DatabaseManager& instance();
 
-    bool init(const std::string& dbFile);
+    bool init(const std::string& folderPath);
 
-    sqlite3* getDB();
+    sqlite3* getAIDB();
+
+    sqlite3* getCommandDB();
+
+    ~DatabaseManager() ;
 
 private:
-    sqlite3* m_db = nullptr;
+    sqlite3* commandDb = nullptr;
+    sqlite3* aiDb  = nullptr;
+
 
     DatabaseManager() = default;
 

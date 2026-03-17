@@ -11,23 +11,25 @@ link_directories(/usr/local/lib)
 
 # ========== 源文件列表 ==========
 set(SRC_FILES
-    text/sql_test.cpp
+    # text/sql_test.cpp
+    text/comand_test.cpp
     # text/text.cpp
 
     #========== 业务层 ==========
 
     business_layer/lobby/lobby_service.cpp  #大厅
     business_layer/safety/safety_service.cpp
-    # business_layer/command/command_service.cpp
+    business_layer/command/command_service.cpp
     business_layer/timer.cpp 
 
     business_layer/command/mqtt/protocol.cpp
     business_layer/command/mqtt/mqtt_service.cpp
     business_layer/command/mqtt_command.cpp
+    business_layer/command/command_object.cpp   
 
     #========== 数据层 ==========
-
-
+    data_layer/command/command_object.cpp
+    data_layer/command/command_dao.cpp
 
 
     #========== 表现层 ==========
@@ -40,6 +42,7 @@ set(SRC_FILES
     #========== 工具 ==========
     common/log/log.cpp
     common/sqlite/sqlite3.c
+    common/sqlite/database_manager.cpp
     # common/sqlite/shell.c //命令行工具的源码
     # main.cpp  # 补充：main函数文件（如果存在，必须添加）
 )

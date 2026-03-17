@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 #include "business_layer/lobby/lobby_object.h"
-
+#include "data_layer/command/command_object.h"
+#include <vector>
+class CommandEntity;
 enum class CommandState{
 
 	STATE_IDLE,  //空闲
@@ -26,23 +28,34 @@ enum class CommandType
 
 class Command {
 public:
-	Command(std::string id, CommandType type, std::string devId)
-        : cmdId(std::move(id)), cmdType(type), deviceId(std::move(devId)),
-          cmdState(CommandState::STATE_PENDING) {}
-
-	~Command();
+	Command(std::string id, CommandType type, std::string devId);
+        
+    
+	~Command() = default;
 
     //1.打开电磁阀命令
-    Command createOperateSolenoid(SolenoidValveOperation& solenoid);
+    static Command createOperateSolenoid(SolenoidValveOperation& solenoid);
 
     //2.下载历史视频命令
-    Command createHistoricalVideo(DownloadHistoricalVideo& download);
+    static Command createHistoricalVideo(DownloadHistoricalVideo& download);
 
-    static int increaseCommandId();
+    
 
     std::string getCmdId() const;
+    CommandType getCmdType() const;
+    CommandState getCmdState() const;
+    std::string getDeviceId() const;
+    std::string getCmdContent() const;
+    long long getCreateTime() const;
+    long long getExecuteTime() const;
 
+    void setCmdState(CommandState state);
 private:
+    //创建cmdId;
+    std::string createCmdId();//CMD_20260317_001 这样的
+private:
+    
+
 	std::string cmdId;
 	CommandType cmdType;
 	CommandState cmdState;
@@ -53,8 +66,13 @@ private:
 };
 
 class DeviceCommands{
+public:    
+    DeviceCommands() = default;
+    ~DeviceCommands() = default;
+    
+private:
 
-
+    std::vector<CommandEntity> commmands;
 
 
 };

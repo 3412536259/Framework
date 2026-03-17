@@ -2,6 +2,7 @@
 #include <nlohmann/json.hpp>
 #include "common/erro_code.h"
 #include <optional>
+using namespace json = nlohmann::json;
 template <typename T>
 class LobbyResult{
 public:
@@ -23,21 +24,28 @@ public:
 
 class DeviceStatusQuery{
 public:
-    explicit DeviceStatusQuery(const nlohmann::json& j){
+    explicit DeviceStatusQuery(const json& j){
         // 从JSON对象中提取查询参数并初始化成员变量
         // 例如：
-        // cameraId = j.at("cameraId").get<std::string>();
-        // timestamp = j.at("timestamp").get<std::string>();
+       
     }
 
+    static DeviceStatusQuery createMqttObject(const json& j);
+
+    static DeviceStatusQuery createHttpObject(const json& j);
 
     bool isValid() const {
         // 实现查询参数的验证逻辑，例如检查必需的字段是否存在，值是否在合理范围内等
         return true; // 返回true表示查询有效，false表示无效
     } 
-private:
+
+
     
 
+
+
+private:
+    
 };
 class SensorQuery {
 
@@ -121,7 +129,15 @@ class DoorLockOperation {
 
 };
 class SolenoidValveOperation {
+public:
 
+
+private:
+    std::string deviceId;
+    std::string cmd;
+    std::string sensorId;
+    std::string cameraId;
+    std::string nvrId;
 };
 class TrolleyOperation {
 

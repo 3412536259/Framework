@@ -3,7 +3,7 @@
 #include "business_layer/command/command_object.h"
 #include <mutex>
 #include "common/sqlite/database_manager.h"
-#include "common/sqlite/sqlite3.h"
+
 
 
 class ICommandDao{
@@ -29,7 +29,7 @@ public:
 class CommandDao : public ICommandDao{
 
 public:
-    CommandDao(sqlite* db):m_db(db){}
+    CommandDao(sqlite3* db):m_db(db){}
 
     ~CommandDao();
 
@@ -46,7 +46,7 @@ public:
 
 private:
 
-    sqlite* m_db;
+    sqlite3* m_db;
     std::mutex m_mutex;
 
 private:

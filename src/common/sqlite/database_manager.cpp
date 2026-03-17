@@ -1,23 +1,35 @@
 #include "common/sqlite/database_manager.h"
 
-bool DatabaseManager::init(const std::string& dbFile)
-{   
-    if(m_db != nullptr) return true;
 
-    if(sqlite3_open(dbFile.c_str(), &m_db) != SQLITE_OK)
-        return false;
+
+DatabaseManager& DatabaseManager::instance() {
+    static DatabaseManager instance;
+    return instance;
+}
+
+
+bool DatabaseManager::init(const std::string& folderPath)
+{   
+    sqlite3_open((folderPath + "/command.db").c_str(), &commandDb);
+    sqlite3_open((folderPath + "/ai.db").c_str(), &aiDb);
+    // sqlite3_open((folderPath + "/log.db").c_str(), &logDb);
+    // sqlite3_open((folderPath + "/config.db").c_str(), &configDb);
 
     return true;
 }
 
-sqlite3* DatabaseManager::getDB()
+sqlite3* DatabaseManager::getAIDB()
 {
-    return m_db;
+    return aiDb;
+}
+sqlite3* DatabaseManager::getCommandDB(){
+    return commandDb;
 }
 
 
 DatabaseManager:: ~DatabaseManager()
 {
-    if(m_db)
-        sqlite3_close(m_db);
+    if(aiDb) sqlite3_close(aiDb);
+
+    if(commandDb) sqlite3_close(commandDb);
 }
