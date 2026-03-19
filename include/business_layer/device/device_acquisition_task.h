@@ -14,7 +14,7 @@ class DeviceAcquisitionTask {
                               const GPIODeviceAcquisitionTask& gpioDeviceAcquisitionTask);
         ~DeviceAcquisitionTask();
 
-        const std::vector< std::unique_ptr<AcquisitionTask> >& getTasks() const ;
+        const std::vector< std::unique_ptr<AcquisitionTask> > getTasks() const ;
 
     private:
 
