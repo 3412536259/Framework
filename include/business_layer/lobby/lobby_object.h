@@ -2,7 +2,7 @@
 #include <nlohmann/json.hpp>
 #include "common/erro_code.h"
 #include <optional>
-using namespace json = nlohmann::json;
+using json = nlohmann::json;
 template <typename T>
 class LobbyResult{
 public:
@@ -130,14 +130,17 @@ class DoorLockOperation {
 };
 class SolenoidValveOperation {
 public:
-
-
+    SolenoidValveOperation(const json& j);
+    ~SolenoidValveOperation() = default;
+    const std::string& getDeviceId() const;
+    const std::string& getCmd() const;
 private:
     std::string deviceId;
     std::string cmd;
     std::string sensorId;
     std::string cameraId;
     std::string nvrId;
+    std::string reqSource;
 };
 class TrolleyOperation {
 

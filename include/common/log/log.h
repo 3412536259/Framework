@@ -4,44 +4,56 @@
 #include <string>
 #include <fstream>
 #include <ctime>
+#include <atomic>
+#include "common/log/log_queue.h"
+#include "common/log/log_sink.h"
+class ILogger {
+public:
+    virtual ~ILogger() = default;
 
-enum class LogLevel{
-    DEBUG,
-    INFO,
-    WARNING,
-    ERROR,
+    virtual void log(LogLevel level, const std::string& message) = 0;
+
+    virtual void setLogLevel(LogLevel level) = 0;
 };
 
-class Logger{
-public:    
-    //获取单例实例
-    static Logger& getInstance();
-    //禁止拷贝构造和赋值操作
-    Logger(const Logger&) = delete;
-    Logger& operator=(const Logger&) = delete;
-    //设置日志文件路径
-    void setLogPath(const std::string& log_path);
-    //设置日志级别
-	void setLogLevel(LogLevel level);
-    //写入日志
-    void log(LogLevel level, const std::string& message);
+
+class AsyncLogger : public ILogger {
+public:
+    AsyncLogger(std::shared_ptr<ILogQueue> queue);
+
+    ~AsyncLogger();
+
+    void log(LogLevel level, const std::string& message) override;
+
+    void setLogLevel(LogLevel level) override;
+
+    // 添加输出目标（未来支持多个）
+    void addSink(std::shared_ptr<ILogSink> sink);
+
+    // 启动 / 停止
+    void start();
+    void stop();
 
 private:
-    Logger();
-    ~Logger();
+    void worker();  // 后台线程
 
-    std::string getCurrentTime() const;
+private:
+    std::shared_ptr<ILogQueue> m_queue;
 
-    std::string logLevelToString(LogLevel level) const;
+    std::vector<std::shared_ptr<ILogSink>> m_sinks;
 
-    std::ofstream logFile;
-    std::string logPath;
-	LogLevel currentLogLevel = LogLevel::INFO;
+    std::thread m_workerThread;
+    std::atomic<bool> m_running{false};
+
+    LogLevel m_level = LogLevel::INFO;
 };
 
+
 // 日志宏定义（简化日志调用）
-#define LOG_INFO(msg) Logger::getInstance().log(LogLevel::INFO, msg)
-#define LOG_WARNING(msg) Logger::getInstance().log(LogLevel::WARNING, msg)
-#define LOG_ERROR(msg) Logger::getInstance().log(LogLevel::ERROR, msg)
-#define LOG_DEBUG(msg) Logger::getInstance().log(LogLevel::DEBUG, msg)
+#define LOG_DEBUG(msg) LoggerManager::instance().getLogger("work")->log(LogLevel::DEBUG, msg)
+#define LOG_INFO(msg) LoggerManager::instance().getLogger("work")->log(LogLevel::INFO, msg)
+#define LOG_WARNING(msg) LoggerManager::instance().getLogger("work")->log(LogLevel::WARNING, msg)
+#define LOG_ERROR(msg) LoggerManager::instance().getLogger("work")->log(LogLevel::ERROR, msg)
+
+
 #endif

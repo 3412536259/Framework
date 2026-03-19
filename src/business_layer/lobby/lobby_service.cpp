@@ -1,4 +1,6 @@
 #include "business_layer/lobby/lobby_service.h"
+#include "business_layer/lobby/lobby_object.h"
+
 //public
  LobbyService::LobbyService(ISafetyService& safetyService, ICommandService& commandService, ITimer & timer )/* IDeviceService& deviceService, IDetectionService& detectionService */
     :  m_safetykService(safetyService), m_commandService(commandService),m_Timer(timer) /* ,m_deviceService(deviceService),  m_detectionService(detectionService) */
@@ -83,16 +85,35 @@ LobbyResult<SensorQuery> LobbyService::operateSolenoidValve(const SolenoidValveO
     if (!auth)return LobbyResult<SensorQuery>::Error(ErrorCode::Code::AUTH_PERMISSION_DENIED);
     // 打开电磁阀的逻辑 
     //1.去device服务里面去验证这个设备的状态是否可用
+
+
     //2.命令服务创建命令
     //3.命令调用命令服务，加入到命令服务的接口
     //4.打开电磁阀
-    //5.根据返回值进行更改命令的状态
+    //5.根据返回值进行更改命令的状态  
+    // try {
+        // 3️⃣ 构建命令（✅ 正确方式）
+        Command cmd = Command::createOperateSolenoid(operation);
 
-    //1.正确
-    return LobbyResult<SensorQuery>::Ok(SensorQuery());
-    //2.错误
-    // return LobbyResult<SensorQuery>::Error(ErrorCode::Code::SERVER_INTERNAL_ERROR);
-    //3.异常错误
+        // 4️⃣ 下发命令
+        m_commandService.executeCommand(cmd);
+
+
+
+        // 5️⃣ 返回结果
+        // SolenoidValveOperationResult result;
+        // result.cmdId = cmd.getCmdId();
+
+        // return LobbyResult<SensorQuery>::Ok();
+    // }
+    // catch (const std::exception& e) {
+        return LobbyResult<SensorQuery>::Error(
+            ErrorCode::Code::SERVER_INTERNAL_ERROR
+        );
+    // }
+      
+
+    
 }
 //private
 void LobbyService::TimingProcessing(){

@@ -113,6 +113,9 @@ set(SRC_FILES
 
     #========== 工具 ==========
     common/log/log.cpp
+    common/log/log_sink.cpp
+    common/log/log_queue.cpp
+    common/log/log_manager.cpp
     common/sqlite/sqlite3.c
     common/sqlite/database_manager.cpp
     # common/sqlite/shell.c //命令行工具的源码

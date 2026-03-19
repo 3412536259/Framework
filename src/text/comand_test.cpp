@@ -4,6 +4,7 @@
 #include "business_layer/command/mqtt_command.h"
 #include "business_layer/command/mqtt/mqtt_service.h"
 #include "business_layer/command/command_service.h"
+#include "common/log/log_manager.h"
 // 全局标志：控制程序是否继续运行
 bool g_running = true;
 
@@ -24,6 +25,14 @@ int main(int argc, char* argv[]) {
     signal(SIGINT, signalHandler);
     signal(SIGTERM, signalHandler);
 
+
+    auto queue = std::make_shared<BlockingQueue>();
+    auto logger = std::make_shared<AsyncLogger>(queue);
+    auto fileSink = std::make_shared<FileSink>("log");
+    logger->addSink(fileSink);
+    logger->start();    
+    LoggerManager::instance().registerLogger("work", logger);
+    
     auto& dbManager = DatabaseManager::instance();
     if (!dbManager.init("/home/lin/Desktop/Framework/include/common/database"))
     {
@@ -70,6 +79,7 @@ int main(int argc, char* argv[]) {
     std::cout << ">>> 开始关闭服务..." << std::endl;
     // webService.stop(); // 停止Web服务
     mqttService.stop(); // 停止MQTT服务
+    logger->stop();
     std::cout << ">>> 服务已关闭，系统退出成功" << std::endl;
     std::cout << "=============================================" << std::endl;
 

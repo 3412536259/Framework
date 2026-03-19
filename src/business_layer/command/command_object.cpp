@@ -3,6 +3,25 @@
 
 
 
+SolenoidValveOperation::SolenoidValveOperation(const json& j){
+        deviceId  = j.value("deviceId", "");
+        cmd       = j.value("cmd", "");
+        sensorId  = j.value("sensorId", "");
+        cameraId  = j.value("cameraId", "");
+        nvrId     = j.value("nvrId", "");
+        reqSource = j.value("reqSource", "");
+}
+
+
+const std::string& SolenoidValveOperation::getDeviceId() const{
+    return deviceId;
+}
+const std::string& SolenoidValveOperation::getCmd() const{
+    return cmd;
+}
+
+
+
 Command::Command(std::string id, CommandType type, std::string devId)
         : cmdId(std::move(id)), cmdType(type), deviceId(std::move(devId)),
           cmdState(CommandState::STATE_IDLE) {auto now = std::chrono::system_clock::now();
@@ -10,7 +29,7 @@ Command::Command(std::string id, CommandType type, std::string devId)
                                               executeTime = 0; // 执行时间默认为0
 }
 
-Command Command::createOperateSolenoid(SolenoidValveOperation& solenoid) {
+Command Command::createOperateSolenoid(const SolenoidValveOperation& solenoid) {
 
     // std::string cmdId = "CMD_SOLENOID_" + std::to_string(id);
     Command cmd("0", CommandType::TYPE_SOLENOID_OPEN, "DEVICE_DEFAULT");
