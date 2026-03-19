@@ -1,5 +1,5 @@
 #include "business_layer/command/mqtt/mqtt_service.h"
-
+#include "common/log/log_manager.h"
 
 #include "business_layer/command/mqtt_command.h"
 #include "business_layer/command/controller.h"
@@ -147,15 +147,16 @@ void MqttService::handlePacket(const MqttPacket& packet){
         {
             std::cout << "MQTT Connected!\n";
             // ✅ 在这里订阅所有主题
-            subscribe(boxId + "OPERATE_PLC_WITH_VERIFY_TOPIC");//电磁阀
-            subscribe(boxId + "UPDATE_CONFIG_TOPIC");//配置更新
-            subscribe(boxId + "GET_ALL_DEVICE_STATUS_TOPI");   //设备的状态
+            subscribe( OPERATE_PLC_WITH_VERIFY_TOPIC);//电磁阀
+            subscribe( UPDATE_CONFIG_TOPIC);//配置更新
+            subscribe( GET_ALL_DEVICE_STATUS_TOPIC);   //设备的状态
             break;
         }
         case MqttPacketType::PUBLISH:
         {   
-            std::cout << "recv topic: " << packet.topic << std::endl;
+            // std::cout << "recv topic: " << packet.topic << std::endl;
             std::cout << "payload: " << packet.payload << std::endl;
+            LOG_INFO("mqtt有效载荷"+packet.payload);
             dispatcher.handleMqtt(packet.topic, packet.payload);
             break;
         }

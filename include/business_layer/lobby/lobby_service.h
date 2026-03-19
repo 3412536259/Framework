@@ -1,10 +1,9 @@
 #pragma once 
 class ICommandService;
 
-#include "lobby_object.h"
 #include "business_layer/timer.h"
 #include "business_layer/safety/safety_service.h"
-
+#include "business_layer/command/command_service.h"
 // #include "business_layer/device/device_service.h"
 
 class ILobbyService {

@@ -34,7 +34,7 @@ public:
 	~Command() = default;
 
     //1.打开电磁阀命令
-    static Command createOperateSolenoid(SolenoidValveOperation& solenoid);
+    static Command createOperateSolenoid(const SolenoidValveOperation& solenoid);
 
     //2.下载历史视频命令
     static Command createHistoricalVideo(DownloadHistoricalVideo& download);

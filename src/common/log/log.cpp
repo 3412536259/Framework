@@ -3,82 +3,74 @@
 #include <iomanip>
 #include <sstream>
 
-Logger::Logger() : logFile() {
-    // 默认日志路径：项目根目录下的log文件夹
-    logPath = "./log/smartPatrol_nvr.log";
-    // 创建log文件夹（若不存在）
-    system(("mkdir -p " + logPath.substr(0, logPath.find_last_of('/'))).c_str());
-    // 打开日志文件（追加模式）
-    logFile.open(logPath, std::ios::out | std::ios::app);
-    if (!logFile.is_open()) {
-        std::cerr << "Failed to open log file: " << logPath << std::endl;
+AsyncLogger::AsyncLogger(std::shared_ptr<ILogQueue> queue)
+    : m_queue(queue)
+{
+}
+
+AsyncLogger::~AsyncLogger() {
+    stop();
+}
+
+void AsyncLogger::start() {
+    if (m_running) return;
+
+    m_running = true;
+    m_workerThread = std::thread(&AsyncLogger::worker, this);
+}
+
+void AsyncLogger::stop() {
+    if (!m_running) return;
+
+    m_running = false;
+    // 通知队列退出（如果你队列支持的话）
+    if (m_queue) {
+        m_queue->notifyAll();  // 需要你在 BlockingQueue 里实现
+    }
+    if (m_workerThread.joinable()) {
+        m_workerThread.join();
     }
 }
 
-Logger::~Logger() {
-    if (logFile.is_open()) {
-        logFile.close();
-    }
+void AsyncLogger::setLogLevel(LogLevel level) {
+    m_level = level;
 }
 
-Logger& Logger::getInstance() {
-    static Logger instance; // 静态局部变量，确保仅初始化一次
-    return instance;
+void AsyncLogger::addSink(std::shared_ptr<ILogSink> sink) {
+    m_sinks.push_back(sink);
 }
 
-void Logger::setLogPath(const std::string& log_path) {
-    if (logFile.is_open()) {
-        logFile.close();
-    }
-    logPath = log_path;
-    // 创建日志路径文件夹（若不存在）
-    size_t lastSlashPos = logPath.find_last_of('/');
-    if (lastSlashPos != std::string::npos) {
-        std::string dirPath = logPath.substr(0, lastSlashPos);
-        system(("mkdir -p " + dirPath).c_str());
-    }
-    // 重新打开日志文件
-    logFile.open(logPath, std::ios::out | std::ios::app);
-    if (!logFile.is_open()) {
-        std::cerr << "Failed to open log file: " << logPath << std::endl;
-    }
+void AsyncLogger::log(LogLevel level, const std::string& message) {
+    if (level < m_level) return;
+    LogMessage msg;
+    msg.level = level;
+    msg.message = message;
+    msg.timestamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    msg.threadId = std::this_thread::get_id();
+
+    m_queue->push(msg);
 }
+void AsyncLogger::worker() {
+    while (m_running) {
+        LogMessage msg;
 
-void Logger::log(LogLevel level, const std::string& message) {
-    if (level < currentLogLevel) {
-        return; // 当前日志级别过低，忽略日志
-	}
+        // 阻塞等待
+        if (!m_queue->pop(msg)) {
+            continue; // 队列被唤醒但没数据
 
-    std::string timeStr = getCurrentTime();
-    std::string levelStr = logLevelToString(level);
-    std::string logMsg = "[" + timeStr + "] [" + levelStr + "] " + message + "\n";
+        }
 
-    // 输出到控制台
-    std::cout << logMsg;
-    // 写入日志文件
-    if (logFile.is_open()) {
-        logFile << logMsg;
-        logFile.flush(); // 强制刷新缓冲区，确保日志实时写入
+        // 分发给所有 sink
+        for (auto& sink : m_sinks) {
+            sink->write(msg);
+        }
     }
-}
 
-std::string Logger::getCurrentTime() const {
-    std::time_t now = std::time(nullptr);
-    std::tm* tmNow = std::localtime(&now);
-    std::stringstream ss;
-    ss << std::put_time(tmNow, "%Y-%m-%d %H:%M:%S");
-    return ss.str();
-}
-
-std::string Logger::logLevelToString(LogLevel level) const {
-    switch (level) {
-        case LogLevel::INFO:
-            return "INFO";
-        case LogLevel::WARNING:
-            return "WARNING";
-        case LogLevel::ERROR:
-            return "ERROR";  
-        default:
-            return "UNKNOWN";
+    // ⭐ 退出前 flush 剩余日志（非常关键）
+    LogMessage msg;
+    while (m_queue->pop(msg)) {
+        for (auto& sink : m_sinks) {
+            sink->write(msg);
+        }
     }
 }
