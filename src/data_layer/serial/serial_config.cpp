@@ -11,7 +11,7 @@ SerialConfig::SerialConfig(int baudRate,
 
 }
 
-speed_t SerialConfig::getBaudRate() {
+speed_t SerialConfig::getBaudRate() const{
   switch (baudRate_)
   {
     case 9600: return B9600;
@@ -26,7 +26,7 @@ speed_t SerialConfig::getBaudRate() {
 void SerialConfig::setPlcDataBits(struct termios& tty ) {
   tty.c_cflag &= ~CSIZE;
 
-  switch(bits) {
+  switch( dataBits_ ) {
       case 5:
           tty.c_cflag |= CS5;
           break;
@@ -44,20 +44,20 @@ void SerialConfig::setPlcDataBits(struct termios& tty ) {
 }
 
 void SerialConfig::setPlcStopBits(struct termios& tty) {
-  if(bits == 2)
+  if( stopBits_ == 2)
     tty.c_cflag |= CSTOPB;
   else
-    ty.c_cflag &= ~CSTOPB;
+    tty.c_cflag &= ~CSTOPB;
 }
 
 void SerialConfig::setPlcParity(struct termios& tty) {
   tty.c_cflag &= ~PARENB;
   tty.c_cflag &= ~PARODD;
 
-  if(parity == "even") {
+  if( parity_ == "even") {
     tty.c_cflag |= PARENB;
   }
-  else if(parity == "odd") {
+  else if(parity_ == "odd") {
     tty.c_cflag |= PARENB;
     tty.c_cflag |= PARODD;
   }

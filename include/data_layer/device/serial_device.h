@@ -23,6 +23,6 @@ class SerialDevice : public Device{
         // std::string slaveAddr_;
         // //寄存器地址
         // std::string regAddr_;
-}
+};
 
 #endif

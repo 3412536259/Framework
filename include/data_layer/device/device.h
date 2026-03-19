@@ -16,11 +16,11 @@ class Device {
 
         virtual std::unique_ptr<DeviceStatus> getStatus() const = 0;
 
-        int getType() const { return type_;};
+        int getType() const { return type_;}
 
-        std::string getDeviceId() const return { return deviceId_;}
+        std::string getDeviceId() const { return deviceId_;}
 
-        std::string getName() const return { return name_;}
+        std::string getName() const { return name_;}
     private:
 
         //设备类型

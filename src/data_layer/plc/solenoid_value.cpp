@@ -1,24 +1,20 @@
 #include <unistd.h>
 #include "solenoid_value.h"
 
-SolenoidValue::SolenoidValue() {
-
-}
-
 SolenoidValue::SolenoidValue(const int type,
                              const std::string& deviceId,
                              const std::string& name,
                              const std::string& bindSerialPort,
                              const std::string& slaveAddr,
-                             const std::string& plcId_,
-                             const std::string& plcPort_,
-                             const std::string& regAddr_) 
-    : Plcdevice(type,deviceId,name,bindSerialPort,slaveAddr), 
+                             const std::string& plcId,
+                             const std::string& plcPort,
+                             const std::string& regAddr) 
+    : PlcDevice(type,deviceId,name,bindSerialPort,slaveAddr), 
       plcId_(plcId),plcPort_(plcPort),regAddr_(regAddr) {
 
 }
 
-SolenoidStatus SolenoidValue::getStatus() const {
+std::unique_ptr<DeviceStatus> SolenoidValue::getStatus() const {
 
 }
 
@@ -77,25 +73,23 @@ SolenoidStatus SolenoidValue::queryStatus(int serialPortStatus) {
 
   if (sent != frame.size()) {
     //perror("电磁阀状态查询指令发送失败");
-    return false;
+    return SolenoidStatus();
   }
 
   // cout << "电磁阀状态查询指令已发送：";
 
   unsigned char recvBuf[256];
   ssize_t len = read(serialPortStatus, recvBuf, sizeof(recvBuf));
-  if(len <= 0) return new SolenoidStatus(getDeviceId(),0,getName(),"UNKNOW","UNKNOW");
+  if(len <= 0) return SolenoidStatus(getDeviceId(),0,getName(),"UNKNOW","UNKNOW");
      
   // 解析响应：第3字节为数据长度，第4字节bit0表示状态（1=开启，0=关闭）
   if (len >= 4) {
     if (recvBuf[3] & 0x01) {
-      return new SolenoidStatus(getDeviceId(),0,getName(),"ONLINE","OPEN");
+      return SolenoidStatus(getDeviceId(),0,getName(),"ONLINE","OPEN");
     } else {
-        return new SolenoidStatus(getDeviceId(),0,getName(),"ONLINE","CLOSED");
+        return SolenoidStatus(getDeviceId(),0,getName(),"ONLINE","CLOSED");
       }
-  } else  return new SolenoidStatus(getDeviceId(),0,getName(),"UNKNOW","UNKNOW"); 
-   
-  return true;
+  } else  return SolenoidStatus(getDeviceId(),0,getName(),"UNKNOW","UNKNOW"); 
 }
 
 std::array<uint8_t,8> SolenoidValue::buildOpenCommand() {
@@ -152,7 +146,7 @@ std::array<uint8_t,8> SolenoidValue::buildCloseCommand() {
 std::array<uint8_t,8> SolenoidValue::buildQueryStatusCommand() {
   std::array<uint8_t,8> frame;
 
-  frame[0] = std::stoi(getSlaveAddr(),nullptr,16);
+  frame[0] = std::stoi(this -> getSlaveAddr(),nullptr,16);
   frame[1] = 0x01;
 
   uint8_t high,low;
@@ -169,10 +163,14 @@ std::array<uint8_t,8> SolenoidValue::buildQueryStatusCommand() {
 
 
 void SolenoidValue::buildCoilAddress(uint8_t& high,uint8_t& low) {
-  int port = std::stoi(plcPort_, nullptr, 16);
-  uint16_t address = 0x0500 + port;
-  high = (address >> 8) & 0xFF;
-  low = address & 0xFF;
+  // int port = std::stoi(regAddr_, nullptr, 16);
+  // uint16_t address = 0x0500 + port;
+  // high = (address >> 8) & 0xFF;
+  // low = address & 0xFF;
+  int value = std::stoi( regAddr_ ,nullptr,16);
+  uint16_t regAddr = static_cast<uint16_t>(value);
+  high = ( regAddr >> 8) & 0xFF;
+  low = regAddr & 0xFF;
 }
 
 uint16_t SolenoidValue::buildCalcCRC(const uint8_t* data, size_t length) {
@@ -185,7 +183,7 @@ uint16_t SolenoidValue::buildCalcCRC(const uint8_t* data, size_t length) {
       if(crc & 0x0001) {
         crc >>= 1;
         crc ^= 0xA001;
-      } else crc >> =1;
+      } else crc >>= 1;
     }
   }
   return crc;
