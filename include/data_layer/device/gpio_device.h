@@ -23,7 +23,7 @@ class GPIODevice : public Device {
         virtual ~GPIODevice() = default;    
 
         int getPin() { return pin_; }
-        std::string getDirection() return { direction_; }
+        std::string getDirection() { return direction_; }
     
     private:
         int gpioGroup_;

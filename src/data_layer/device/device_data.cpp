@@ -1,17 +1,34 @@
-#include "device_data.h"
+#include "data_layer/device/device_data.h"
 
-DeviceData::DeviceData(int type,const SolenoidStatus solenoidStatus,const SolenoidRealTimeData solenoidRealTimeData) 
-    : type(type), solenoidStatus(solenoidStatus), solenoidRealTimeData(solenoidRealTimeData) {
+DeviceData::DeviceData(int type,const SolenoidStatus solenoidStatus) 
+    : type(type), solenoidStatus_(solenoidStatus){
 
 }
 
-DeviceData::DeviceData(int type,const Sensorstatus sensorStatus,const SensorRealTimeData sensorRealTimeData) 
-    : type(type), sensorStatus(sensorStatus), sensorRealTimeData(sensorRealTimeData) {
+DeviceData::DeviceData(int type,const TempHumidSensorStatus sensorStatus) 
+    : type(type), sensorStatus_(sensorStatus) {
 
 }
 
 DeviceData::DeviceData(int type,const CameraStatus cameraStatus) 
-    : type(type), cameraStatus(cameraStatus) {
+    : type(type), cameraStatus_(cameraStatus) {
+
+}
+
+DeviceData::DeviceData(int type,const DoorLockStatus doorLockStatus) 
+    : type(type), doorLockStatus_(doorLockStatus) {
+
+}
+DeviceData::DeviceData(int type,const InfraredSensorStatus infraredSensorStatus) 
+    : type(type), infraredSensorStatus_(infraredSensorStatus) {
+
+}
+DeviceData::DeviceData(int type,const PlcSmokeDetectorStatus smokeDetectorStatus) 
+    : type(type), smokeDetectorStatus_(smokeDetectorStatus) {
+
+}
+DeviceData::DeviceData(int type,const PlcWaterLevelSensorStatus waterLevelSensorStatus) 
+    :type(type), waterLevelSensorStatus_(waterLevelSensorStatus) {
 
 }
 
@@ -20,21 +37,27 @@ int DeviceData::getType() const {
 }
 
 SolenoidStatus DeviceData::getSolenoidStatus() const {
-    return solenoidStatus;
+    return solenoidStatus_;
 }
+ 
 
-SolenoidRealTimeData DeviceData::getSolenoidRealTimeData() const {
-    return solenoidRealTimeData;
+TempHumidSensorStatus DeviceData::getSensorStatus() const {
+    return sensorStatus_;
 }   
-
-SensorStatus DeviceData::getSensorStatus() const {
-    return sensorStatus;
-}   
-
-SensorRealTimeData DeviceData::getSensorRealTimeData() const {
-    return sensorRealTimeData;
-}
 
 CameraStatus DeviceData::getCameraStatus() const {
-    return cameraStatus;
+    return cameraStatus_;
+}
+
+DoorLockStatus DeviceData::getDoorLockStatus() const {
+    return doorLockStatus_;
+}
+InfraredSensorStatus DeviceData::getInfraredSensorStatus() const {
+    return infraredSensorStatus_;
+}
+PlcSmokeDetectorStatus DeviceData::getPlcSmokeDetectorStatus() const {
+    return smokeDetectorStatus_;
+}
+PlcWaterLevelSensorStatus DeviceData::getPlcWaterLevelSensorStatus() const {
+    return waterLevelSensorStatus_;
 }

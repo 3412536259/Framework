@@ -1,7 +1,7 @@
-#include "sensor_status.h"
+#include "temp_humid_sensor_status.h"
 
 
-SensorStatus::SensorStatus(const std::string& deviceId,
+TempHumidSensorStatus::TempHumidSensorStatus(const std::string& deviceId,
                            const int type,
                            const std::string& name,
                            const Status& status,

@@ -1,14 +1,14 @@
-#ifndef SENSOR_H
-#define SENSOR_H
+#ifndef TEMP_HUMID_SENSOR_H
+#define TEMP_HUMID_SENSOR_H
 
 #include <string>
-#include "sensor_status.h"
-#include "serial_direct_device.h"
-#include "serial_config.h"
-class SerialDirectSensor : SerialDirectDevice {  
+#include "data_layer/sensor/temp_humid_sensor_status.h"
+#include "data_layer/device/serial_direct_device.h"
+#include "data_layer/serial/serial_config.h"
+class TempHumidSensor : public SerialDirectDevice {  
     public:
-        SerialDirectSensor() = default;
-        SerialDirectSensor(int type,
+        TempHumidSensor() = default;
+        TempHumidSensor(int type,
                const std::string& deviceId,
                const std::string& name,
                const std::string& bindSerialPort,
@@ -16,9 +16,11 @@ class SerialDirectSensor : SerialDirectDevice {
                const std::string& regAddr,
                const int readRegs,
                SerialConfig serialConfig);
-        ~SerialDirectSensor();
+        ~TempHumidSensor();
 
-        SensorStatus readSensorData();
+        std::unique_ptr<DeviceStatus> getStatus() const ;
+
+        TempHumidSensorStatus readSensorData();
         //打开串口
         bool connect();
         bool disconnect();

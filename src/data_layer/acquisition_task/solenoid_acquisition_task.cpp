@@ -1,9 +1,8 @@
-#include "solenoid_acquisition_task.h"
+#include "data_layer/acquisition_task/solenoid_acquisition_task.h"
 
 SolenoidAcquisitionTask::SolenoidAcquisitionTask(int type, int sampleIntervalSec) 
     : AcquisitionTask(type, sampleIntervalSec)
 {
-    _nextAcquisitionTime = std::chrono::steady_clock::now();
 }
 SolenoidAcquisitionTask::~SolenoidAcquisitionTask() {
 

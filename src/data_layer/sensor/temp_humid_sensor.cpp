@@ -4,9 +4,9 @@
 #include <thread>
 #include <chrono>
 #include <cstring>
-#include "serial_direct_sensor.h"
+#include "data_layer/sensor/temp_humid_sensor.h"
 
-SerialDirectSensor::SerialDirectSensor(int type,
+TempHumidSensor::TempHumidSensor(int type,
                                        const std::string& deviceId,
                                        const std::string& name,
                                        const std::string& bindSerialPort,
@@ -20,29 +20,34 @@ SerialDirectSensor::SerialDirectSensor(int type,
 
 }
 
-SerialDirectSensor::~SerialDirectSensor() {
+TempHumidSensor::~TempHumidSensor() {
     
 }
-SensorStatus SerialDirectSensor::readSensorData() {
+
+std::unique_ptr<DeviceStatus> TempHumidSensor::getStatus() const  {
+  return std::make_unique<DeviceStatus> ();
+}
+
+TempHumidSensorStatus TempHumidSensor::readSensorData() {
   if(!connect()){
     //串口未打开
-    return SensorStatus();
+    return TempHumidSensorStatus();
   }
   auto command = buildReadDataCommand();
   
   if( !sendData(command)){
     //发送指令失败
-    return SensorStatus();
+    return TempHumidSensorStatus();
   }
 
   
 
   unsigned char recvBuf[256];
-  int len =recviceData(recvBuf,sizeof(recvBuf));
+  int len =recviceData(recvBuf,sizeof(recvBuf),100);
   
   if(len < 0) {
     //未收到响应 超时
-    return SensorStatus();
+    return TempHumidSensorStatus();
   }
 
   int slaveAddr = std::stoul(this->getSlaveAddr().substr(2),nullptr,16);
@@ -50,30 +55,30 @@ SensorStatus SerialDirectSensor::readSensorData() {
     float humidity = ( (recvBuf[3] << 8) | recvBuf[4] ) / 10.0;
     float tempature = ((recvBuf[5] << 8) | recvBuf[6] ) / 10.0;
   
-    return SensorStatus(this->getDeviceId(),1,this->getName(),Status::NORMAL,humidity,tempature);
+    return TempHumidSensorStatus(this->getDeviceId(),1,this->getName(),Status::NORMAL,humidity,tempature);
   } else if( len == 0) {
     //未收到响应
-    SensorStatus(this->getDeviceId(),1,this->getName(),Status::ABNORMAL,0.0f,0.0f);
+    TempHumidSensorStatus(this->getDeviceId(),1,this->getName(),Status::ABNORMAL,0.0f,0.0f);
   } else {
     //响应异常
-    SensorStatus(this->getDeviceId(),1,this->getName(),Status::ABNORMAL,0.0f,0.0f);
+    TempHumidSensorStatus(this->getDeviceId(),1,this->getName(),Status::ABNORMAL,0.0f,0.0f);
   }
 }
 
-bool SerialDirectSensor::sendData(const std::array<uint8_t,8>& data) {
+bool TempHumidSensor::sendData(const std::array<uint8_t,8>& data) {
   ssize_t sent = write(serialPortStatus_,data.data(),data.size());
   tcdrain(serialPortStatus_);
   return true;
 }
 
-int SerialDirectSensor::recviceData(unsigned char* buf,int bufSize,int waitTime) {
+int TempHumidSensor::recviceData(unsigned char* buf,int bufSize,int waitTime) {
   std::this_thread::sleep_for(std::chrono::milliseconds(waitTime));
   memset(buf,0,sizeof(buf));
   int len = read(serialPortStatus_,buf,bufSize);
   return len;
 }
 
-std::array<uint8_t,8> SerialDirectSensor::buildReadDataCommand() {
+std::array<uint8_t,8> TempHumidSensor::buildReadDataCommand() {
   std::array<uint8_t,8> frame;
   frame[0] = std::stoi(this->getSlaveAddr(),nullptr,16);
   //功能码
@@ -90,7 +95,7 @@ std::array<uint8_t,8> SerialDirectSensor::buildReadDataCommand() {
   return frame;
 }
 
-bool SerialDirectSensor::connect() {
+bool TempHumidSensor::connect() {
   if(serialPortStatus_ >= 0) {
     //串口已打开
     return true;
@@ -108,7 +113,7 @@ bool SerialDirectSensor::connect() {
   //串口初始化成功，并打开
 }
 
-bool SerialDirectSensor::disconnect() {
+bool TempHumidSensor::disconnect() {
   if(serialPortStatus_ >= 0) {
     close(serialPortStatus_);
     serialPortStatus_ = -1;
@@ -116,7 +121,7 @@ bool SerialDirectSensor::disconnect() {
   }
 }
 
-bool SerialDirectSensor::configureSerial() {
+bool TempHumidSensor::configureSerial() {
   struct termios tty;
   if(tcgetattr(serialPortStatus_,&tty) != 0) {
     //配置失败
@@ -150,14 +155,14 @@ bool SerialDirectSensor::configureSerial() {
   return true;
 }
 
-void SerialDirectSensor::splitRegAddress(uint8_t& high,uint8_t& low) {
+void TempHumidSensor::splitRegAddress(uint8_t& high,uint8_t& low) {
   int value = std::stoi(this->getRegAddr(),nullptr,16);
   uint16_t regAddr = static_cast<uint16_t>(value);
   high = ( regAddr >> 8) & 0xFF;
   low = regAddr & 0xFF;
 }
 
-uint16_t SerialDirectSensor::buildCalcCRC(const uint8_t* data,size_t length) {
+uint16_t TempHumidSensor::buildCalcCRC(const uint8_t* data,size_t length) {
   uint16_t crc = 0xFFFF;
 
   for(size_t i = 0; i < length; ++i){

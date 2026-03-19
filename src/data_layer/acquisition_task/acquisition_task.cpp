@@ -1,9 +1,9 @@
-#include "acquisition_task.h"
+#include "data_layer/acquisition_task/acquisition_task.h"
 
 AcquisitionTask::AcquisitionTask(int type, int sampleIntervalSec)
     : _type(type), _sampleIntervalSec(sampleIntervalSec)
 {
-
+    _nextAcquisitionTime = std::chrono::steady_clock::now();
 }
 
 AcquisitionTask::~AcquisitionTask() {

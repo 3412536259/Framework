@@ -2,7 +2,7 @@
 #define SOLENOID_STATUS_H
 
 #include <string>
-#include "device_status.h"
+#include "data_layer/device/device_status.h"
 class SolenoidStatus : public DeviceStatus{
 
     public:
@@ -14,6 +14,7 @@ class SolenoidStatus : public DeviceStatus{
         SolenoidStatus() = default;
         ~SolenoidStatus() override = default;
 
+        bool isOpen();
         // std::string getStatus() const;
 
     private:

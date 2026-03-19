@@ -2,8 +2,8 @@
 #define CAMERA_STATUS_H
 
 #include <string>
-#include  "camera_utils.h"
-#include "device_status.h"
+#include "data_layer/camera/camera_utils.h"
+#include "data_layer/device/device_status.h"
 class CameraStatus : public DeviceStatus{
     public:
         CameraStatus(const std::string& deviceId,
