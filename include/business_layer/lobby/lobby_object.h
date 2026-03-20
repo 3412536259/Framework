@@ -2,6 +2,7 @@
 #include <nlohmann/json.hpp>
 #include "common/erro_code.h"
 #include <optional>
+
 using json = nlohmann::json;
 template <typename T>
 class LobbyResult{
@@ -21,7 +22,7 @@ public:
         return {false,code,ErrorCode::getMessage(code),std::nullopt};
     } 
 };
-
+#include "data_layer/plc/solenoid_value_info.h"
 class DeviceStatusQuery{
 public:
     explicit DeviceStatusQuery(const json& j){
@@ -137,9 +138,7 @@ public:
 private:
     std::string deviceId;
     std::string cmd;
-    std::string sensorId;
-    std::string cameraId;
-    std::string nvrId;
+    std::string plcId;
     std::string reqSource;
 };
 class TrolleyOperation {

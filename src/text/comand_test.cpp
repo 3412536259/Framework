@@ -42,13 +42,17 @@ int main(int argc, char* argv[]) {
     CommandDao commandDao(dbManager.getCommandDB());
 
     NetworkService* networkService = nullptr; // 先不绑定
+
+    
     
     SafetyService safetyService;
+
+    // DeviceService deviceService;
     
     CommandService commandService(networkService,commandDao);
 
     Timer timer;
-    LobbyService lobbyService(safetyService,commandService,timer);
+    LobbyService lobbyService(safetyService,commandService /*,deviceService*/,timer);
 
     MQTTCommandController mqttController = MQTTCommandController(lobbyService);
     HTTPCommandController httpController = HTTPCommandController(lobbyService);

@@ -5,7 +5,7 @@ class ICommandService;
 #include "business_layer/safety/safety_service.h"
 #include "business_layer/command/command_service.h"
 // #include "business_layer/device/device_service.h"
-
+#include "data_layer/plc/solenoid_value_info.h"
 class ILobbyService {
 public:
     // ================= 查询 =================
@@ -22,7 +22,7 @@ public:
 
     // ================= 控制 =================
     // virtual LobbyResult operateDoorLock(const DoorLockOperation& operation) = 0;//控制门锁
-    virtual LobbyResult<SensorQuery> operateSolenoidValve(const SolenoidValveOperation& operation) = 0;//控制电磁阀
+    virtual LobbyResult<DeviceOperationResult> operateSolenoidValve(const SolenoidValveOperation& operation) = 0;//控制电磁阀
     // virtual LobbyResult controlTrolleyRotation(const TrolleyOperation& operation) = 0;//控制小车旋转
     // virtual LobbyResult controlRotateCamera(const CameraOperation& operation) = 0;//控制旋转摄像头
 
@@ -43,7 +43,7 @@ public:
 
 class LobbyService : public ILobbyService{
 public:
-    LobbyService(ISafetyService& safetyService, ICommandService& commandService, ITimer& timer );/*  IDeviceService& deviceService,IDetectionService& detectionService */
+    LobbyService(ISafetyService& safetyService, ICommandService& commandService/*, IDeviceService&  deviceService*/,ITimer& timer );/*  IDeviceService& deviceService,IDetectionService& detectionService */
     ~LobbyService() = default;  
 
    // ================= 查询 =================
@@ -59,7 +59,7 @@ public:
 
     // ================= 控制 =================
     // LobbyResult operateDoorLock(const DoorLockOperation& operation) override;
-    LobbyResult<SensorQuery> operateSolenoidValve(const SolenoidValveOperation& operation) override;
+    LobbyResult<DeviceOperationResult> operateSolenoidValve(const SolenoidValveOperation& operation) override;
     // LobbyResult controlTrolleyRotation(const TrolleyOperation& operation) override;
     // LobbyResult controlRotateCamera(const CameraOperation& operation) override;
 
