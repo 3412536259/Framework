@@ -55,13 +55,13 @@ TempHumidSensorStatus TempHumidSensor::readSensorData() {
     float humidity = ( (recvBuf[3] << 8) | recvBuf[4] ) / 10.0;
     float tempature = ((recvBuf[5] << 8) | recvBuf[6] ) / 10.0;
   
-    return TempHumidSensorStatus(this->getDeviceId(),1,this->getName(),Status::NORMAL,humidity,tempature);
+    return TempHumidSensorStatus(this->getDeviceId(),1,this->getName(),TempHumidStatus::NORMAL,humidity,tempature);
   } else if( len == 0) {
     //未收到响应
-    TempHumidSensorStatus(this->getDeviceId(),1,this->getName(),Status::ABNORMAL,0.0f,0.0f);
+    return TempHumidSensorStatus(this->getDeviceId(),1,this->getName(),TempHumidStatus::ABNORMAL,0.0f,0.0f);
   } else {
     //响应异常
-    TempHumidSensorStatus(this->getDeviceId(),1,this->getName(),Status::ABNORMAL,0.0f,0.0f);
+    return TempHumidSensorStatus(this->getDeviceId(),1,this->getName(),TempHumidStatus::ABNORMAL,0.0f,0.0f);
   }
 }
 
@@ -111,9 +111,10 @@ bool TempHumidSensor::connect() {
   }
 
   //串口初始化成功，并打开
+  return true;
 }
 
-bool TempHumidSensor::disconnect() {
+void TempHumidSensor::disconnect() {
   if(serialPortStatus_ >= 0) {
     close(serialPortStatus_);
     serialPortStatus_ = -1;

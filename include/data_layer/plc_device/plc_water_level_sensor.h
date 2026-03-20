@@ -1,8 +1,8 @@
 #ifndef PLC_WATER_LEVEL_SENSOR_H
 #define PLC_WATER_LEVEL_SENSOR_H
 
-#include "plc_device.h"
-#include "plc_water_level_sensor_status.h"
+#include "data_layer/plc/plc_device.h"
+#include "data_layer/plc_device/plc_water_level_sensor_status.h"
 class PlcWaterLevelSensor : public PlcDevice {
     public:
         PlcWaterLevelSensor();

@@ -1,4 +1,4 @@
-#include "door_lock_acquisition_task.h"
+#include "data_layer/acquisition_task/door_lock_acquisition_task.h"
 
 DoorLockAcquisitionTask::DoorLockAcquisitionTask(int type, int sampleIntervalSec)
                             : AcquisitionTask(type,sampleIntervalSec){

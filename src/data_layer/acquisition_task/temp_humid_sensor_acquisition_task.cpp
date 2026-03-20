@@ -5,9 +5,6 @@ TempHumidSensorAcquisitionTask::TempHumidSensorAcquisitionTask(int type, int sam
 {
 }
 
-TempHumidSensorAcquisitionTask::~TempHumidSensorAcquisitionTask() {
-
-}
 
 bool TempHumidSensorAcquisitionTask::isAcquisitionData() {
     auto now = std::chrono::steady_clock::now();

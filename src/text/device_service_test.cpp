@@ -37,13 +37,13 @@ int main(int argc, char* argv[]) {
 
     PlcInstance plcInsatnce = PlcInstance(plcDevice,SerialConfig(1,1,1,"11"),solenoidvalues,infraredSensors,smokeDetectors,waterLevelSensors);
     std::unordered_map<std::string, PlcInstance> plcMap;
-    plcMap["plc_001"] = plcInsatnce;
+    plcMap.emplace("plc_001",plcInsatnce);
     PlcInstanceSet plcInstances = PlcInstanceSet(plcMap);
 
     
     std::unordered_map<std::string,std::unique_ptr<Camera> >  cameras;
-    cameras["camera_00x"] = std::make_unique<Camera> ("camera_00x","camera","");
-    CameraInstanceSet cameraInstances = CameraInstanceSet(cameras);
+    cameras.emplace("camera_00x",std::make_unique<Camera> ("camera_00x","camera","") );
+    CameraInstanceSet cameraInstances(std::move(cameras) );
 
     std::vector<DoorLock> doorLocks;
     doorLocks.reserve(5);
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
     sensors.push_back(TempHumidSensor(1,"1","1","1","1","1",1,SerialConfig()));
     SerialDirectDeviceInstanceSet serialInstances = SerialDirectDeviceInstanceSet(sensors);
 
-    DeviceManageService deviceManageService = DeviceManageService(plcInstances,cameraInstances,gpioInstanceSet,serialInstances);
+    DeviceManageService deviceManageService(std::move(plcInstances),std::move(cameraInstances),std::move(gpioInstanceSet),std::move(serialInstances));
 
     DeviceStatusCache deviceStatusCache = DeviceStatusCache();
 

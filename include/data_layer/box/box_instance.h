@@ -2,6 +2,7 @@
 #define BOX_INSTANCE_H
 
 #include "data_layer/box/box_device_param.h"
+#include "data_layer/box/box_config_result.h"
 class BoxInstance {
     public:
         BoxInstance() = default;

@@ -1,4 +1,4 @@
-#include "serial_config.h"
+#include "data_layer/serial/serial_config.h"
 
 SerialConfig::SerialConfig(int baudRate,
                            int dataBits,

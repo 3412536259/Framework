@@ -13,7 +13,7 @@ DeviceAcquisitionTask::~DeviceAcquisitionTask() {
 
 }
 
-const std::vector< std::unique_ptr<AcquisitionTask> >&  DeviceAcquisitionTask::getTasks() const {
+const std::vector< std::unique_ptr<AcquisitionTask> >  DeviceAcquisitionTask::getTasks() const {
     std::vector<std::unique_ptr<AcquisitionTask> > tasks;
     tasks.reserve(20);
     tasks.push_back(std::make_unique<TempHumidSensorAcquisitionTask> ( serialDirectDeviceTask_.getTempHumidSensorTask()) );

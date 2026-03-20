@@ -1,7 +1,7 @@
 #ifndef CAMERA_REAL_TIME_FRAME_H
 #define CAMERA_REAL_TIME_FRAME_H
 
-#include "camera_utils.h"
+#include "data_layer/camera/camera_utils.h"
 
 class CameraRealTimeFrame {
     public:

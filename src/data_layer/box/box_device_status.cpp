@@ -1,12 +1,12 @@
-#include "box_device_status.h"
+#include "data_layer/box/box_device_status.h"
 
-BoxDeviceStatus::BoxDeviceStatus(const std::vector<SolenoidStatus>& solenoidStatuses,
-                                 const std::vector<CameraStatus>& cameraStatuses,
-                                 const std::vector<TempHumidSensorStatus>& sensorStatuses,
-                                 const std::vector<InfraredSensorStatus>& infraredSensorStatuses,
-                                 const std::vector<PlcSmokeDetectorStatus>& smokeDetectorStatuses,
-                                 const std::vector<PlcWaterLevelSensorStatus>& waterSensorStatuses,
-                                 const std::vector<DoorLockStatus>& doorLockStatuses)
+BoxDeviceStatus::BoxDeviceStatus(const std::vector<SolenoidStatus> solenoidStatuses,
+                                 const std::vector<CameraStatus> cameraStatuses,
+                                 const std::vector<TempHumidSensorStatus> sensorStatuses,
+                                 const std::vector<InfraredSensorStatus> infraredSensorStatuses,
+                                 const std::vector<PlcSmokeDetectorStatus> smokeDetectorStatuses,
+                                 const std::vector<PlcWaterLevelSensorStatus> waterSensorStatuses,
+                                 const std::vector<DoorLockStatus> doorLockStatuses)
     : solenoidStatuses_(solenoidStatuses),
       cameraStatuses_(cameraStatuses),
       sensorStatuses_(sensorStatuses),

@@ -2,8 +2,9 @@
 #define RADAR_POINT_CLOUD_H
 
 class RadarPointCloud {
-    RadarPointCloud() = default;
-    ~RadarPointCloud();
+    public:
+        RadarPointCloud() ;
+        ~RadarPointCloud();
 };
 
 #endif

@@ -1,4 +1,4 @@
-#include "infrared_sensor_acquisition_task.h"
+#include "data_layer/acquisition_task/infrared_sensor_acquisition_task.h"
 
 InfraredSensorAcquisitionTask::InfraredSensorAcquisitionTask(int type, int sampleIntervalSec) 
                                 : AcquisitionTask(type,sampleIntervalSec){

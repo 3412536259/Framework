@@ -1,8 +1,8 @@
 #ifndef PLC_SMOKE_DETECTOR_H
 #define PLC_SMOKE_DETECTOR_H
 
-#include "plc_device.h"
-#include "plc_smoke_detector_status.h"
+#include "data_layer/plc/plc_device.h"
+#include "data_layer/plc_device/plc_smoke_detector_status.h"
 class PlcSmokeDetector : public PlcDevice {
     public:
         PlcSmokeDetector() = default;

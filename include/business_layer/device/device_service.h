@@ -23,14 +23,14 @@ class IDeviceService{
         virtual DeviceOperationResult closeSolenoidValue( const PlcDeviceInfo& info) = 0;
         
         //小车控制
-        virtual DeviceOperationResult controlCarRotation( const CarControl& car) = 0;
+        // virtual DeviceOperationResult controlCarRotation( const CarControl& car) = 0;
         
         //摄像头
         virtual CameraRealTimeFrame getCameraRealTimeFrame( const CameraInfo& info) = 0;
         virtual CameraHistoryVideo viewCameraHistoryVideo( const CameraInfo& info) = 0;
 
         //雷达
-        virtual RadarPointCloud getRadarPointCloudData( const RadarInfo& info) = 0;
+        // virtual RadarPointCloud getRadarPointCloudData( const RadarInfo& info) = 0;
 
         //盒子配置
         // virtual BoxConfigResult configBoxDeviceParams( const BoxDeviceParam& params) = 0;
@@ -59,14 +59,14 @@ class DeviceService : public IDeviceService{
         DeviceOperationResult unlockDoorLock(const GPIODeviceSimpleInfo& info);
         
         //小车控制
-        DeviceOperationResult controlCarRotation( const CarControl& car) override;
+        // DeviceOperationResult controlCarRotation( const CarControl& car) override;
         
         //摄像头
         CameraRealTimeFrame getCameraRealTimeFrame( const CameraInfo& info) override;
         CameraHistoryVideo viewCameraHistoryVideo( const CameraInfo& info) override;
 
         //雷达
-        RadarPointCloud getRadarPointCloudData( const RadarInfo& info) override;
+        // RadarPointCloud getRadarPointCloudData( const RadarInfo& info) override;
 
         //盒子配置
         // BoxConfigResult configBoxDeviceParams( const BoxDeviceParam& params) override;

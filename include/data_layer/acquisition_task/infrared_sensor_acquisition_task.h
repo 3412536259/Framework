@@ -1,7 +1,7 @@
 #ifndef INFRARED_SENSOR_ACQUISITION_TASK_H
 #define INFRARED_SENSOR_ACQUISITION_TASK_H
 
-#include "acquisition_task.h"
+#include "data_layer/acquisition_task/acquisition_task.h"
 class InfraredSensorAcquisitionTask : public AcquisitionTask{
 
     public:

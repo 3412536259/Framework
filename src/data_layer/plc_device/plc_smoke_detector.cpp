@@ -1,5 +1,5 @@
-#include "plc_smoke_detector.h"
-#include "plc_smoke_detector_status.h"
+#include "data_layer/plc_device/plc_smoke_detector.h"
+#include "data_layer/plc_device/plc_smoke_detector_status.h"
 
 #include <cstring>
 #include <thread>

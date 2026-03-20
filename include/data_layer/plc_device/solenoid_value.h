@@ -2,9 +2,8 @@
 #define SOLENOID_VALUE_H
 
 #include <string>
-#include "plc_device.h"
-#include "solenoid_status.h"
-#include "solenoid_real_time_data.h"
+#include "data_layer/plc/plc_device.h"
+#include "data_layer/plc_device/solenoid_status.h"
 class SolenoidValue : public PlcDevice{
     public:
         SolenoidValue() = default;
@@ -23,7 +22,7 @@ class SolenoidValue : public PlcDevice{
         std::string getPlcId() const ;
         // SolenoidRealTimeData getRealTimeData();
 
-        bool open(int serialPortStatus);
+        bool open(int serialPortStatus);    
         bool close(int serialPortStatus);
         SolenoidStatus queryStatus(int serialPortStatus);
 

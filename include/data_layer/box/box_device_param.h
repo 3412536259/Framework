@@ -1,9 +1,9 @@
 #ifndef BOX_DEVICE_PARAM_H
 #define BOX_DEVICE_PARAM_H
 
-#include "box_config.h"
-#include "camera_config.h"
-#include "solenoid_config.h"
+#include "data_layer/box/box_config.h"
+#include "data_layer/camera/camera_config.h"
+#include "data_layer/plc_device/solenoid_config.h"
 #include <vector>
 
 class BoxDeviceParam {

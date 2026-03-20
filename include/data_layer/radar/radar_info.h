@@ -2,8 +2,10 @@
 #define RADAR_INFO_H
 
 class RadarInfo {
-    RadarInfo() = default;
-    ~RadarInfo();
+    public:
+
+        RadarInfo() ;
+        ~RadarInfo();
 };
 
 #endif

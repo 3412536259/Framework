@@ -1,4 +1,4 @@
-#include "solenoid_status.h"
+#include "data_layer/plc_device/solenoid_status.h"
 
 SolenoidStatus::SolenoidStatus(const std::string& deviceId,
                                const int type,

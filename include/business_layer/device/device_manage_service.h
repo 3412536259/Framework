@@ -25,11 +25,11 @@ class IDeviceManageService {
         virtual DeviceOperationResult openSolenoidValue(const PlcDeviceInfo& info) = 0;
         virtual DeviceOperationResult closeSolenoidValue(const PlcDeviceInfo& info) = 0;
 
-        virtual DeviceOperationResult controlCarRotation(const CarControl& car) = 0;
+        // virtual DeviceOperationResult controlCarRotation(const CarControl& car) = 0;
 
         virtual CameraHistoryVideo getCameraHistoryVideo(const CameraInfo& info) = 0;
 
-        virtual RadarPointCloud getRadarPointCloudData(const RadarInfo& info) = 0;
+        // virtual RadarPointCloud getRadarPointCloudData(const RadarInfo& info) = 0;
 
         // virtual BoxConfigResult BoxDeviceParamsConfig( const BoxDeviceParam& params) = 0;
 
@@ -41,12 +41,16 @@ class IDeviceManageService {
 class DeviceManageService : public IDeviceManageService { 
     public:
         DeviceManageService() = default ;
-        ~DeviceManageService() = default;
+        ~DeviceManageService() ;
         DeviceManageService(
-                            PlcInstanceSet plcInstances,
-                            CameraInstanceSet cameraInstances,
-                            GPIODeviceInstanceSet gpioInstanceSet,
-                            SerialDirectDeviceInstanceSet serialInstances);
+                            PlcInstanceSet&& plcInstances,
+                            CameraInstanceSet&& cameraInstances,
+                            GPIODeviceInstanceSet&& gpioInstanceSet,
+                            SerialDirectDeviceInstanceSet&& serialInstances);
+        DeviceManageService(DeviceManageService&&) = default;
+        DeviceManageService& operator=(DeviceManageService&&) = default;
+        DeviceManageService(const DeviceManageService&) = delete;
+        DeviceManageService& operator=(const DeviceManageService&) = delete;
         BoxDeviceStatus getDeviceStatus() override;
         // BoxDeviceRealTimeData getDeviceRealTimeData() override;
 
@@ -56,11 +60,11 @@ class DeviceManageService : public IDeviceManageService {
         DeviceOperationResult lockDoorLock(const GPIODeviceSimpleInfo& info);
         DeviceOperationResult unlockDoorLock(const GPIODeviceSimpleInfo& info);
 
-        DeviceOperationResult controlCarRotation(const CarControl& car) override;
+        // DeviceOperationResult controlCarRotation(const CarControl& car) override;
 
         CameraHistoryVideo getCameraHistoryVideo(const CameraInfo& info) override;
 
-        RadarPointCloud getRadarPointCloudData(const RadarInfo& info) override;
+        // RadarPointCloud getRadarPointCloudData(const RadarInfo& info) override;
 
         // BoxConfigResult boxDeviceParamsConfig( const BoxDeviceParams& params) override;
 

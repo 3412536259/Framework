@@ -42,7 +42,7 @@ std::vector<SolenoidStatus> PlcInstanceSet::getPlcSolenoidStatusList() {
     }
     solenoidStatusList.reserve(listSize);
     for( auto& [key,plc] : plcMap_) {
-        const auto& list = plc.getInfraredSensorStatusList();
+        const auto& list = plc.getSolenoidStatusList();
         solenoidStatusList.insert(solenoidStatusList.end(),list.begin(),list.end());
     }
     return solenoidStatusList;
@@ -102,6 +102,7 @@ std::vector<std::unique_ptr<DeviceData> > PlcInstanceSet::acquisitionPlcSolenoid
             solenoidDataList.push_back( std::make_unique<DeviceData>(0, status) );
         }
     }
+    return solenoidDataList;
 }
 std::vector<std::unique_ptr<DeviceData> > PlcInstanceSet::acquisitionPlcInfraredSensorData() {
     std::vector<std::unique_ptr<DeviceData> > infraredDataList;
@@ -117,6 +118,7 @@ std::vector<std::unique_ptr<DeviceData> > PlcInstanceSet::acquisitionPlcInfrared
             infraredDataList.push_back( std::make_unique<DeviceData>(4, status) );
         }
     }
+    return infraredDataList;
 }
 std::vector<std::unique_ptr<DeviceData> > PlcInstanceSet::acquisitionPlcSmokeDetectorData() {
     std::vector<std::unique_ptr<DeviceData> > smokeDetectorDataList;
@@ -132,6 +134,7 @@ std::vector<std::unique_ptr<DeviceData> > PlcInstanceSet::acquisitionPlcSmokeDet
             smokeDetectorDataList.push_back( std::make_unique<DeviceData>(5, status) );
         }
     }
+    return smokeDetectorDataList;
 }
 std::vector<std::unique_ptr<DeviceData> > PlcInstanceSet::acquisitionPlcWaterLevelSensorData() {
     std::vector<std::unique_ptr<DeviceData> > waterLevelSensorDataList;
@@ -147,6 +150,7 @@ std::vector<std::unique_ptr<DeviceData> > PlcInstanceSet::acquisitionPlcWaterLev
             waterLevelSensorDataList.push_back( std::make_unique<DeviceData>(6, status) );
         }
     }
+    return waterLevelSensorDataList;
 }
 
 SolenoidStatus PlcInstanceSet::getPlcSolenoidStatus(const SolenoidValueInfo& info) {

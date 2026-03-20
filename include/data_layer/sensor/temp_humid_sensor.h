@@ -7,7 +7,6 @@
 #include "data_layer/serial/serial_config.h"
 class TempHumidSensor : public SerialDirectDevice {  
     public:
-        TempHumidSensor() = default;
         TempHumidSensor(int type,
                const std::string& deviceId,
                const std::string& name,
@@ -23,7 +22,7 @@ class TempHumidSensor : public SerialDirectDevice {
         TempHumidSensorStatus readSensorData();
         //打开串口
         bool connect();
-        bool disconnect();
+        void disconnect();
         // SensorStatus getStatus();
         // SensorRealTimeData getRealTimeData();
 

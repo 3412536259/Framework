@@ -1,4 +1,4 @@
-#include "camera_acquisition_task.h"
+#include "data_layer/acquisition_task/camera_acquisition_task.h"
 
 CameraAcquisitionTask::CameraAcquisitionTask(int type, int sampleIntervalSec)
     : AcquisitionTask(type, sampleIntervalSec)

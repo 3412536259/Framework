@@ -1,7 +1,7 @@
 #ifndef SERIAL_DIRECT_DEVICE_H
 #define SERIAL_DIRECT_DEVICE_H
 
-#include "serial_device.h"
+#include "data_layer/device/serial_device.h"
 class SerialDirectDevice : public SerialDevice{
     
     protected:
@@ -14,7 +14,6 @@ class SerialDirectDevice : public SerialDevice{
             : SerialDevice(type,deviceId,name,bindSerialPort),
               slaveAddr_(slaveAddr),
               regAddr_(regAddr) {}
-
     public:
         virtual ~SerialDirectDevice() = default;
 
