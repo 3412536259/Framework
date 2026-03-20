@@ -1,8 +1,8 @@
 #ifndef INFRARED_SENSOR_H
 #define INFRARED_SENSOR_H
 
-#include "plc_device.h"
-#include "infrared_sensor_status.h"
+#include "data_layer/plc/plc_device.h"
+#include "data_layer/plc_device/infrared_sensor_status.h"
 class InfraredSensor : public PlcDevice{
 
     public:

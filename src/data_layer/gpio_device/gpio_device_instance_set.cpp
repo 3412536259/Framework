@@ -1,4 +1,4 @@
-#include "gpio_device_instance_set.h"
+#include "data_layer/gpio_device/gpio_device_instance_set.h"
 
 GPIODeviceInstanceSet::GPIODeviceInstanceSet(std::vector<DoorLock> doorLocks) {
 
@@ -42,4 +42,6 @@ std::vector<std::unique_ptr<DeviceData> > GPIODeviceInstanceSet::acquisitionDoor
         DoorLockStatus status = doorLock.queryDoorLockStatus();
         doorLockDataList.push_back( std::make_unique<DeviceData> (3,status) );
     }
+
+    return doorLockDataList;
 }

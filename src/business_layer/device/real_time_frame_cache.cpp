@@ -1,10 +1,6 @@
-#include "real_time_frame_cache.h"
+#include "business_layer/device/real_time_frame_cache.h"
 
 RealTimeFrameCache::RealTimeFrameCache() {
-
-}
-
-RealTimeFrameCache::~RealTimeFrameCache() {
 
 }
 
@@ -13,9 +9,9 @@ void RealTimeFrameCache::updateCameraRealTimeFrame() {
 }
 
 CameraRealTimeFrame RealTimeFrameCache::getCameraRealTimeFrame( const CameraInfo& info) {
-    auto it = _cameraFrameMap.find(info.getCameraId());
+    auto it = _cameraFrameMap.find(info.getDeviceId());
     if(it == _cameraFrameMap.end() )
-        return new CameraRealTimeFrame();
+        return CameraRealTimeFrame();
 
-    return it -> sencond;
+    return it -> second;
 }

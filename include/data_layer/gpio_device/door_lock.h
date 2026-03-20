@@ -1,8 +1,8 @@
 #ifndef DOOR_LOCK_H
 #define DOOR_LOCK_H
 
-#include "gpio_output_device.h"
-#include "door_lock_status.h"
+#include "data_layer/device/gpio_output_device.h"
+#include "data_layer/gpio_device/door_lock_status.h"
 class DoorLock : public GPIOOutputDevice {
 
     public:

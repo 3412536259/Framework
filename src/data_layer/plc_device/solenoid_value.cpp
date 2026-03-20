@@ -1,5 +1,5 @@
 #include <unistd.h>
-#include "solenoid_value.h"
+#include "data_layer/plc_device/solenoid_value.h"
 
 SolenoidValue::SolenoidValue(const int type,
                              const std::string& deviceId,
@@ -15,7 +15,7 @@ SolenoidValue::SolenoidValue(const int type,
 }
 
 std::unique_ptr<DeviceStatus> SolenoidValue::getStatus() const {
-
+  return std::make_unique<DeviceStatus> ();
 }
 
 std::string SolenoidValue::getPlcId() const {

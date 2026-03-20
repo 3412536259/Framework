@@ -1,7 +1,7 @@
 #ifndef SERIAL_DEVICE_H
 #define SERIAL_DEVICE_H
 
-#include "device.h"
+#include "data_layer/device/device.h"
 class SerialDevice : public Device{
     protected:
         SerialDevice(int type,const std::string deviceId,const std::string name,const std::string bindSerialPort)

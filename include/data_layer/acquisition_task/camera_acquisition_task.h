@@ -1,7 +1,7 @@
 #ifndef CAMERA_ACQUISITION_TASK_H
 #define CAMERA_ACQUISITION_TASK_H
 
-#include "data_layer/device/acquisition_task.h"
+#include "data_layer/acquisition_task/acquisition_task.h"
 
 class CameraAcquisitionTask : public AcquisitionTask {
     public:

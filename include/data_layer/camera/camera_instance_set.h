@@ -12,12 +12,17 @@
 class CameraInstanceSet {
     public:
         CameraInstanceSet() = default;
-        CameraInstanceSet(const std::unordered_map<std::string, std::unique_ptr<Camera> >& cameras);
+        CameraInstanceSet(std::unordered_map<std::string, std::unique_ptr<Camera>>&& cameras);
         ~CameraInstanceSet();
+        CameraInstanceSet(CameraInstanceSet&&) = default;
+        CameraInstanceSet& operator=(CameraInstanceSet&&) = default;
 
-        std::vector<CameraStatus> getCameraStatusList() const;
+        CameraInstanceSet(const CameraInstanceSet&) = delete;
+        CameraInstanceSet& operator=(const CameraInstanceSet&) = delete;
 
-        CameraHistoryVideo getCameraHistoryVideo(const std::string& cameraId) const;
+        std::vector<CameraStatus> getCameraStatusList() ;
+
+        CameraHistoryVideo getCameraHistoryVideo(const std::string& cameraId) ;
 
         std::vector<std::unique_ptr<DeviceData> > acquisitionCameraData();
 

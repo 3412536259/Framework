@@ -1,7 +1,7 @@
 #ifndef GPIO_DEVICE_H
 #define GPIO_DEVICE_H
 
-#include "device.h"
+#include "data_layer/device/device.h"
 class GPIODevice : public Device {
 
     protected:

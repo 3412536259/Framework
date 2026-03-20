@@ -5,7 +5,7 @@
 class DeviceStatus {
 
     protected:
-        DeviceStatus() : type_(0) {}
+        
         DeviceStatus(const std::string& deviceId,
                      const int type,
                      const std::string& name)
@@ -16,6 +16,8 @@ class DeviceStatus {
     public:
         virtual ~DeviceStatus() = default;
 
+        DeviceStatus() : type_(0) {}
+        
         std::string getDeviceId() const {return deviceId_;}
 
         int getType() {return type_;}

@@ -54,9 +54,9 @@ DeviceOperationResult DeviceService::unlockDoorLock(const GPIODeviceSimpleInfo& 
     return deviceManageService_.unlockDoorLock(info);
 }
 
-DeviceOperationResult DeviceService::controlCarRotation( const CarControl& car) {
-    return deviceManageService_.controlCarRotation(car);
-}
+// DeviceOperationResult DeviceService::controlCarRotation( const CarControl& car) {
+//     return deviceManageService_.controlCarRotation(car);
+// }
 
 CameraRealTimeFrame DeviceService::getCameraRealTimeFrame( const CameraInfo& info) {
     return realTimeFrameCache_.getCameraRealTimeFrame(info);
@@ -66,9 +66,9 @@ CameraHistoryVideo DeviceService::viewCameraHistoryVideo( const CameraInfo& info
     return deviceManageService_.getCameraHistoryVideo(info);
 }
 
-RadarPointCloud DeviceService::getRadarPointCloudData( const RadarInfo& info) {
-    return deviceManageService_.getRadarPointCloudData(info);
-}
+// RadarPointCloud DeviceService::getRadarPointCloudData( const RadarInfo& info) {
+//     return deviceManageService_.getRadarPointCloudData(info);
+// }
 
 // BoxConfigResult DeviceService::configBoxDeviceParams( const BoxDeviceParam& params) {
 //     return deviceManageService_.boxDeviceParamsConfig(params);

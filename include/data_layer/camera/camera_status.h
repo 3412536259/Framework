@@ -9,7 +9,7 @@ class CameraStatus : public DeviceStatus{
         CameraStatus(const std::string& deviceId,
                      const int type,
                      const std::string& name,
-                     const Status& status);
+                     const CameraOnlineStatus& status);
         CameraStatus() = default;
         ~CameraStatus() override = default;
         // Status getStatus() const;
@@ -17,7 +17,7 @@ class CameraStatus : public DeviceStatus{
 
     private:
 
-        Status status_;
+        CameraOnlineStatus status_;
 
 };
 

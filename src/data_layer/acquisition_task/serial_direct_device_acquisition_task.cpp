@@ -1,4 +1,4 @@
-#include "serial_direct_device_acquisition_task.h"
+#include "data_layer/acquisition_task/serial_direct_device_acquisition_task.h"
 
 SerialDirectDeviceAcquisitionTask::SerialDirectDeviceAcquisitionTask(TempHumidSensorAcquisitionTask tempHumidSensorTask)
                                     : tempHumidSensorTask_(tempHumidSensorTask) {

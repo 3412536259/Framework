@@ -3,12 +3,12 @@
 #include <vector>
 
 DeviceManageService::DeviceManageService(
-                                         PlcInstanceSet plcInstances,
-                                         CameraInstanceSet cameraInstances,
-                                         GPIODeviceInstanceSet gpioInstanceSet,
-                                         SerialDirectDeviceInstanceSet serialInstances) 
-    :   plcInstances_(plcInstances),cameraInstances_(cameraInstances),
-        gpioInstanceSet_(gpioInstanceSet),serialInstances_(serialInstances) 
+                                         PlcInstanceSet&& plcInstances,
+                                         CameraInstanceSet&& cameraInstances,
+                                         GPIODeviceInstanceSet&& gpioInstanceSet,
+                                         SerialDirectDeviceInstanceSet&& serialInstances) 
+    :   plcInstances_(std::move(plcInstances)),cameraInstances_(std::move(cameraInstances)),
+        gpioInstanceSet_(std::move(gpioInstanceSet)),serialInstances_(std::move(serialInstances)) 
 {
 
 }
@@ -78,7 +78,7 @@ std::vector<std::unique_ptr<DeviceData> > DeviceManageService::deviceDataAcquisi
         case 4: return plcInstances_.acquisitionPlcInfraredSensorData();
         case 5: return plcInstances_.acquisitionPlcSmokeDetectorData();
         case 6: return plcInstances_.acquisitionPlcWaterLevelSensorData();
-       
+        default: return {};
     }
     
 }

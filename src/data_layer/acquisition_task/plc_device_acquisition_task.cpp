@@ -1,4 +1,4 @@
-#include "plc_device_acquisition_task.h"
+#include "data_layer/acquisition_task/plc_device_acquisition_task.h"
 
 PlcDeviceAcquisitionTask::PlcDeviceAcquisitionTask(const SolenoidAcquisitionTask& solenoidTask,
                                  const InfraredSensorAcquisitionTask& infraredSensorTask,

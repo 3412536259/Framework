@@ -11,14 +11,14 @@ class TempHumidSensorStatus : public DeviceStatus{
         TempHumidSensorStatus(const std::string& deviceId,
                      const int type,
                      const std::string& name,
-                     const Status& status,
+                     const TempHumidStatus& status,
                      float humidity,
                      float tempature);
         ~TempHumidSensorStatus() override = default;
     
     private:
 
-        Status status_;
+        TempHumidStatus status_;
         float humidity_;
         float tempature_;
 

@@ -27,7 +27,7 @@ class Camera {
     private:
         void pullKeyFrameLoop();
 
-        Status onlineStatus_ ;
+        CameraOnlineStatus onlineStatus_ ;
         std::string cameraId_;
         std::string name_;
         std::string rtspUrl_;

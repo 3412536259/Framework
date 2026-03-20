@@ -1,4 +1,4 @@
-#include "door_lock_status.h"
+#include "data_layer/gpio_device/door_lock_status.h"
 
 DoorLockStatus::DoorLockStatus(const std::string& deviceId,
                        const int type,

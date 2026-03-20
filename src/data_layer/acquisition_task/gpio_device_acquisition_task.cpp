@@ -1,4 +1,4 @@
-#include "gpio_device_acquisition_task.h"
+#include "data_layer/acquisition_task/gpio_device_acquisition_task.h"
 
 GPIODeviceAcquisitionTask::GPIODeviceAcquisitionTask(DoorLockAcquisitionTask doorLockTask)
                             : doorLockTask_(doorLockTask) {

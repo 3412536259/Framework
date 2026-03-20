@@ -2,8 +2,8 @@
 #define CAMERA_UTILS_H
 
 #include <libavutil/frame.h>
-
-enum class Status {
+#include <memory>
+enum class CameraOnlineStatus {
     OFFLINE,
     ONLINE
 };
@@ -11,6 +11,6 @@ enum class Status {
 struct FrameData {
     std::shared_ptr<AVFrame> frame;
     int64_t timestamp_ = 0;
-}
+};
 
 #endif

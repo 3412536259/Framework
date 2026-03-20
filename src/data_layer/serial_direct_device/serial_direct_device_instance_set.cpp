@@ -1,8 +1,8 @@
-#include "serial_direct_device_instance_set.h"
+#include "data_layer/serial_direct_device/serial_direct_device_instance_set.h"
 
 SerialDirectDeviceInstanceSet::SerialDirectDeviceInstanceSet(std::vector<TempHumidSensor> sensorList) {
     for(auto& sensor : sensorList) {
-        sensors_[sensor.getDeviceId()] = sensor;
+        sensors_.emplace(sensor.getDeviceId(),std::move(sensor));
     }
 }
 
@@ -25,4 +25,5 @@ std::vector<std::unique_ptr<DeviceData> > SerialDirectDeviceInstanceSet::acquisi
         TempHumidSensorStatus status = sensor.readSensorData();
         sensorDataList.push_back( std::make_unique<DeviceData> (1,status) );
     }
+    return sensorDataList;
 }
