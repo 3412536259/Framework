@@ -1,15 +1,20 @@
 #include <termios.h>
 #include <fcntl.h> 
 #include <unistd.h>
-#include "plc_instance.h"
+#include "data_layer/plc/plc_instance.h"
 
 PlcInstance::PlcInstance(const PlcDevice& plcDevice,
-                         const std::vector<SolenoidValue>& solenoidValues)
-                         : plcDevice_(plcDevice){
+                         const SerialConfig& serialConfig,
+                         const std::vector<SolenoidValue>& solenoidValues,
+                         const std::vector<InfraredSensor>& infraredSensors,
+                         const std::vector<PlcSmokeDetector>& smokeDetectors,
+                         const std::vector<PlcWaterLevelSensor>& waterLevelSensors)
+                         : plcDevice_(plcDevice),
+                           serialConfig_(serialConfig) {
 
 }
 
-bool PlcInstance::openSolenoidValue(const SolenoidValueInfo& info) {
+bool PlcInstance::openSolenoidValue(const PlcDeviceInfo& info) {
   auto it = solenoidMap_.find(info.getDeviceId());
 
   if(it == solenoidMap_.end()) {
@@ -19,7 +24,7 @@ bool PlcInstance::openSolenoidValue(const SolenoidValueInfo& info) {
   return solenoid.open(serialPortStatus_);  
 }
 
-bool PlcInstance::closeSolenoidValue(const SolenoidValueInfo& info) {
+bool PlcInstance::closeSolenoidValue(const PlcDeviceInfo& info) {
   auto it = solenoidMap_.find(info.getDeviceId());
 
   if(it == solenoidMap_.end()) {
@@ -28,6 +33,39 @@ bool PlcInstance::closeSolenoidValue(const SolenoidValueInfo& info) {
   SolenoidValue& solenoid = it -> second;
   return solenoid.close(serialPortStatus_);
 
+}
+
+std::vector<SolenoidStatus> PlcInstance::getSolenoidStatusList(){
+  std::vector<SolenoidStatus> statusList;
+  statusList.reserve(solenoidMap_.size());
+  for(auto& [key,solenoid] : solenoidMap_) {
+    statusList.push_back(solenoid.queryStatus(serialPortStatus_));
+  }
+  return statusList;
+}
+std::vector<InfraredSensorStatus> PlcInstance::getInfraredSensorStatusList(){
+  std::vector<InfraredSensorStatus> statusList;
+  statusList.reserve(infraredSensorMap_.size());
+  for(auto& [key,sensor] : infraredSensorMap_) {
+    statusList.push_back(sensor.queryStatus(serialPortStatus_));
+  }
+  return statusList;
+}
+std::vector<PlcSmokeDetectorStatus> PlcInstance::getSmokeDetectorStatusList()  {
+  std::vector<PlcSmokeDetectorStatus> statusList;
+  statusList.reserve(smokeDetectorMap_.size());
+  for(auto& [key,smokeDetector] : smokeDetectorMap_) {
+    statusList.push_back(smokeDetector.queryStatus(serialPortStatus_));
+  }
+  return statusList;
+}
+std::vector<PlcWaterLevelSensorStatus> PlcInstance::getWaterLevelStatusList(){
+  std::vector<PlcWaterLevelSensorStatus> statusList;
+  statusList.reserve(waterLevelSensorMap_.size());
+  for(auto& [key,waterLevelSensor] : waterLevelSensorMap_) {
+    statusList.push_back(waterLevelSensor.queryStatus(serialPortStatus_));
+  }
+  return statusList;
 }
 
 SolenoidStatus PlcInstance::getSolenoidValueStatus(const SolenoidValueInfo& info) {
@@ -57,6 +95,28 @@ PlcSmokeDetectorStatus PlcInstance::getSmokeDetectorStatus(const PlcDeviceInfo& 
     return PlcSmokeDetectorStatus();
   PlcSmokeDetector& smokeDetector = it -> second;
   return smokeDetector.queryStatus(serialPortStatus_);
+}
+
+PlcWaterLevelSensorStatus PlcInstance::getWaterLevelSensorStatus(const PlcDeviceInfo& info) {
+  auto it = waterLevelSensorMap_.find(info.getDeviceId());
+
+  if(it == waterLevelSensorMap_.end())
+    return PlcWaterLevelSensorStatus();
+  PlcWaterLevelSensor& waterLevelSensor = it -> second;
+  return waterLevelSensor.queryStatus(serialPortStatus_);
+}
+
+int PlcInstance::getSolenoidSensorNum(){
+  return solenoidMap_.size();
+}
+int PlcInstance::getInfraredSensorNum(){
+  return infraredSensorMap_.size();
+}
+int PlcInstance::getSmokeSensorNum(){
+  return smokeDetectorMap_.size();
+}
+int PlcInstance::getWaterLevelSensorNum() {
+  return waterLevelSensorMap_.size();
 }
 
 bool PlcInstance::connect() {

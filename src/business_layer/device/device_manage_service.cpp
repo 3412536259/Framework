@@ -1,13 +1,14 @@
-#include "device_manage_service.h"
-#include "solenoid_value.h"
+#include "business_layer/device/device_manage_service.h"
+// #include "solenoid_value.h"
 #include <vector>
 
-DeviceManageService::DeviceManageService(BoxInstance boxInstance,
-                                         SolenoidInstanceSet solenoidInstances,
+DeviceManageService::DeviceManageService(
+                                         PlcInstanceSet plcInstances,
                                          CameraInstanceSet cameraInstances,
-                                         SensorInstanceSet sensorInstances) 
-    :   boxInstance_(boxInstance),solenoidInstances_(solenoidInstances),
-        cameraInstances_(cameraInstances),sensorInstances_(sensorInstances) 
+                                         GPIODeviceInstanceSet gpioInstanceSet,
+                                         SerialDirectDeviceInstanceSet serialInstances) 
+    :   plcInstances_(plcInstances),cameraInstances_(cameraInstances),
+        gpioInstanceSet_(gpioInstanceSet),serialInstances_(serialInstances) 
 {
 
 }
@@ -17,35 +18,38 @@ DeviceManageService::~DeviceManageService() {
 }
 
 BoxDeviceStatus DeviceManageService::getDeviceStatus() {
-    const std::vector<SolenoidStatus> solenoidValues = solenoidInstanceSet_.getSolenoidStatusList();
-    const std::vector<CameraStatus> cameras = cameraInstanceSet_.getCameraStatusList();
-    const std::vector<SensorStatus> sensors = sensorInstanceSet_.getSensorStatusList();
+    const std::vector<SolenoidStatus> solenoidValues = plcInstances_.getPlcSolenoidStatusList();
+    const std::vector<InfraredSensorStatus> infraredSensorStatuses = plcInstances_.getPlcInfraredSensorStatusList();
+    const std::vector<PlcSmokeDetectorStatus> smokeDetectorStatuses = plcInstances_.getPlcSmokeDetectorStatusList();
+    const std::vector<PlcWaterLevelSensorStatus> waterSensores = plcInstances_.getPlcWaterLevelSensorStatusList();
+    const std::vector<CameraStatus> cameras = cameraInstances_.getCameraStatusList();
+    const std::vector<TempHumidSensorStatus> tempHumidSensors = serialInstances_.getSensorStatusList();
+    const std::vector<DoorLockStatus> doorLocks = gpioInstanceSet_.getDoorLockStatusList();
     // const std::vector<RadarStatus> radars = _radarInstanceSet.getRadars();
     // const std::vector<CarStatus> cars = _carInstanceSet.getCars();
 
-    return new BoxDeviceStatus(solenoidValues, cameras, sensors);
+    return BoxDeviceStatus(solenoidValues, cameras, tempHumidSensors,infraredSensorStatuses,smokeDetectorStatuses,waterSensores,doorLocks);
 }
 
-BoxDeviceRealTimeData DeviceManageService::getDeviceRealTimeData() {
-    const std::vector<SolenoidRealTimeData> solenoids = solenoidInstanceSet_.getSolenoidRealTimeDataList();
-    // const std::vector<CameraRealTimeData> cameras = _cameraInstanceSet.getCameraRealTimeDataList();
-    const std::vector<SensorRealTimeData> sensors = sensorInstanceSet_.getSensorRealTimeDataList();
-    // const std::vector<RadarRealTimeData> radars = _radarInstanceSet.getRadarRealTimeData();
-    // const std::vector<CarRealTimeData> cars = _carInstanceSet.getCarRealTimeData();
 
-    return new BoxDeviceRealTimeData(solenoids,sensors);
+
+DeviceOperationResult DeviceManageService::openSolenoidValue(const PlcDeviceInfo& info) {
+    if(plcInstances_.openPlcSolenoid(info)) return DeviceOperationResult(0,"打开成功"); 
+    return DeviceOperationResult(-1,"打开失败");
 }
 
-DeviceOperationResult DeviceManageService::openSolenoidValue( const SolenoidValueInfo& info) {
-    int result = solenoidInstanceSet_.openSolenoidValue(info);
-    if (result == 0 ) return new DeviceOperationResult(0,"打开成功"); 
-    return new DeviceOperationResult(result,"打开失败");
+DeviceOperationResult DeviceManageService::closeSolenoidValue(const PlcDeviceInfo& info) {
+    if(plcInstances_.closePlcSolenoid(info)) return DeviceOperationResult(0,"关闭成功");
+    return DeviceOperationResult(-1,"关闭失败");
 }
 
-DeviceOperationResult DeviceManageService::closeSolenoidValue( const SolenoidValueInfo& info) {
-    int result = solenoidInstanceSet_.closeSolenoidValue(info);
-    if( result == 0 ) return new DeviceOperationResult(0,"关闭成功");
-    return new DeviceOperationResult(result,"关闭失败");
+DeviceOperationResult DeviceManageService::lockDoorLock(const GPIODeviceSimpleInfo& info) {
+    if(gpioInstanceSet_.lockDoorLock(info)) return DeviceOperationResult(0,"上锁成功");
+    return DeviceOperationResult(-1,"上锁失败");
+}
+DeviceOperationResult DeviceManageService::unlockDoorLock(const GPIODeviceSimpleInfo& info) {
+    if(gpioInstanceSet_.unlockDoorLock(info)) return DeviceOperationResult(0,"解锁成功");
+    return DeviceOperationResult(-1,"解锁失败");
 }
 
 // DeviceOperationResult DeviceManageService::controlCarRotation( const CarControl& car) {
@@ -54,23 +58,27 @@ DeviceOperationResult DeviceManageService::closeSolenoidValue( const SolenoidVal
 // }
 
 CameraHistoryVideo DeviceManageService::getCameraHistoryVideo( const CameraInfo& info) {
-    return cameraInstanceSet_.getCameraHistoryVideo(info.getDeviceId());
+    return cameraInstances_.getCameraHistoryVideo(info.getDeviceId());
 }
 
 // RadarPointCloud DeviceManageService::getRadarPointCloudData( const RadarInfo& info) {
 //     return radarInstanceSet_.getRadarPointCloudData(info.getDeviceId());
 // }
 
-BoxConfigResult DeviceManageService::boxDeviceParamsConfig( const BoxDeviceParam& params) {
-    return boxInstance_.configBoxDeviceParams(params);
-}
+// BoxConfigResult DeviceManageService::boxDeviceParamsConfig( const BoxDeviceParam& params) {
+//     return boxInstance_.configBoxDeviceParams(params);
+// }
 
 std::vector<std::unique_ptr<DeviceData> > DeviceManageService::deviceDataAcquisition(int deviceType) {
-    if(deviceType == 0) {
-        return solenoidInstanceSet_.acquisitionSolenoidData();
-    }else if(deviceType == 1) {
-        return sensorInstanceSet_.acquisitionSensorData();
-    }else if(deviceType == 2) {
-        return cameraInstanceSet_.acquisitionCameraData();
+    switch(deviceType) {
+        case 0: return plcInstances_.acquisitionPlcSolenoidData();
+        case 1: return serialInstances_.acquisitionTempHumidSensorData();
+        case 2: return cameraInstances_.acquisitionCameraData();
+        case 3: return gpioInstanceSet_.acquisitionDoorLockData();
+        case 4: return plcInstances_.acquisitionPlcInfraredSensorData();
+        case 5: return plcInstances_.acquisitionPlcSmokeDetectorData();
+        case 6: return plcInstances_.acquisitionPlcWaterLevelSensorData();
+       
     }
+    
 }

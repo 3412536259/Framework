@@ -5,12 +5,12 @@
 class PlcDeviceInfo {
     public:
         PlcDeviceInfo() = default;
-        PlcDeviceInfo(std::string& plcId,
-                      std::string& deviceId);
+        PlcDeviceInfo(const std::string& plcId,
+                      const std::string& deviceId);
         ~PlcDeviceInfo() = default;
 
-        const std::string getPlcId() const;
-        const std::string getDeviceId() const;
+        const std::string& getPlcId() const;
+        const std::string& getDeviceId() const;
     
     private:
         std::string plcId_;

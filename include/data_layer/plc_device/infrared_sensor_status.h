@@ -1,8 +1,8 @@
 #ifndef INFRARED_SENSOR_STATUS_H
 #define INFRARED_SENSOR_STATUS_H
 
-#include "device_status.h"
-#include "sensor_types.h"
+#include "data_layer/device/device_status.h"
+#include "data_layer/sensor/sensor_types.h"
 class InfraredSensorStatus : public DeviceStatus {
 
     public:

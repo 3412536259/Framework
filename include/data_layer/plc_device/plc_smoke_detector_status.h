@@ -1,8 +1,8 @@
 #ifndef PLC_SMOKE_DETECTOR_STATUS_H
 #define PLC_SMOKE_DETECTOR_STATUS_H
 
-#include "device_status.h"
-#include "sensor_types.h"
+#include "data_layer/device/device_status.h"
+#include "data_layer/sensor/sensor_types.h"
 class PlcSmokeDetectorStatus : public DeviceStatus {
 
     public:

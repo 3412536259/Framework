@@ -36,7 +36,7 @@ class SolenoidValue : public PlcDevice{
         std::array<uint8_t,8> buildQueryStatusCommand();
 
         std::array<uint8_t,8> buildOpenCommand();
-        std::array<uint8_t,8> buildCloseCommand();
+        std::array<uint8_t,8> buildCloseCommand() ;
     
         std::string plcId_;
         std::string plcPort_;

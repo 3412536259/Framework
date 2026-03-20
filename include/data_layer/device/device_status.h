@@ -16,6 +16,8 @@ class DeviceStatus {
     public:
         virtual ~DeviceStatus() = default;
 
+        std::string getDeviceId() const {return deviceId_;}
+
         int getType() {return type_;}
     
     private:

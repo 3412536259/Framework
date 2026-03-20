@@ -7,7 +7,7 @@ class CarControl {
     public:
 
         CarControl() = default;
-        CarControl(const std::string& deviceId) const;
+        CarControl(const std::string& deviceId) ;
 
         const std::string& getDeviceId() const ;
     private:

@@ -1,8 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "camera_status.h"
-#include "camera_history_video.h"
+#include "data_layer/camera/camera_status.h"
+#include "data_layer/camera/camera_history_video.h"
 
 #include <string>
 #include <atomic>

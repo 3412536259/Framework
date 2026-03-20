@@ -13,6 +13,7 @@ link_directories(/usr/local/lib)
 set(SRC_FILES
     # text/sql_test.cpp
     text/comand_test.cpp
+    # text/device_service_test.cpp
     # text/text.cpp
 
     #========== 业务层 ==========
@@ -27,9 +28,80 @@ set(SRC_FILES
     business_layer/command/mqtt_command.cpp
     business_layer/command/command_object.cpp   
 
+    business_layer/device/device_acquisition_task.cpp
+    business_layer/device/device_manage_service.cpp
+    business_layer/device/device_service.cpp
+    business_layer/device/device_status_cache.cpp
+    business_layer/device/real_time_frame_cache.cpp
+
     #========== 数据层 ==========
     data_layer/command/command_object.cpp
     data_layer/command/command_dao.cpp
+
+    data_layer/acquisition_task/acquisition_task.cpp
+    data_layer/acquisition_task/door_lock_acquisition_task.cpp
+    data_layer/acquisition_task/gpio_device_acquisition_task.cpp
+    data_layer/acquisition_task/infrared_sensor_acquisition_task.cpp
+    data_layer/acquisition_task/infrared_sensor_acquisition_task.cpp
+    data_layer/acquisition_task/plc_device_acquisition_task.cpp
+    data_layer/acquisition_task/serial_direct_device_acquisition_task.cpp
+    data_layer/acquisition_task/smoke_detector_acquisition_task.cpp
+    data_layer/acquisition_task/solenoid_acquisition_task.cpp
+    data_layer/acquisition_task/water_level_sensor_acquisition_task.cpp
+    data_layer/acquisition_task/temp_humid_sensor_acquisition_task.cpp
+    data_layer/acquisition_task/camera_acquisition_task.cpp
+
+    data_layer/box/box_config_result.cpp
+    data_layer/box/box_device_status.cpp
+    data_layer/box/box_instance.cpp
+
+    
+    data_layer/camera/camera_history_video.cpp
+    data_layer/camera/camera_info.cpp
+    data_layer/camera/camera_instance_set.cpp
+    data_layer/camera/camera_real_time_frame.cpp
+    data_layer/camera/camera_status.cpp
+    data_layer/camera/camera.cpp
+
+    data_layer/car/car_control.cpp
+
+    data_layer/device/device_data.cpp
+    data_layer/device/device_operation_result.cpp
+
+    data_layer/gpio_device/door_lock_status.cpp
+    data_layer/gpio_device/door_lock.cpp
+    data_layer/gpio_device/gpio_device_instance_set.cpp
+    data_layer/gpio_device/gpio_device_simple_info.cpp
+
+    
+    data_layer/plc/plc_device.cpp
+    data_layer/plc/plc_instance_set.cpp
+    data_layer/plc/plc_instance.cpp
+
+    data_layer/plc_device/infrared_sensor.cpp
+    data_layer/plc_device/infrared_sensor.cpp
+    data_layer/plc_device/plc_device_info.cpp
+    data_layer/plc_device/plc_smoke_detector_status.cpp
+    data_layer/plc_device/plc_smoke_detector.cpp
+    data_layer/plc_device/plc_water_level_sensor_status.cpp
+    data_layer/plc_device/plc_water_level_sensor.cpp
+    data_layer/plc_device/solenoid_instance_set.cpp
+    data_layer/plc_device/solenoid_real_time_data.cpp
+    data_layer/plc_device/solenoid_status.cpp
+    data_layer/plc_device/solenoid_value_info.cpp
+    data_layer/plc_device/solenoid_value.cpp
+
+    data_layer/radar/radar_info.cpp
+    data_layer/radar/radar_point_cloud.cpp
+    data_layer/sensor/sensor_instance_set.cpp
+    data_layer/sensor/sensor_real_time_data.cpp
+
+    data_layer/sensor/temp_humid_sensor_status.cpp
+    data_layer/sensor/temp_humid_sensor.cpp
+    data_layer/serial/serial_config.cpp
+    data_layer/serial_direct_device/serial_direct_device_instance_set.cpp
+
+
 
 
     #========== 表现层 ==========

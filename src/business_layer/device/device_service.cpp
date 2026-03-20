@@ -4,10 +4,10 @@ DeviceService::DeviceService(DeviceManageService& deviceManageService,
                              DeviceStatusCache& deviceStatusCache,
                              DeviceAcquisitionTask& deviceAcuqisitionTask,
                              RealTimeFrameCache& realTimeFrameCache) 
-    :deviceManageService_(deviceManageService),
-     deviceStatusCache_(deviceStatusCache),
-     deviceAcquisitionTask_(deviceAcuqisitionTask),
-     realTimeFrameCache_(realTimeFrameCache)
+    : deviceManageService_(deviceManageService),
+      deviceStatusCache_(deviceStatusCache),
+      deviceAcquisitionTask_(deviceAcuqisitionTask),
+      realTimeFrameCache_(realTimeFrameCache)
 {
     startTimer();
 }
@@ -17,7 +17,7 @@ DeviceService::~DeviceService() {
 }
 
 BoxDeviceStatus DeviceService::viewAllDeviceStatus() {
-    if (_deviceStatusCache.isBoxDeviceStatusEmpty()){
+    if (deviceStatusCache_.isBoxDeviceStatusEmpty()){
         const BoxDeviceStatus& devicesStatus = deviceManageService_.getDeviceStatus();
         deviceStatusCache_.updateBoxDeviceStatus(devicesStatus);
         return devicesStatus;
@@ -27,28 +27,31 @@ BoxDeviceStatus DeviceService::viewAllDeviceStatus() {
     return devicesStatus;
 }
 
-BoxDeviceRealTimeData DeviceService::getBoxDeviceRealTimeData() {
-    if(_deviceStatusCache.isBoxRealTimeDataEmpty()) {
-        const BoxDeviceRealTimeData& realTimeData = deviceManageService_.getBoxDeviceRealTimeData();
-        deviceStatusCache_.updateBoxDeviceRealTimeData(realTimeData);
-        return realTimeData;
-    }
-    const BoxDeviceRealTimeData& realTimeData = deviceStatusCache_.getBoxDeviceRealTimeData();
-    return realTimeData;
-}
 
-DeviceOperationResult DeviceService::openSolenoidValue( const SolenoidValueInfo& info) {
+DeviceOperationResult DeviceService::openSolenoidValue(const PlcDeviceInfo& info) {
     if(deviceStatusCache_.isSolenoidOpen(info))
-        return new DeviceOperationResult(-1,"电磁阀已经打开!");
+        return DeviceOperationResult(-1,"电磁阀已经打开!");
     deviceManageService_.openSolenoidValue(info);
-    return new DeviceOperationResult(0,"电磁阀打开成功!");
+    return DeviceOperationResult(0,"电磁阀打开成功!");
 }
 
-DeviceOperationResult DeviceService::closeSolenoidValue( const SolenoidValueInfo& info) {
+DeviceOperationResult DeviceService::closeSolenoidValue(const PlcDeviceInfo& info) {
     if(deviceStatusCache_.isSolenoidClose(info))
-        return new DeviceOperationResult(-1,"电磁阀已经关闭!");
+        return DeviceOperationResult(-1,"电磁阀已经关闭!");
 
     return deviceManageService_.closeSolenoidValue(info);
+}
+
+DeviceOperationResult DeviceService::lockDoorLock(const GPIODeviceSimpleInfo& info) {
+    if(deviceStatusCache_.isDoorLockLock(info))
+        return DeviceOperationResult(-1,"门锁已被锁上");
+    return deviceManageService_.lockDoorLock(info);
+}
+
+DeviceOperationResult DeviceService::unlockDoorLock(const GPIODeviceSimpleInfo& info) {
+    if(!deviceStatusCache_.isDoorLockLock(info))
+        return DeviceOperationResult(-1,"门锁已被解锁");
+    return deviceManageService_.unlockDoorLock(info);
 }
 
 DeviceOperationResult DeviceService::controlCarRotation( const CarControl& car) {
@@ -67,9 +70,9 @@ RadarPointCloud DeviceService::getRadarPointCloudData( const RadarInfo& info) {
     return deviceManageService_.getRadarPointCloudData(info);
 }
 
-BoxConfigResult DeviceService::configBoxDeviceParams( const BoxDeviceParam& params) {
-    return deviceManageService_.boxDeviceParamsConfig(params);
-}
+// BoxConfigResult DeviceService::configBoxDeviceParams( const BoxDeviceParam& params) {
+//     return deviceManageService_.boxDeviceParamsConfig(params);
+// }
 
 void DeviceService::startTimer() {
     _running = true;
@@ -89,7 +92,6 @@ void DeviceService::devicesDataCollection(int deviceType) {
     std::vector<std::unique_ptr<DeviceData> > deviceData = deviceManageService_.deviceDataAcquisition(deviceType);
     //更新一种设备的状态和实时数据
     deviceStatusCache_.updateDeviceStatus(deviceData);
-    deviceStatusCache_.updateDeviceRealTimeData(deviceData);
 }
 
 void DeviceService::timerLoop() {
@@ -98,7 +100,7 @@ void DeviceService::timerLoop() {
     while(_running) {
         auto startTime = steady_clock::now();
 
-        for(auto& task : deviceAcquisitionTask_.getTasks()) {
+        for(const auto& task : deviceAcquisitionTask_.getTasks()) {
             if(task->isAcquisitionData()) 
                 devicesDataCollection(task->getType());
         }

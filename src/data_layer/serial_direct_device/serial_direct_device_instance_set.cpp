@@ -1,0 +1,28 @@
+#include "serial_direct_device_instance_set.h"
+
+SerialDirectDeviceInstanceSet::SerialDirectDeviceInstanceSet(std::vector<TempHumidSensor> sensorList) {
+    for(auto& sensor : sensorList) {
+        sensors_[sensor.getDeviceId()] = sensor;
+    }
+}
+
+std::vector<TempHumidSensorStatus> SerialDirectDeviceInstanceSet::getSensorStatusList() {
+    std::vector<TempHumidSensorStatus> statusList;
+    statusList.reserve(sensors_.size());
+
+    for(auto& [key, sensor] : sensors_) {
+        statusList.push_back(sensor.readSensorData());
+    }
+
+    return statusList;
+}
+
+std::vector<std::unique_ptr<DeviceData> > SerialDirectDeviceInstanceSet::acquisitionTempHumidSensorData() {
+    std::vector<std::unique_ptr<DeviceData> > sensorDataList;
+    sensorDataList.reserve(sensors_.size());
+
+    for(auto& [key, sensor] : sensors_) {
+        TempHumidSensorStatus status = sensor.readSensorData();
+        sensorDataList.push_back( std::make_unique<DeviceData> (1,status) );
+    }
+}

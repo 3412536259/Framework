@@ -2,6 +2,7 @@
 #define DOOR_LOCK_H
 
 #include "gpio_output_device.h"
+#include "door_lock_status.h"
 class DoorLock : public GPIOOutputDevice {
 
     public:
@@ -23,7 +24,7 @@ class DoorLock : public GPIOOutputDevice {
 
         std::unique_ptr<DeviceStatus> getStatus() const ;
 
-        int queryDoorLockStatus();
+        DoorLockStatus queryDoorLockStatus();
     
     private:
         bool isGPIOExport();

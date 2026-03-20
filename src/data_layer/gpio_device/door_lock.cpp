@@ -43,16 +43,17 @@ std::unique_ptr<DeviceStatus> DoorLock::getStatus() const {
     return std::make_unique<DeviceStatus> ();
 }
 
-int DoorLock::queryDoorLockStatus() {
+DoorLockStatus DoorLock::queryDoorLockStatus() {
     std::ifstream valueFile(getGPIOSysPath());
     if (!valueFile.is_open()) {
         //无法读取value文件"
-        return -1;
+        return DoorLockStatus(this->getDeviceId(),4,this->getName(),LockStatus::UNKNOW);
     }
     std::string valueStr;
     valueFile >> valueStr;
     valueFile.close();
-    return stoi(valueStr);
+    if (valueStr == "1") return  DoorLockStatus(this->getDeviceId(),4,this->getName(),LockStatus::UNLOCK);
+    return DoorLockStatus(this->getDeviceId(),4,this->getName(),LockStatus::LOCK);
 }
 
 bool DoorLock::isGPIOExport() {
