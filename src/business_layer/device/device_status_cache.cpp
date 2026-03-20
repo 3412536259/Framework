@@ -2,7 +2,20 @@
 
 #include <functional>
 DeviceStatusCache::DeviceStatusCache() {
-
+    solenoidStatusMap_.clear(); 
+    solenoidStatusMap_.reserve(16);
+    sensorStatusMap_.clear();   
+    sensorStatusMap_.reserve(8);
+    cameraStatusMap_.clear();   
+    cameraStatusMap_.reserve(4);
+    infraredSensorStatusMap_.clear(); 
+    infraredSensorStatusMap_.reserve(4);
+    waterLevelSensorStatusMap_.clear(); 
+    waterLevelSensorStatusMap_.reserve(4);
+    smokeDetectorStatusMap_.clear(); 
+    smokeDetectorStatusMap_.reserve(4);
+    doorLockStatusMap_.clear(); 
+    doorLockStatusMap_.reserve(4);
 }
 
 DeviceStatusCache::~DeviceStatusCache() {
@@ -45,35 +58,42 @@ void DeviceStatusCache::updateBoxDeviceStatus( const BoxDeviceStatus& devices) {
     }
 }
 
-void DeviceStatusCache::updateDeviceStatus( const std::vector<std::unique_ptr<DeviceData> >& deviceDataList ) {
-    if(deviceDataList.empty() || !deviceDataList.front() ) return ;
+void DeviceStatusCache::updateDeviceStatus( const std::vector<DeviceData>& deviceDataList ) {
+    if(deviceDataList.empty() ) return ;
 
-    const DeviceData& deviceData = *deviceDataList.front();
+    const DeviceData& deviceData = deviceDataList.front();
 
     switch(deviceData.getType()) {
         case 0:
-            for(auto& solenoidPtr : deviceDataList)
-                updateSolenoidStatus( solenoidPtr -> getSolenoidStatus()); 
+            for(auto& solenoid : deviceDataList)
+                updateSolenoidStatus( solenoid.getSolenoidStatus()); 
             break;
         case 1: 
-            for(auto& sensorPtr : deviceDataList)
-                updateTempHumidSensorStatus(sensorPtr -> getSensorStatus());
+            for(auto& sensor : deviceDataList)
+                updateTempHumidSensorStatus(sensor.getSensorStatus());
             break;
         case 2:
-            for(auto& cameraPtr : deviceDataList)
-                updateCameraStatus(cameraPtr -> getCameraStatus());
+            for(auto& camera : deviceDataList)
+                updateCameraStatus(camera.getCameraStatus());
+            break;
         case 3:
-            for(auto& doorLockPtr : deviceDataList)
-                updateDoorLockStatus(doorLockPtr -> getDoorLockStatus());
+            for(auto& doorLock : deviceDataList)
+                updateDoorLockStatus(doorLock.getDoorLockStatus());
+            break;
         case 4:
-            for(auto& infraredSensorPtr : deviceDataList)
-                updateInfraredSensorStatus(infraredSensorPtr -> getInfraredSensorStatus());
+            for(auto& infraredSensor : deviceDataList)
+                updateInfraredSensorStatus(infraredSensor.getInfraredSensorStatus());
+            break;
         case 5:
-            for(auto& smokeDetectorPtr : deviceDataList)
-                updatePlcSmokeDetectorStatus(smokeDetectorPtr -> getPlcSmokeDetectorStatus());
+            for(auto& smokeDetector : deviceDataList)
+                updatePlcSmokeDetectorStatus(smokeDetector.getPlcSmokeDetectorStatus());
+            break;
         case 6:
-            for(auto& waterLevelSensorPtr : deviceDataList)
-                updatePlcWaterLevelSensorStatus(waterLevelSensorPtr -> getPlcWaterLevelSensorStatus());
+            for(auto& waterLevelSensor : deviceDataList)
+                updatePlcWaterLevelSensorStatus(waterLevelSensor.getPlcWaterLevelSensorStatus());
+            break;
+        default:
+            break;
     }
 
 }
@@ -82,38 +102,38 @@ void DeviceStatusCache::updateDeviceStatus( const std::vector<std::unique_ptr<De
 BoxDeviceStatus DeviceStatusCache::getBoxDeviceStatus() {
     std::vector<SolenoidStatus> solenoidStatusList;
     solenoidStatusList.reserve(solenoidStatusMap_.size());
-    for( auto& [id, ptr] : solenoidStatusMap_) {
-        solenoidStatusList.push_back( *ptr );
+    for( auto& [id, solenoid] : solenoidStatusMap_) {
+        solenoidStatusList.push_back(solenoid );
     }
 
     std::vector<TempHumidSensorStatus> sensorStatusList;
-    for( auto& [id, ptr] : sensorStatusMap_) {
-        sensorStatusList.push_back( *ptr );
+    for( auto& [id, sensor] : sensorStatusMap_) {
+        sensorStatusList.push_back( sensor );
     }
 
     std::vector<CameraStatus> cameraStatusList;
-    for( auto& [id, ptr] : cameraStatusMap_) {
-        cameraStatusList.push_back( *ptr );
+    for( auto& [id, camera] : cameraStatusMap_) {
+        cameraStatusList.push_back( camera );
     }
 
     std::vector<DoorLockStatus> doorLockStatusList;
-    for( auto& [id, ptr] : doorLockStatusMap_) {
-        doorLockStatusList.push_back( *ptr );
+    for( auto& [id, doorLock] : doorLockStatusMap_) {
+        doorLockStatusList.push_back( doorLock );
     }
 
     std::vector<InfraredSensorStatus> infraredSensorStatusList;
-    for( auto& [id, ptr] : infraredSensorStatusMap_) {
-        infraredSensorStatusList.push_back( *ptr );
+    for( auto& [id, sensor] : infraredSensorStatusMap_) {
+        infraredSensorStatusList.push_back( sensor );
     }
 
     std::vector<PlcSmokeDetectorStatus> smokeDetectorStatusList;
-    for( auto& [id, ptr] : smokeDetectorStatusMap_) {
-        smokeDetectorStatusList.push_back( *ptr );
+    for( auto& [id, detector] : smokeDetectorStatusMap_) {
+        smokeDetectorStatusList.push_back( detector );
     }
 
     std::vector<PlcWaterLevelSensorStatus> waterLevelStatusList;
-    for( auto& [id, ptr] : waterLevelSensorStatusMap_) {
-        waterLevelStatusList.push_back( *ptr );
+    for( auto& [id, sensor] : waterLevelSensorStatusMap_) {
+        waterLevelStatusList.push_back( sensor );
     }
 
     return BoxDeviceStatus(solenoidStatusList, cameraStatusList, sensorStatusList,
@@ -131,7 +151,7 @@ bool DeviceStatusCache::isSolenoidOpen( const PlcDeviceInfo& info) {
     if(it == solenoidStatusMap_.end())
         throw std::runtime_error("Solenoid device not found in cache");
 
-    SolenoidStatus& status = *(it->second);
+    SolenoidStatus& status = it->second;
     return status.isOpen();
 }
 
@@ -141,7 +161,7 @@ bool DeviceStatusCache::isSolenoidClose( const PlcDeviceInfo& info) {
     if(it == solenoidStatusMap_.end())
         throw std::runtime_error("Solenoid device not found in cache");
 
-    SolenoidStatus& status = *(it->second);
+    SolenoidStatus& status = it->second;
     return !status.isOpen();
 }
 
@@ -151,7 +171,7 @@ bool DeviceStatusCache::isDoorLockLock(const GPIODeviceSimpleInfo& info) {
     if(it == doorLockStatusMap_.end())
         throw std::runtime_error("Solenoid device not found in cache");
 
-    DoorLockStatus& status = *(it->second);
+    DoorLockStatus& status = it->second;
     return status.isLock();
 }
 
@@ -160,8 +180,8 @@ void DeviceStatusCache::updateSolenoidStatus( const SolenoidStatus& status ) {
 
     auto it = solenoidStatusMap_.find(deviceId);
     if(it == solenoidStatusMap_.end()) 
-        solenoidStatusMap_[deviceId] = std::make_unique<SolenoidStatus>(status);
-    else *(it->second) = status;
+        solenoidStatusMap_[deviceId] = status;
+    else it->second = status;
 }
 
 void DeviceStatusCache::updateTempHumidSensorStatus( const TempHumidSensorStatus& status) {
@@ -169,8 +189,8 @@ void DeviceStatusCache::updateTempHumidSensorStatus( const TempHumidSensorStatus
     const std::string& deviceId = status.getDeviceId();
     auto it = sensorStatusMap_.find(deviceId);
     if(it == sensorStatusMap_.end())
-        sensorStatusMap_[deviceId] = std::make_unique<TempHumidSensorStatus> (status);
-    else *(it->second) = status;
+        sensorStatusMap_[deviceId] = status;
+    else it->second = status;
 }
 
 void DeviceStatusCache::updateCameraStatus( const CameraStatus& status) {
@@ -179,8 +199,8 @@ void DeviceStatusCache::updateCameraStatus( const CameraStatus& status) {
 
     auto it = cameraStatusMap_.find(deviceId);
     if(it == cameraStatusMap_.end())
-        cameraStatusMap_[deviceId] = std::make_unique<CameraStatus>(status);
-    else *(it->second) = status;
+        cameraStatusMap_[deviceId] = status;
+    else it->second = status;
 }
 
 void DeviceStatusCache::updateInfraredSensorStatus(const InfraredSensorStatus& status) {
@@ -188,30 +208,30 @@ void DeviceStatusCache::updateInfraredSensorStatus(const InfraredSensorStatus& s
 
     auto it = infraredSensorStatusMap_.find(deviceId);
     if(it == infraredSensorStatusMap_.end())
-        infraredSensorStatusMap_[deviceId] = std::make_unique<InfraredSensorStatus>(status);
-    else *(it->second) = status;
+        infraredSensorStatusMap_[deviceId] = status;
+    else it->second = status;
  }
 void DeviceStatusCache::updatePlcWaterLevelSensorStatus(const PlcWaterLevelSensorStatus& status) {
     const std::string& deviceId = status.getDeviceId();
 
     auto it = waterLevelSensorStatusMap_.find(deviceId);
     if(it == waterLevelSensorStatusMap_.end())
-        waterLevelSensorStatusMap_[deviceId] = std::make_unique<PlcWaterLevelSensorStatus>(status);
-    else *(it->second) = status;
+        waterLevelSensorStatusMap_[deviceId] = status;
+    else it->second = status;
 }
 void DeviceStatusCache::updatePlcSmokeDetectorStatus(const PlcSmokeDetectorStatus& status) {
     const std::string& deviceId = status.getDeviceId();
 
     auto it = smokeDetectorStatusMap_.find(deviceId);
     if(it == smokeDetectorStatusMap_.end())
-        smokeDetectorStatusMap_[deviceId] = std::make_unique<PlcSmokeDetectorStatus>(status);
-    else *(it->second) = status;
+        smokeDetectorStatusMap_[deviceId] = status;
+    else it->second = status;
 }
 void DeviceStatusCache::updateDoorLockStatus(const DoorLockStatus& status) {
     const std::string& deviceId = status.getDeviceId();
 
     auto it = doorLockStatusMap_.find(deviceId);
     if(it == doorLockStatusMap_.end())
-        doorLockStatusMap_[deviceId] = std::make_unique<DoorLockStatus>(status);
-    else *(it->second) = status;
+        doorLockStatusMap_[deviceId] = status;
+    else it->second = status;
 }

@@ -21,10 +21,10 @@ class PlcInstance {
         PlcInstance() = default;
         PlcInstance(const PlcDevice& plcDevice,
                     const SerialConfig& serialConfig,
-                    const std::vector<SolenoidValue>& solenoidValues,
-                    const std::vector<InfraredSensor>& infraredSensors,
-                    const std::vector<PlcSmokeDetector>& smokeDetectors,
-                    const std::vector<PlcWaterLevelSensor>& waterLevelSensors);
+                    std::vector<SolenoidValue>& solenoidValues,
+                    std::vector<InfraredSensor>& infraredSensors,
+                    std::vector<PlcSmokeDetector>& smokeDetectors,
+                    std::vector<PlcWaterLevelSensor>& waterLevelSensors);
         ~PlcInstance() = default;
 
         bool openSolenoidValue(const PlcDeviceInfo& info);

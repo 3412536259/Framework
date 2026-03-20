@@ -19,7 +19,7 @@ class GPIODeviceInstanceSet {
 
         std::vector<DoorLockStatus> getDoorLockStatusList();
 
-        std::vector<std::unique_ptr<DeviceData> > acquisitionDoorLockData();
+        std::vector<DeviceData> acquisitionDoorLockData();
     
     private:
         std::unordered_map<std::string, DoorLock> doorLocks_;

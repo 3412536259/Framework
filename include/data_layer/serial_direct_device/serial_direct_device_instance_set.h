@@ -16,7 +16,7 @@ class SerialDirectDeviceInstanceSet {
 
         std::vector<TempHumidSensorStatus> getSensorStatusList();
 
-        std::vector<std::unique_ptr<DeviceData> > acquisitionTempHumidSensorData();
+        std::vector<DeviceData> acquisitionTempHumidSensorData();
     
     private:
         std::unordered_map<std::string, TempHumidSensor>  sensors_;

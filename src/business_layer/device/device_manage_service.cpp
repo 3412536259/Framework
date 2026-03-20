@@ -69,7 +69,7 @@ CameraHistoryVideo DeviceManageService::getCameraHistoryVideo( const CameraInfo&
 //     return boxInstance_.configBoxDeviceParams(params);
 // }
 
-std::vector<std::unique_ptr<DeviceData> > DeviceManageService::deviceDataAcquisition(int deviceType) {
+std::vector<DeviceData> DeviceManageService::deviceDataAcquisition(int deviceType) {
     switch(deviceType) {
         case 0: return plcInstances_.acquisitionPlcSolenoidData();
         case 1: return serialInstances_.acquisitionTempHumidSensorData();

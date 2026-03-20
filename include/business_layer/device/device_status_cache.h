@@ -24,7 +24,7 @@ class DeviceStatusCache {
         ~DeviceStatusCache();
 
         void updateBoxDeviceStatus( const BoxDeviceStatus& devices);
-        void updateDeviceStatus( const std::vector<std::unique_ptr<DeviceData> >& deviceDataList );
+        void updateDeviceStatus( const std::vector<DeviceData>& deviceDataList );
 
         BoxDeviceStatus getBoxDeviceStatus();
 
@@ -43,13 +43,13 @@ class DeviceStatusCache {
         void updatePlcSmokeDetectorStatus(const PlcSmokeDetectorStatus& status);
         void updateDoorLockStatus(const DoorLockStatus& status);
 
-        std::unordered_map<std::string, std::unique_ptr<SolenoidStatus> > solenoidStatusMap_;
-        std::unordered_map<std::string, std::unique_ptr<TempHumidSensorStatus> > sensorStatusMap_;
-        std::unordered_map<std::string, std::unique_ptr<CameraStatus> > cameraStatusMap_;
-        std::unordered_map<std::string, std::unique_ptr<InfraredSensorStatus> > infraredSensorStatusMap_;
-        std::unordered_map<std::string, std::unique_ptr<PlcWaterLevelSensorStatus> > waterLevelSensorStatusMap_;
-        std::unordered_map<std::string, std::unique_ptr<PlcSmokeDetectorStatus> > smokeDetectorStatusMap_;
-        std::unordered_map<std::string, std::unique_ptr<DoorLockStatus> > doorLockStatusMap_;
+        std::unordered_map<std::string, SolenoidStatus> solenoidStatusMap_;
+        std::unordered_map<std::string, TempHumidSensorStatus> sensorStatusMap_;
+        std::unordered_map<std::string, CameraStatus> cameraStatusMap_;
+        std::unordered_map<std::string, InfraredSensorStatus> infraredSensorStatusMap_;
+        std::unordered_map<std::string, PlcWaterLevelSensorStatus> waterLevelSensorStatusMap_;
+        std::unordered_map<std::string, PlcSmokeDetectorStatus> smokeDetectorStatusMap_;
+        std::unordered_map<std::string, DoorLockStatus> doorLockStatusMap_;
         // std::unordered_map<std::string, std::unique_ptr<RadarStatus> > _radarStatusMap;
         // std::unordered_map<std::string, std::unique_ptr<CarStatus> > _carStatusMap;
 
