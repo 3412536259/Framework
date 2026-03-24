@@ -1,6 +1,6 @@
 #ifndef PLC_DEVICE_INFO_H
 #define PLC_DEVICE_INFO_H
-
+class SolenoidValveOperation;
 #include <string>
 class PlcDeviceInfo {
     public:
@@ -12,6 +12,9 @@ class PlcDeviceInfo {
         const std::string& getPlcId() const;
         const std::string& getDeviceId() const;
     
+        static PlcDeviceInfo createPlcDevice(const SolenoidValveOperation& op);
+
+
     private:
         std::string plcId_;
         std::string deviceId_;

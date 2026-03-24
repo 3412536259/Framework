@@ -135,6 +135,29 @@ bool MqttProtocol::decode(const std::vector<uint8_t>& buffer,MqttPacket& packet)
     
     return true;
 }
+
+bool MqttProtocol::parseConnAck(const std::vector<uint8_t>& data) {
+    if (data.size() < 4) {
+        std::cerr << "CONNACK too short\n";
+        return false;
+    }
+
+    uint8_t packetType = data[0] >> 4;
+    if (packetType != 2) { // 2 = CONNACK
+        std::cerr << "Not CONNACK\n";
+        return false;
+    }
+
+    uint8_t returnCode = data[3];
+
+    if (returnCode == 0) {
+        std::cout << "MQTT connected successfully\n";
+        return true;
+    } else {
+        std::cerr << "MQTT connect failed, code: " << (int)returnCode << "\n";
+        return false;
+    }
+}
 // private
 void MqttProtocol::encodeRemainingLength(std::vector<uint8_t>& buf, int length){
 

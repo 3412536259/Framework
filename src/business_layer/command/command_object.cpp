@@ -1,24 +1,6 @@
 #include "business_layer/command/command_object.h"
 #include <sstream>  
-
-
-
-SolenoidValveOperation::SolenoidValveOperation(const json& j){
-        deviceId  = j.value("deviceId", "");
-        cmd       = j.value("cmd", "");
-        sensorId  = j.value("sensorId", "");
-        cameraId  = j.value("cameraId", "");
-        nvrId     = j.value("nvrId", "");
-        reqSource = j.value("reqSource", "");
-}
-
-
-const std::string& SolenoidValveOperation::getDeviceId() const{
-    return deviceId;
-}
-const std::string& SolenoidValveOperation::getCmd() const{
-    return cmd;
-}
+#include <atomic>
 
 
 
@@ -29,20 +11,49 @@ Command::Command(std::string id, CommandType type, std::string devId)
                                               executeTime = 0; // 执行时间默认为0
 }
 
-Command Command::createOperateSolenoid(const SolenoidValveOperation& solenoid) {
+Command Command::createOperateSolenoid(const SolenoidValveOperation& solenoid)
+{
+    std::string cmdId = createCmdId();
 
-    // std::string cmdId = "CMD_SOLENOID_" + std::to_string(id);
-    Command cmd("0", CommandType::TYPE_SOLENOID_OPEN, "DEVICE_DEFAULT");
-    // cmd.cmdContent = solenoid.open ? "OPEN_SOLENOID" : "CLOSE_SOLENOID";
-    return cmd;
+    CommandType type;
+
+    if (solenoid.getCmd() == "open") {
+        type = CommandType::TYPE_SOLENOID_OPEN;
+    } 
+    else if (solenoid.getCmd() == "close") {
+        type = CommandType::TYPE_SOLENOID_CLOSE;
+    } 
+    else {
+        throw std::invalid_argument("Invalid solenoid command");
+    }
+
+    return Command(cmdId, type, solenoid.getDeviceId());
 }
 
 Command Command::createHistoricalVideo(DownloadHistoricalVideo& download) {
-    // std::string cmdId = "CMD_VIDEO_" + std::to_string(id);
-    Command cmd(0, CommandType::TYPE_CAMERA_HISTORY, "DEVICE_DEFAULT");
-    // cmd.cmdContent = "DOWNLOAD_VIDEO[" + download.startTime + "~" + download.endTime + "]";
-    return cmd;
+    
+    return Command(createCmdId(), CommandType::TYPE_CAMERA_HISTORY, "DEVICE_DEFAULT");;
 }
+
+Command Command:: createOperateSolenoidResult(const DeviceOperationResult& solenoid,const SolenoidValveOperation& operation){
+    std::string cmdId = createCmdId();
+
+    CommandType type;
+
+    if (operation.getCmd() == "open") {
+        type = CommandType::TYPE_SOLENOID_OPEN;
+    } 
+    else if (operation.getCmd() == "close") {
+        type = CommandType::TYPE_SOLENOID_CLOSE;
+    } 
+    else {
+        throw std::invalid_argument("Invalid solenoid command");
+    }
+
+    return Command(cmdId, type, operation.getDeviceId());
+}
+
+
 
 std::string Command::getCmdId() const { return cmdId; }
 CommandType Command::getCmdType() const { return cmdType; }
@@ -58,11 +69,14 @@ void Command::setCmdState(CommandState state) {
 }
 
 std::string Command::createCmdId(){
-    static int id = 1;
+    static std::atomic<int> id{1};
+
+    auto now = std::chrono::system_clock::now();
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                  now.time_since_epoch()).count();
+
     std::stringstream ss;
-    ss << "CMD_" 
-       << time(nullptr)    // 用时间戳保证唯一
-       << "_" 
-       << id++;
+    ss << "CMD_" << ms << "_" << id++;
+
     return ss.str();
 }

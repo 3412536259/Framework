@@ -12,11 +12,18 @@ AsyncLogger::~AsyncLogger() {
     stop();
 }
 
-void AsyncLogger::start() {
-    if (m_running) return;
+bool AsyncLogger::start() {
+    // 已经在运行，直接返回 false
+    if(m_running) {
+        std::cerr << "MQTT Service already running\n";
+        return false;
+    }
 
+    // 标记启动中
     m_running = true;
+
     m_workerThread = std::thread(&AsyncLogger::worker, this);
+    return true;  // 关键：成功返回 true
 }
 
 void AsyncLogger::stop() {

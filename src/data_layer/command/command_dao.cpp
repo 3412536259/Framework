@@ -15,7 +15,7 @@ bool CommandDao::insertCommand(const CommandEntity& cmd) {
 
     const char* sql =
         "INSERT INTO commands "
-        "(id,device_id,type,state,payload,create_time,update_time)"
+        "(cmd_id,device_id,type,state,payload,create_time,update_time)"
         "VALUES(?,?,?,?,?,?,?)";
     
    sqlite3_stmt* stmt = stmt;

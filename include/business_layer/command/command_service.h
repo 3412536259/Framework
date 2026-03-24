@@ -20,7 +20,7 @@ public:
 	// 执行指定命令（文档中"构建命令对象并执行命令"）
 	virtual void executeCommand(const Command& cmd) = 0;
 
-	// 批量执行待执行命令（适配MQTT批量消息）
+	// 执行命令轮询
 	virtual void executePendingCommands() = 0;
 
 	// 查询本地命令任务状态（按命令ID）
@@ -33,7 +33,7 @@ public:
 	virtual CommandState getCommandState(const CommandType& type) = 0;
 
 	// 发送命令结果到MQTT（文档中"将消息发送出去，上报执行结果"）
-	virtual void sendCommandResultToMqtt(const std::string& topic, std::string& msg) = 0;
+	virtual void sendCommandResultToMqtt(const std::string& topic, const std::string& msg) = 0;
 
 	// 更新命令状态（执行后同步状态到DAO和内存）
 	virtual void updateCommandState(const std::string& cmdId, CommandState newState) = 0;
@@ -66,7 +66,7 @@ public:
 
 
     // 实现接口：发送命令结果到MQTT
-    void sendCommandResultToMqtt(const std::string& topic, std::string& msg) override;
+    void sendCommandResultToMqtt(const std::string& topic,const std::string& msg) override;
 
     // 实现接口：更新命令状态
     void updateCommandState(const std::string& cmdId, CommandState newState) override;

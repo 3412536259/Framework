@@ -31,24 +31,22 @@ void MQTTCommandController::handleGetAllDeviceStatus(const nlohmann::json& j){
 
 void MQTTCommandController::handleOperateWithVerify(const nlohmann::json& j){
     try {
+       
         SolenoidValveOperation operation(j);
-        LOG_ERROR("无法构建业务对象 SolenoidValveOperation");
-        if(operation.getCmd().size() <= 1) {
-            LOG_ERROR("无法构建业务对象 SolenoidValveOperation");
-            return ;
-        }
-        auto result = lobbyService.operateSolenoidValve(operation);
 
-        if (!result.success) {
-            // LOG_ERROR("Operate solenoid valve failed: {}", result.message);
+        if (operation.isValid()) {
+            LOG_ERROR(" SolenoidValveOperation: cmd 为空");
             return;
         }
 
-        // LOG_INFO("Operate solenoid valve success");
+        auto result = lobbyService.operateSolenoidValve(operation);
 
-        // TODO: publish MQTT response
+        if (!result.success) {
+            LOG_ERROR("Operate solenoid valve 失败");
+            return;
+        }
 
     } catch (const std::exception& e) {
-        LOG_ERROR("Exception in handleOperateWithVerify: {}");
+        LOG_ERROR(std::string("Exception: ") + e.what());
     }
 }

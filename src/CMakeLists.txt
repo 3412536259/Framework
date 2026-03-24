@@ -19,6 +19,8 @@ set(SRC_FILES
     #========== 业务层 ==========
 
     business_layer/lobby/lobby_service.cpp  #大厅
+    business_layer/lobby/lobby_object.cpp
+    
     business_layer/safety/safety_service.cpp
     business_layer/command/command_service.cpp
     business_layer/timer.cpp 
@@ -78,6 +80,7 @@ set(SRC_FILES
     data_layer/plc/plc_instance_set.cpp
     data_layer/plc/plc_instance.cpp
 
+    data_layer/plc_device/infrared_sensor_status.cpp
     data_layer/plc_device/infrared_sensor.cpp
     data_layer/plc_device/infrared_sensor_status.cpp
     data_layer/plc_device/plc_device_info.cpp
@@ -108,8 +111,7 @@ set(SRC_FILES
 
     presentation_layer/http_command.cpp
     presentation_layer/http_service.cpp
-
-
+    presentation_layer/http_response.cpp
 
     #========== 工具 ==========
     common/log/log.cpp
