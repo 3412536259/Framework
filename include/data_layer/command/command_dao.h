@@ -35,8 +35,8 @@ public:
 
     bool insertCommand(const CommandEntity& cmd) override;
 
-
     bool updateCommandState(const std::string& cmdId,CommandState state) override;
+    
 
     CommandEntity getCommand(const std::string& cmdId) override;
 

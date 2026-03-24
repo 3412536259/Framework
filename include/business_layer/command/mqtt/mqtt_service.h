@@ -35,11 +35,11 @@ public:
     }
     ~MqttService();
     
-    void start() override;
+    bool start() override;
 
     void stop() override;
 
-    void publish(const std::string& topic,std::string& payload) override;
+    void publish(const std::string& topic, const std::string& payload) override;
       
     void subscribe(const std::string& topic) override;
     
@@ -47,6 +47,8 @@ private:
     void run();
 
     bool connectBroker();
+
+    bool mqttHandshake();
 
     MqttPacket receiveMessage(int socketFd,std::string& topic,std::string& payload);
 
@@ -56,7 +58,7 @@ private:
 
     bool sendPacket(const std::vector<uint8_t>& data);
 
-
+    std::vector<uint8_t> recvPacket();
     // std::string buildPublishPacket(const std::string& topic,const std::string& payload);
 
     // void onMessage(const std::string& topic,const std::string& payload);
@@ -76,7 +78,7 @@ private:
 
     std::thread mqttThread;
 
-    std::atomic<bool> running ;
+    std::atomic<bool> running{false};
 
     IController& dispatcher;
 

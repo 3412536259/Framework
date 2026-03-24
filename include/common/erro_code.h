@@ -38,6 +38,7 @@ enum class Code {
     SERVER_THIRD_PARTY_ERROR = 3003, // 第三方服务调用失败（接口/网络异常）
     SERVER_RESOURCE_EXHAUSTED = 3004,// 服务器资源耗尽（内存/CPU/连接数超限）
     SERVER_CONFIG_ERROR = 3005,      // 配置错误（参数配置缺失/错误）
+    SERVER_TOO_MANY_Repeat = 3006,   //上传定时器打开重复
 
     // 摄像头/帧查询相关错误 (4000-4999)
     CAMERA_FRAME_QUERY_INVALID = 4001,  // 帧查询参数无效（摄像头ID/时间范围非法）

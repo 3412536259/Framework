@@ -2,6 +2,7 @@
 #include <nlohmann/json.hpp>
 #include "common/erro_code.h"
 #include <optional>
+#include "data_layer/device/device_operation_result.h"
 
 using json = nlohmann::json;
 template <typename T>
@@ -12,8 +13,8 @@ public:
     std::string message; // 相关信息的字符串
     std::optional<T> data; // 可选的数据字段，成功时包含返回数据，失败时为 std::nullopt
 
-
-public:    
+public:  
+    
     static LobbyResult<T> Ok(const T& data){// 成功结果，包含数据
         return {true,ErrorCode::Code::SUCCESS,"success",data};
     } 
@@ -22,7 +23,28 @@ public:
         return {false,code,ErrorCode::getMessage(code),std::nullopt};
     } 
 };
-#include "data_layer/plc/solenoid_value_info.h"
+
+template <>
+class LobbyResult<void>{
+public:
+    bool success; // 操作是否成功
+    ErrorCode::Code errorCode; // 错误码，成功时为 ErrorCode::Code::SUCCESS
+    std::string message; // 相关信息的字符串
+    
+
+public:  
+    
+    static LobbyResult<void> Ok(){// 成功结果，包含数据
+        return {true,ErrorCode::Code::SUCCESS,"success"};
+    } 
+
+    static LobbyResult<void>Error(ErrorCode::Code code){//错误结果，包含错误码和对应的错误信息
+        return {false,code,ErrorCode::getMessage(code)};
+    } 
+};
+
+
+
 class DeviceStatusQuery{
 public:
     explicit DeviceStatusQuery(const json& j){
@@ -40,8 +62,12 @@ public:
         return true; // 返回true表示查询有效，false表示无效
     } 
 
+    std::string getReqSource() const {
+        return reqSource;
+    };
 
-    
+private:
+    std::string reqSource;
 
 
 
@@ -135,13 +161,37 @@ public:
     ~SolenoidValveOperation() = default;
     const std::string& getDeviceId() const;
     const std::string& getCmd() const;
+    const std::string& getPlcId() const;
+    const std::string& getReqSource() const;
+    bool isValid();
 private:
     std::string deviceId;
     std::string cmd;
     std::string plcId;
     std::string reqSource;
 };
-class TrolleyOperation {
+
+class SolenoidValveOperationResult {
+public: 
+    SolenoidValveOperationResult(const std::string& deviceId_, const std::string& plc_, int code_, const std::string& message_): deviceId(deviceId_), plc(plc_), code(code_), message(message_) {}
+    ~SolenoidValveOperationResult() = default;
+    static SolenoidValveOperationResult createResult(const DeviceOperationResult& result , const SolenoidValveOperation& operation ){
+        return SolenoidValveOperationResult(
+            operation.getDeviceId(),                
+            operation.getPlcId(),                
+            result.operationBool() ? 0 : -1,  
+            result.getMessage()
+        );
+    }
+    std::string getDeviceId() const { return deviceId; }
+    std::string getPlc() const { return plc; }
+    int getCode() const { return code; }
+    std::string getMessage() const { return message; }
+private:
+    std::string deviceId;
+    std::string plc;
+    int code;
+    std::string message;
 
 };
 class CameraOperation {

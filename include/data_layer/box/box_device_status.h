@@ -30,7 +30,7 @@ class BoxDeviceStatus {
         std::vector<PlcSmokeDetectorStatus> getSmokeDetectorStatusList() const;
         std::vector<PlcWaterLevelSensorStatus> getWaterLevelSensorStatusList() const;
         std::vector<DoorLockStatus> getDoorLockStatusList() const;
-
+            
     private:
         std::vector<SolenoidStatus> solenoidStatuses_;
         std::vector<TempHumidSensorStatus> sensorStatuses_;

@@ -22,7 +22,7 @@ void CommandService::executeCommand(const Command& cmd)
 
     // 2 放入缓存
     // Command newCmd = cmd;
-    commandCache.emplace(cmd.getCmdId(), cmd);
+    // commandCache.emplace(cmd.getCmdId(), cmd);
 }
 
 // 实现接口：执行待执行命令
@@ -77,7 +77,7 @@ CommandState CommandService::getCommandState(const CommandType& type)
 
 
 // 实现接口：发送命令结果到MQTT云端
-void CommandService::sendCommandResultToMqtt(const std::string& topic,std::string& msg){
+void CommandService::sendCommandResultToMqtt(const std::string& topic, const std::string& msg){
     if (m_mqttService)
     {
         m_mqttService->publish(topic, msg);
@@ -86,14 +86,14 @@ void CommandService::sendCommandResultToMqtt(const std::string& topic,std::strin
 
 // 实现接口：更新命令状态
 void CommandService::updateCommandState(const std::string& cmdId, CommandState newState) {
-	auto it = commandCache.find(cmdId);
+	// auto it = commandCache.find(cmdId);
 
-    if (it == commandCache.end())
-    {
-        return ;
-    }
+    // if (it == commandCache.end())
+    // {
+    //     return ;
+    // }
 
-    it->second.setCmdState(newState);
+    // it->second.setCmdState(newState);
 
     commandDao.updateCommandState(cmdId,newState);
 

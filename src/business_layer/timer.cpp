@@ -1,5 +1,5 @@
 #include "business_layer/timer.h"
-
+#include "common/log/log_manager.h"
 
 void Timer::TimingProcessing(){
     auto last_time = std::chrono::steady_clock::now();//获取当前时间（系统里面的时间）
@@ -12,8 +12,42 @@ void Timer::TimingProcessing(){
     }
 };
 
-void Timer::TimingUpload(){
 
+void Timer::scheduleRepeated(int intervalMs, std::function<void()> task){
+    bool expected = false;
+    if(!m_runningUpload.compare_exchange_strong(expected,true)) {
+        return ; //已经运行了
+    }
+
+    m_intervalMs = intervalMs;
+    uploadthread = std::thread([this](){
+        while(m_runningUpload.load()){
+            try{
+                if(taskUpload){
+                    taskUpload();
+                }
+            } catch(...){
+                LOG_WARNING("[Timer] task exception");
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(m_intervalMs));
+        }
+    });
+}
+
+void Timer::stopUpload(){
+m_running.store(false);
+
+    if (uploadthread .joinable()) {
+        uploadthread .join();
+    }
+}
+
+bool Timer::isRunningUpload() const{
+     return m_running.load();
+}
+
+void Timer::TimingUpload(){
+    //这里去拿数据
 };
 
 void Timer::TimingPullVideoFrame(){

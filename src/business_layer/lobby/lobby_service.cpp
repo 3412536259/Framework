@@ -1,24 +1,25 @@
 #include "business_layer/lobby/lobby_service.h"
 #include "business_layer/lobby/lobby_object.h"
-
+#include "common/log/log_manager.h"
 //public
- LobbyService::LobbyService(ISafetyService& safetyService, ICommandService& commandService/*,IDeviceService deviceService*/,ITimer & timer )/* IDeviceService& deviceService, IDetectionService& detectionService */
-    :  m_safetykService(safetyService), m_commandService(commandService)/*,m_deviceService(deviceService)*/,m_Timer(timer) /* ,m_deviceService(deviceService),  m_detectionService(detectionService) */
+ LobbyService::LobbyService(ISafetyService& safetyService, ICommandService& commandService,IDeviceService& deviceService,ITimer & timer,DeviceStatusCache& deviceStatusCache )
+    :  m_safetykService(safetyService), m_commandService(commandService),m_deviceService(deviceService),m_Timer(timer),deviceStatusCache_(deviceStatusCache)
 {
     
 }
 
 
-LobbyResult<SensorQuery> LobbyService::retrieveDeviceStatus(const DeviceStatusQuery& query){
+LobbyResult<BoxDeviceStatus> LobbyService::retrieveDeviceStatus(const DeviceStatusQuery& query){
     auto auth = m_safetykService.authenticate();
-    if (!auth)return LobbyResult<SensorQuery>::Error(ErrorCode::Code::AUTH_PERMISSION_DENIED);   
-    // 获取设备状态的逻辑 去设备状态缓冲里面去拿
-    //1.正确
-    return LobbyResult<SensorQuery>::Ok(SensorQuery());
-    //2.错误
-    // return LobbyResult<SensorQuery>::Error(ErrorCode::Code::SERVER_INTERNAL_ERROR);
-    //3.异常错误
-
+    if (!auth)return LobbyResult<BoxDeviceStatus>::Error(ErrorCode::Code::AUTH_PERMISSION_DENIED);   
+    if(query.getReqSource() == "http"){
+        //去拿设备状态
+    } else{
+        
+    }
+    return LobbyResult<BoxDeviceStatus>::Ok(BoxDeviceStatus());
+    
+    
 }
 
 
@@ -79,82 +80,55 @@ LobbyResult<SensorQuery> LobbyService::downloadHistoricalCameraFootage(const Dow
 
 
 
-LobbyResult<DeviceOperationResult> LobbyService::operateSolenoidValve(const SolenoidValveOperation& operation)
+LobbyResult<SolenoidValveOperationResult> LobbyService::operateSolenoidValve(const SolenoidValveOperation& operation)
 {
     auto auth = m_safetykService.authenticate();
-    if (!auth)return LobbyResult<DeviceOperationResult>::Error(ErrorCode::Code::AUTH_PERMISSION_DENIED);
-    // 打开电磁阀的逻辑 
-    //1.去device服务里面去验证这个设备的状态是否可用
+    if (!auth)return LobbyResult<SolenoidValveOperationResult>::Error(ErrorCode::Code::AUTH_PERMISSION_DENIED);
 
+    //这里需要检查设备状态的
 
+    try {
 
-    // try {
-        // 3️⃣ 构建命令（✅ 正确方式）
-        Command cmd = Command::createOperateSolenoid(operation);
+        PlcDeviceInfo plcDevice = PlcDeviceInfo::createPlcDevice(operation);
 
-        // 4️⃣ 下发命令
-        m_commandService.executeCommand(cmd);
+        DeviceOperationResult result;
 
         if(operation.getCmd() == "open"){
-            //这里 去调用设备服务去打开电磁阀
-            // DeviceOperationResult result = 
-            // return LobbyResult<SensorQuery>::Ok();
-        } else if(operation.getCmd() == "close"){
-            // DeviceOperationResult result = 
-            // return LobbyResult<SensorQuery>::Ok();
+            result = m_deviceService.openSolenoidValue(plcDevice);
+        }
+        else if(operation.getCmd() == "close"){
+            result = m_deviceService.closeSolenoidValue(plcDevice); 
+        } 
+        else {
+            return LobbyResult<SolenoidValveOperationResult>::Error(ErrorCode::Code::SERVER_INTERNAL_ERROR);
         }
 
-        // 5️⃣ 返回结果
-        // SolenoidValveOperationResult result;
-        // result.cmdId = cmd.getCmdId();
+        Command cmd = Command::createOperateSolenoidResult(result,operation);
 
-        // return LobbyResult<SensorQuery>::Ok();
-    // }
-    // catch (const std::exception& e) {
-        return LobbyResult<DeviceOperationResult>::Error(
-            ErrorCode::Code::SERVER_INTERNAL_ERROR
-        );
-    // }
-    //   LobbyResult<DeviceOperationResult>
-    // operateSolenoidValve(const SolenoidValveOperation& op) override
-    // {
-    //     // (1) 鉴权
-    //     auto auth = m_safety.authenticate();
-    //     if (!auth) {
-    //         return LobbyResult<DeviceOperationResult>::Error(
-    //             ErrorCode::AUTH_PERMISSION_DENIED);
-    //     }
+        m_commandService.executeCommand(cmd);
+        
+        sendSolenoidResult(cmd,operation,result);
+        
+        
+        SolenoidValveOperationResult opResult = SolenoidValveOperationResult::createResult(result,operation);
 
-    //     // (2) 查询设备状态
-    //     auto deviceStatus = m_deviceClient.getDeviceStatus(op.getDeviceId());
-    //     if (!deviceStatus) {
-    //         return LobbyResult<DeviceOperationResult>::Error(
-    //             ErrorCode::DEVICE_NOT_FOUND);
-    //     }
+        return LobbyResult<SolenoidValveOperationResult>::Ok(opResult);
+    } catch (const std::exception& e) {
+            LOG_WARNING("操作电磁阀出错 " + std::string("Exception: ") + e.what());
+            return LobbyResult<SolenoidValveOperationResult>::Error(ErrorCode::Code::SERVER_INTERNAL_ERROR);
 
-    //     if (!deviceStatus.value().isAvailable()) {
-    //         return LobbyResult<DeviceOperationResult>::Error(
-    //             ErrorCode::DEVICE_BUSY);
-    //     }
-
-    //     // (3) 执行命令
-    //     auto result = m_commandClient.operateSolenoidValve(op);
-    //     if (!result) {
-    //         return result; // 直接返回错误
-    //     }
-
-    //     // (4) 更新设备状态
-    //     DeviceStatus newStatus = deviceStatus.value();
-    //     newStatus.updateFromOperation(result.value());
-
-    //     m_deviceClient.updateDeviceStatus(op.getDeviceId(), newStatus);
-
-    //     // (5) 返回结果
-    //     return result;
-    // }
-
-    
+        }
 }
+
+LobbyResult<void> LobbyService::startDeviceStatusUpload(const DeviceStatusQuery& query){
+    auto auth = m_safetykService.authenticate();
+    if (!auth)return LobbyResult<void>::Error(ErrorCode::Code::AUTH_PERMISSION_DENIED);
+    if(!TimingUpload()){
+        return LobbyResult<void>::Error(ErrorCode::Code::SERVER_TOO_MANY_Repeat);
+    }
+    return LobbyResult<void>::Ok();
+}
+
 //private
 void LobbyService::TimingProcessing(){
     
@@ -162,12 +136,50 @@ void LobbyService::TimingProcessing(){
 
 }
 
+bool LobbyService::TimingUpload(){
 
-void LobbyService::TimingPullVideoFrame(){
-
+    if(m_Timer.isRunningUpload()) return false;
+    m_Timer.scheduleRepeated(5000,[this]() {
+        // 👇 业务逻辑在这里（不是 Timer 内部）
+        auto status = m_deviceService.viewAllDeviceStatus();
+        // upload(status); //上传逻辑
+        sendBoxStatusResult(status);
+        
+    });
 }
 
 
 
+void LobbyService::TimingPullVideoFrame(){
+
+}
+void LobbyService::sendBoxStatusResult(const BoxDeviceStatus& boxStatus) {
+    json msg;
+
+    // 从传入的 boxStatus 中获取所有设备状态
+    // msg["solenoid"] = boxStatus.getSolenoidStatusList();
+    // msg["sensor"] = boxStatus.getSensorStatusList();
+    // msg["camera"] = boxStatus.getCameraStatusList();
+    // msg["infrared"] = boxStatus.getInfraredSensorStatusList();
+    // msg["smokeDetector"] = boxStatus.getSmokeDetectorStatusList();
+    // msg["waterLevel"] = boxStatus.getWaterLevelSensorStatusList();
+    // msg["doorLock"] = boxStatus.getDoorLockStatusList();
+
+    // MQTT 发送
+    std::string topic = "device/uploadStatus/result";
+    m_commandService.sendCommandResultToMqtt(topic, msg.dump());
+}
 
 
+void LobbyService::sendSolenoidResult(const Command& cmd, const SolenoidValveOperation& op,const DeviceOperationResult& result){
+    if(op.getReqSource() == "http") return;
+    json msg;
+    msg["cmdId"] = cmd.getCmdId();
+    msg["deviceId"] = cmd.getDeviceId();
+    msg["plcId"] = op.getPlcId();
+    msg["success"] = result.operationBool()? "0" : "-1";
+
+    std::string topic = "device/solenoid/result";
+
+    m_commandService.sendCommandResultToMqtt(topic, msg.dump());
+}

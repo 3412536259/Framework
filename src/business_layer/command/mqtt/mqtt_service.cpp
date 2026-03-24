@@ -3,7 +3,8 @@
 
 #include "business_layer/command/mqtt_command.h"
 #include "business_layer/command/controller.h"
-
+#include <fcntl.h>
+#include <errno.h>
 // public
 
 MqttService::~MqttService(){
@@ -13,17 +14,28 @@ MqttService::~MqttService(){
 }
 
 
-void MqttService::start(){
-    if(running) return;
+bool MqttService::start(){
+    // 已经在运行，直接返回 false
+    if(running) {
+        std::cerr << "MQTT Service already running\n";
+        return false;
+    }
+
+    // 标记启动中
     running = true;
-    if(!connectBroker())
-    {
-        std::cerr<<"MQTT connect failed\n";
-        std::cout<<"MQTT Service is not"<<std::endl; 
-        return;
-    } 
-    std::cout<<"MQTT Service "<<std::endl;   
-    mqttThread = std::thread(&MqttService::run,this);
+    
+    // 连接失败 → 恢复状态 + 返回 false
+    if(!connectBroker()) {
+        std::cerr << "MQTT connect failed\n";
+        std::cout << "MQTT Service is not started\n"; 
+        running = false;  // 关键：失败要重置标志
+        return false;     // 返回 false
+    }
+
+    // 连接成功，启动线程
+    mqttThread = std::thread(&MqttService::run, this);
+
+    return true;  // 关键：成功返回 true
 }
 
 void MqttService::stop(){  
@@ -45,7 +57,7 @@ void MqttService::stop(){
     closeConnection();
 }
 
-void MqttService::publish(const std::string& topic, std::string& payload){
+void MqttService::publish(const std::string& topic, const std::string& payload){
     auto packet = m_protocol.encodePublish(topic, payload);
 
     sendPacket(packet);
@@ -61,7 +73,7 @@ void MqttService::subscribe(const std::string& topic)
 
 
 // private
- void MqttService::run(){
+void MqttService::run(){
     std::cout<<"MQTT Service is running..."<<std::endl;
     while(running){
         std::string topic,payload;
@@ -74,26 +86,106 @@ void MqttService::subscribe(const std::string& topic)
     std::cout<<"MQTT Service stopped."<<std::endl;
 }
 
-bool MqttService::connectBroker(){  
-    socketFd = socket(AF_INET,SOCK_STREAM,0); //创建socket
-    if(socketFd < 0){
-        std::cerr<<"Failed to create socket\n";
-        return false;
-    }
-    sockaddr_in serverAddr{};
-    serverAddr.sin_family = AF_INET; //IPv4
-    serverAddr.sin_port = htons(port); //端口号
-    inet_pton(AF_INET,Ip.c_str(),&serverAddr.sin_addr); //IP地址
-    
-    if(connect(socketFd,(sockaddr*)&serverAddr, sizeof(serverAddr)) < 0){ //连接服务器
-        std::cerr<<"Failed to connect to MQTT broker\n";
+
+
+bool MqttService::connectBroker() {
+    socketFd = socket(AF_INET, SOCK_STREAM, 0);
+    if (socketFd < 0) {
+        std::cerr << "socket create failed\n";
         return false;
     }
 
-    //发送CONNECT包
+    // 🔥 1. 设置非阻塞
+    fcntl(socketFd, F_SETFL, O_NONBLOCK);
+
+    sockaddr_in serverAddr{};
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(port);
+
+    if (inet_pton(AF_INET, Ip.c_str(), &serverAddr.sin_addr) <= 0) {
+        std::cerr << "Invalid IP\n";
+        return false;
+    }
+
+    // 🔥 2. 发起连接
+    int ret = connect(socketFd, (sockaddr*)&serverAddr, sizeof(serverAddr));
+
+    if (ret == 0) {
+        // 立即连接成功（很少见）
+        std::cout << "connect success immediately\n";
+    }
+    else if (ret < 0) {
+        if (errno != EINPROGRESS) {
+            std::cerr << "connect error immediately\n";
+            return false;
+        }
+
+        // 🔥 3. 等待连接完成（带超时）
+        fd_set wfds;
+        FD_ZERO(&wfds);
+        FD_SET(socketFd, &wfds);
+
+        timeval tv{};
+        tv.tv_sec = 3;  // ⏱️ 超时3秒
+
+        ret = select(socketFd + 1, nullptr, &wfds, nullptr, &tv);
+
+        if (ret == 0) {
+            std::cerr << "connect timeout\n";
+            return false;
+        }
+        else if (ret < 0) {
+            std::cerr << "select error\n";
+            return false;
+        }
+
+        // 🔥 4. 检查是否真的成功
+        int err;
+        socklen_t len = sizeof(err);
+        getsockopt(socketFd, SOL_SOCKET, SO_ERROR, &err, &len);
+
+        if (err != 0) {
+            std::cerr << "connect failed: " << strerror(err) << "\n";
+            return false;
+        }
+    }
+
+    std::cout << "connect success\n";
+    return true;
+}
+
+bool MqttService::mqttHandshake() {
     auto packet = m_protocol.encodeConnect(boxId);
 
-    return sendPacket(packet);
+    if (!sendPacket(packet)) return false;
+
+    
+    auto resp = recvPacket();
+
+    return m_protocol.parseConnAck(resp);
+}
+
+std::vector<uint8_t> MqttService::recvPacket() {
+    uint8_t header[2];
+
+    // 1️⃣ 先读固定头
+    if (recv(socketFd, header, 2, MSG_WAITALL) != 2) {
+        return {};
+    }
+
+    uint8_t type = header[0];
+    uint8_t remaining = header[1]; // 简化（实际是变长）
+
+    std::vector<uint8_t> packet(2 + remaining);
+    packet[0] = header[0];
+    packet[1] = header[1];
+
+    // 2️⃣ 读剩余部分
+    if (recv(socketFd, packet.data() + 2, remaining, MSG_WAITALL) != remaining) {
+        return {};
+    }
+
+    return packet;
 }
 
 bool MqttService::sendPacket(const std::vector<uint8_t>& data){

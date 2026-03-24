@@ -28,15 +28,17 @@ private:
 
 private:
 
-    void handleGetRealImage(const nlohmann::json& j);
+    HttpResponse handleoperateSolenoidValve(const nlohmann::json& j);
+
+    HttpResponse handleGetRealImage(const nlohmann::json& j);
 
     // void handleGetSensorData(const nlohmann::json& j);
 
-    void handleGetAllDeviceStatus(const nlohmann::json& j);
+    HttpResponse handleGetAllDeviceStatus(const nlohmann::json& j);
 
-    void handVideoHistoryTime(const nlohmann::json& j);
+    HttpResponse handVideoHistoryTime(const nlohmann::json& j);
     
-    void handVideoHistoryFile(const nlohmann::json& j);
+    HttpResponse handVideoHistoryFile(const nlohmann::json& j);
 
 
     // void

@@ -1,6 +1,7 @@
 #pragma once
 #include "business_layer/command/mqtt/mqtt_object.h"
 #include <vector>
+#include <iostream>
 //作用：1.编码：构建MQTT的 packet
 //      2.解码：解析MQTT的 socket
 
@@ -24,6 +25,8 @@ public:
 
     virtual bool decode(const std::vector<uint8_t>& buffer, MqttPacket& packet) = 0;
 
+    virtual bool parseConnAck(const std::vector<uint8_t>& data) = 0;
+
 };
 
 
@@ -42,7 +45,7 @@ public:
 
     bool decode(const std::vector<uint8_t>& buffer,MqttPacket& packet) override;
 
-
+    bool parseConnAck(const std::vector<uint8_t>& data) override;
 
 
 private:

@@ -39,6 +39,8 @@ public:
     //2.下载历史视频命令
     static Command createHistoricalVideo(DownloadHistoricalVideo& download);
 
+    //3.根据电磁阀操作返回结果创建命令
+    static Command createOperateSolenoidResult(const DeviceOperationResult& solenoid,const SolenoidValveOperation& operation);
     
 
     std::string getCmdId() const;
@@ -52,7 +54,7 @@ public:
     void setCmdState(CommandState state);
 private:
     //创建cmdId;
-    std::string createCmdId();//CMD_20260317_001 这样的
+    static std::string createCmdId();//CMD_20260317_001 这样的
 private:
     
 

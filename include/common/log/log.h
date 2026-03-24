@@ -31,7 +31,7 @@ public:
     void addSink(std::shared_ptr<ILogSink> sink);
 
     // 启动 / 停止
-    void start();
+    bool start();
     void stop();
 
 private:
