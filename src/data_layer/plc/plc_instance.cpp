@@ -5,13 +5,33 @@
 
 PlcInstance::PlcInstance(const PlcDevice& plcDevice,
                          const SerialConfig& serialConfig,
-                         const std::vector<SolenoidValue>& solenoidValues,
-                         const std::vector<InfraredSensor>& infraredSensors,
-                         const std::vector<PlcSmokeDetector>& smokeDetectors,
-                         const std::vector<PlcWaterLevelSensor>& waterLevelSensors)
+                         std::vector<SolenoidValue>& solenoidValues,
+                         std::vector<InfraredSensor>& infraredSensors,
+                         std::vector<PlcSmokeDetector>& smokeDetectors,
+                         std::vector<PlcWaterLevelSensor>& waterLevelSensors)
                          : plcDevice_(plcDevice),
-                           serialConfig_(serialConfig) {
+                           serialConfig_(serialConfig)
+{
+  solenoidMap_.reserve(solenoidValues.size());
+  infraredSensorMap_.reserve(infraredSensors.size());
+  smokeDetectorMap_.reserve(smokeDetectors.size());
+  waterLevelSensorMap_.reserve(waterLevelSensors.size()); 
+         
+  for (auto& solenoid : solenoidValues) {
+    solenoidMap_.emplace(solenoid.getDeviceId(), std::move(solenoid));
+  }
 
+  for (auto& sensor: infraredSensors) {
+    infraredSensorMap_.emplace(sensor.getDeviceId(), std::move(sensor));
+  }
+
+  for (auto& smokeDetector : smokeDetectors) {
+    smokeDetectorMap_.emplace(smokeDetector.getDeviceId(), std::move(smokeDetector));
+  }
+
+  for (auto& sensor : waterLevelSensors) {
+    waterLevelSensorMap_.emplace(sensor.getDeviceId(), std::move(sensor));
+  }
 }
 
 bool PlcInstance::openSolenoidValue(const PlcDeviceInfo& info) {

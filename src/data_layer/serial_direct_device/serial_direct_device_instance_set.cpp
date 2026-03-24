@@ -17,13 +17,13 @@ std::vector<TempHumidSensorStatus> SerialDirectDeviceInstanceSet::getSensorStatu
     return statusList;
 }
 
-std::vector<std::unique_ptr<DeviceData> > SerialDirectDeviceInstanceSet::acquisitionTempHumidSensorData() {
-    std::vector<std::unique_ptr<DeviceData> > sensorDataList;
+std::vector<DeviceData> SerialDirectDeviceInstanceSet::acquisitionTempHumidSensorData() {
+    std::vector<DeviceData> sensorDataList;
     sensorDataList.reserve(sensors_.size());
 
     for(auto& [key, sensor] : sensors_) {
         TempHumidSensorStatus status = sensor.readSensorData();
-        sensorDataList.push_back( std::make_unique<DeviceData> (1,status) );
+        sensorDataList.push_back(DeviceData (1,status) );
     }
     return sensorDataList;
 }

@@ -89,7 +89,7 @@ void DeviceService::stopTimer() {
 void DeviceService::devicesDataCollection(int deviceType) {
     
     // 设备数据采集 DeviceData 父类
-    std::vector<std::unique_ptr<DeviceData> > deviceData = deviceManageService_.deviceDataAcquisition(deviceType);
+    std::vector<DeviceData> deviceData = deviceManageService_.deviceDataAcquisition(deviceType);
     //更新一种设备的状态和实时数据
     deviceStatusCache_.updateDeviceStatus(deviceData);
 }

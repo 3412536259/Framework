@@ -12,8 +12,8 @@ link_directories(/usr/local/lib)
 # ========== 源文件列表 ==========
 set(SRC_FILES
     # text/sql_test.cpp
-    text/comand_test.cpp
-    # text/device_service_test.cpp
+    # text/comand_test.cpp
+    text/device_service_test.cpp
     # text/text.cpp
 
     #========== 业务层 ==========
@@ -82,7 +82,7 @@ set(SRC_FILES
 
     data_layer/plc_device/infrared_sensor_status.cpp
     data_layer/plc_device/infrared_sensor.cpp
-    data_layer/plc_device/infrared_sensor.cpp
+    data_layer/plc_device/infrared_sensor_status.cpp
     data_layer/plc_device/plc_device_info.cpp
     data_layer/plc_device/plc_smoke_detector_status.cpp
     data_layer/plc_device/plc_smoke_detector.cpp

@@ -8,7 +8,7 @@ class PlcInstanceSet {
 
     public:
         PlcInstanceSet() = default;
-        PlcInstanceSet(const std::unordered_map<std::string,PlcInstance> plcMap);
+        PlcInstanceSet(std::unordered_map<std::string,PlcInstance> plcMap);
         ~PlcInstanceSet() = default;
 
         bool openPlcSolenoid(const PlcDeviceInfo& info);
@@ -19,10 +19,10 @@ class PlcInstanceSet {
         std::vector<PlcSmokeDetectorStatus> getPlcSmokeDetectorStatusList();
         std::vector<PlcWaterLevelSensorStatus> getPlcWaterLevelSensorStatusList();
 
-        std::vector<std::unique_ptr<DeviceData> > acquisitionPlcSolenoidData();
-        std::vector<std::unique_ptr<DeviceData> > acquisitionPlcInfraredSensorData();
-        std::vector<std::unique_ptr<DeviceData> > acquisitionPlcSmokeDetectorData();
-        std::vector<std::unique_ptr<DeviceData> > acquisitionPlcWaterLevelSensorData();
+        std::vector<DeviceData> acquisitionPlcSolenoidData();
+        std::vector<DeviceData> acquisitionPlcInfraredSensorData();
+        std::vector<DeviceData> acquisitionPlcSmokeDetectorData();
+        std::vector<DeviceData> acquisitionPlcWaterLevelSensorData();
 
         SolenoidStatus getPlcSolenoidStatus(const SolenoidValueInfo& info);
         InfraredSensorStatus getPlcInfraredSensorStatus(const PlcDeviceInfo& info);//获取红外传感器状态

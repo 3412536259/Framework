@@ -1,7 +1,11 @@
 #include "data_layer/gpio_device/gpio_device_instance_set.h"
 
 GPIODeviceInstanceSet::GPIODeviceInstanceSet(std::vector<DoorLock> doorLocks) {
+    doorLocks_.reserve(doorLocks.size());
 
+    for (auto& lock : doorLocks) {
+        doorLocks_.emplace(lock.getDeviceId(), std::move(lock));
+    }
 }
 
 bool GPIODeviceInstanceSet::lockDoorLock(const GPIODeviceSimpleInfo& info) {
@@ -34,13 +38,13 @@ std::vector<DoorLockStatus> GPIODeviceInstanceSet::getDoorLockStatusList() {
     return doorLockStatusList;
 }
 
-std::vector<std::unique_ptr<DeviceData> > GPIODeviceInstanceSet::acquisitionDoorLockData() {
-    std::vector<std::unique_ptr<DeviceData> > doorLockDataList;
+std::vector<DeviceData> GPIODeviceInstanceSet::acquisitionDoorLockData() {
+    std::vector<DeviceData> doorLockDataList;
     doorLockDataList.reserve(doorLocks_.size());
 
     for(auto& [key, doorLock] : doorLocks_) {
         DoorLockStatus status = doorLock.queryDoorLockStatus();
-        doorLockDataList.push_back( std::make_unique<DeviceData> (3,status) );
+        doorLockDataList.push_back( DeviceData(3,status) );
     }
 
     return doorLockDataList;
