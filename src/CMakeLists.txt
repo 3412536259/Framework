@@ -32,7 +32,7 @@ set(SRC_FILES
     business_layer/device/device_manage_service.cpp
     business_layer/device/device_service.cpp
     business_layer/device/device_status_cache.cpp
-    business_layer/device/real_time_frame_cache.cpp
+    business_layer/lobby/real_time_frame_cache.cpp
 
     #========== 数据层 ==========
     data_layer/command/command_object.cpp

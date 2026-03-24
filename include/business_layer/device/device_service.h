@@ -3,7 +3,7 @@
 #include "business_layer/device/device_manage_service.h"
 #include "business_layer/device/device_status_cache.h"
 #include "business_layer/device/device_acquisition_task.h"
-#include "business_layer/device/real_time_frame_cache.h"
+#include "business_layer/lobby/real_time_frame_cache.h"
 
 #include "data_layer/camera/camera_real_time_frame.h"
 
