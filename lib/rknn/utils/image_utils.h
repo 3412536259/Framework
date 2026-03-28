@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "common.h"
+#include "/home/ztl/workspace/Framework/lib/rknn/utils/common.h"
 
 /**
  * @brief LetterBox

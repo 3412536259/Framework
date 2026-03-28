@@ -5,6 +5,6 @@ GPIODeviceSimpleInfo::GPIODeviceSimpleInfo(const std::string& deviceId,const std
 
 }
 
-std::string GPIODeviceSimpleInfo::getDeviceId() const {
+const std::string GPIODeviceSimpleInfo::getDeviceId() const {
     return deviceId_;
 }

@@ -1,7 +1,9 @@
 #ifndef FRAME_QUEUE_H
 #define FRAME_QUEUE_H
 
-#include <libavutil/frame.h>
+extern "C" {
+    #include <libavutil/frame.h>
+} 
 #include <queue>
 #include <mutex>
 #include <memory>

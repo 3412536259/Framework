@@ -1,11 +1,14 @@
 #ifndef PACKET_DECODE_H
 #define PACKET_DECODE_H
 
-#include <libavcodec/avcodec.h>
+extern "C" {
+    #include <libavcodec/avcodec.h>
+}
+
 #include <vector>
 class PacketDecoder {
     public:
-        PacketDecoder();
+        PacketDecoder() = default;
         ~PacketDecoder();
 
         bool open(const AVCodecParameters* params);// 初始化解码器

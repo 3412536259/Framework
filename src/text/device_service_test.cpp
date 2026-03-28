@@ -1,5 +1,8 @@
 #include "business_layer/device/device_service.h"
-
+#include "common/config/config_parser.h"
+#include "business_layer/stream/stream_service.h"
+#include <iostream>
+const std::string CONFIGPATH = "../include/common/config/config.json";
 int main(int argc, char* argv[]) {
 
     TempHumidSensorAcquisitionTask tempSensorTask = TempHumidSensorAcquisitionTask(1, 10);
@@ -11,55 +14,47 @@ int main(int argc, char* argv[]) {
     SmokeDetectorAcquisitionTask smokeTask = SmokeDetectorAcquisitionTask(6,10);
 
 
-    PlcDeviceAcquisitionTask plcTask = PlcDeviceAcquisitionTask(solenoidTask,infraredTask,waterLevelTask,smokeTask);
+    PlcDeviceAcquisitionTask plcTask = PlcDeviceAcquisitionTask(solenoidTask);
 
     DoorLockAcquisitionTask doorLockTask = DoorLockAcquisitionTask(3,10);
-    GPIODeviceAcquisitionTask gpioTask  = GPIODeviceAcquisitionTask(doorLockTask);
+    GPIODeviceAcquisitionTask gpioTask  = GPIODeviceAcquisitionTask(doorLockTask,infraredTask,waterLevelTask,smokeTask);
 
     //设备任务类
     DeviceAcquisitionTask deviceAcquisitionTask = DeviceAcquisitionTask(serialDeviceTask, plcTask,gpioTask);
 
-    PlcDevice plcDevice = PlcDevice(10,"plc_001","111","?","0x01");
-    std::vector<SolenoidValue> solenoidvalues ;
-    SolenoidValue solenoid = SolenoidValue(0,"solenoid_001","001","00","00","00","00","00");
-    solenoidvalues.push_back(solenoid);
+    if(!ConfigParser::getInstance().loadFromFile(CONFIGPATH)) {
+        std::cout << "配置文件加载失败" << std::endl;
+    }
 
-    InfraredSensor infraredSensor = InfraredSensor(4,"11","11","211","1221","22","121");
-    std::vector<InfraredSensor>  infraredSensors;
-    infraredSensors.push_back(infraredSensor);
+    // PlcInstanceSet plcInstances;
+    // SerialDirectDeviceInstanceSet serialDeviceInstances;
+    // GPIODeviceInstanceSet gpioDeviceInstances;
+    // DeviceManageService devicemanageService(std::move(plcInstances),std::move(gpioDeviceInstances),std::move(serialDeviceInstances));
 
-    std::vector<PlcSmokeDetector> smokeDetectors;
-    PlcSmokeDetector smokeDetector = PlcSmokeDetector(5,"11","11","211","1221","22","121");
-    smokeDetectors.push_back(smokeDetector);
+    // DeviceStatusCache deviceStatusCache;
+    // RealTimeFrameCache realTimeFrameCache;
 
-    std::vector<PlcWaterLevelSensor> waterLevelSensors;
-    PlcWaterLevelSensor waterSensor = PlcWaterLevelSensor(6,"11","11","211","1221","22","121");
+    // DeviceService deviceService(devicemanageService,deviceStatusCache,deviceAcquisitionTask,realTimeFrameCache);
 
-    PlcInstance plcInsatnce = PlcInstance(plcDevice,SerialConfig(1,1,1,"11"),solenoidvalues,infraredSensors,smokeDetectors,waterLevelSensors);
-    std::unordered_map<std::string, PlcInstance> plcMap;
-    plcMap.emplace("plc_001",plcInsatnce);
-    PlcInstanceSet plcInstances = PlcInstanceSet(plcMap);
 
-    
-    std::unordered_map<std::string,std::unique_ptr<Camera> >  cameras;
-    cameras.emplace("camera_00x",std::make_unique<Camera> ("camera_00x","camera","") );
-    CameraInstanceSet cameraInstances(std::move(cameras) );
+    // InfraredSensorStatus infraredSensorStatus = deviceService.getInfraredSensorStatus(GPIODeviceSimpleInfo("infrared_01","红外传感器"));
+    // SmokeDetectorStatus smokeStatus = deviceService.getSmokeDetectorStatus(GPIODeviceSimpleInfo("smoke_01","烟感传感器"));
+    // WaterLevelSensorStatus waterLevelSensorStatus =  deviceService.getWaterLevelSensorStatus(GPIODeviceSimpleInfo("water_01","水浸传感器"));
 
-    std::vector<DoorLock> doorLocks;
-    doorLocks.reserve(5);
-    doorLocks.push_back(DoorLock(3,"1","!",1,1,1,"1","1",1,"11"));
-    GPIODeviceInstanceSet gpioInstanceSet = GPIODeviceInstanceSet(doorLocks);
+    // std::cout <<"获取到的红外传感器状态:" << infraredSensorStatus.getStatus() << std::endl;
+    // std::cout <<"获取到的烟感传感器状态" << smokeStatus.getStatus() << std::endl;
+    // std::cout <<"获取到的水浸传感器状态" << waterLevelSensorStatus.getStatus() << std::endl;
 
-    std::vector<TempHumidSensor> sensors;
-    sensors.reserve(5);
-    sensors.push_back(TempHumidSensor(1,"1","1","1","1","1",1,SerialConfig()));
-    SerialDirectDeviceInstanceSet serialInstances = SerialDirectDeviceInstanceSet(sensors);
 
-    DeviceManageService deviceManageService(std::move(plcInstances),std::move(cameraInstances),std::move(gpioInstanceSet),std::move(serialInstances));
+    // int result = deviceService.lockDoorLock(GPIODeviceSimpleInfo("door_lock_1","门锁1"));
+    // if(result == 0) {
+    //     std::cout <<"打开成功" << std::endl;
+    // } else if(result == -1) {
+    //     std::cout <<"打开失败" << std::endl;
+    // } else {
+    //     std::cout << "门锁已经打开" << std::endl;
+    // }
 
-    DeviceStatusCache deviceStatusCache = DeviceStatusCache();
-
-    RealTimeFrameCache realTimeFrameCache = RealTimeFrameCache();
-
-    DeviceService deviceService(deviceManageService,deviceStatusCache,deviceAcquisitionTask,realTimeFrameCache);
+    StreamService streamService;
+ 
 }

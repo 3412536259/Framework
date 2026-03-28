@@ -29,12 +29,12 @@ CameraHistoryVideo CameraInstanceSet::getCameraHistoryVideo(const std::string& c
     return camera->second->getCameraHistoryVideo(); 
 }
 
-std::vector<DeviceData> CameraInstanceSet::acquisitionCameraData() {
-    std::vector<DeviceData> cameraDataList;
-    cameraDataList.reserve(cameras_.size());
-    for(auto& [cameraId, camera] : cameras_) {
-        CameraStatus status = camera->getStatus();
-        cameraDataList.push_back(DeviceData(2, status));
-    }
-    return cameraDataList;
-}
+// std::vector<DeviceData> CameraInstanceSet::acquisitionCameraData() {
+//     std::vector<DeviceData> cameraDataList;
+//     cameraDataList.reserve(cameras_.size());
+//     for(auto& [cameraId, camera] : cameras_) {
+//         CameraStatus status = camera->getStatus();
+//         cameraDataList.push_back(DeviceData(2, status));
+//     }
+//     return cameraDataList;
+// }

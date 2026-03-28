@@ -4,6 +4,7 @@
 #include "data_layer/sensor/temp_humid_sensor_status.h"
 #include "data_layer/sensor/temp_humid_sensor.h"
 #include "data_layer/device/device_data.h"
+#include "common/config/config_parser.h"
 
 #include <vector>
 #include <unordered_map>
@@ -13,14 +14,14 @@ class SensorInstanceSet {
         SensorInstanceSet();
         ~SensorInstanceSet();
 
-        const std::vector<TempHumidSensorStatus> getSensorStatusList() const;
+        const std::vector<TempHumidSensorStatus> getSensorStatusList() ;
          //循环获取传感器实时数据
         // const std::vector<SensorRealTimeData>& getSensorRealTimeDataList() const;
 
         std::vector<std::unique_ptr<DeviceData> > acquisitionSensorData();
 
     private:
-        std::unordered_map<std::string,std::unique_ptr<TempHumidSensor> > sensors_;
+        std::unordered_map<std::string,TempHumidSensor> sensors_;
 };
 
 #endif

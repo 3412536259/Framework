@@ -5,7 +5,7 @@
 class IFrameConsumer {
     public:
         virtual ~IFrameConsumer() = default;
-        virtual void onFrame(const Frame& frame) = 0;
+        virtual void onFrame(const KeyFrame& frameData) = 0;
 };
 
 #endif

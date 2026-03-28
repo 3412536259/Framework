@@ -1,0 +1,23 @@
+#ifndef INFRARED_SENSOR_STATUS_H
+#define INFRARED_SENSOR_STATUS_H
+
+#include "data_layer/device/device_status.h"
+#include "data_layer/sensor/sensor_types.h"
+class InfraredSensorStatus : public DeviceStatus {
+
+    public:
+        InfraredSensorStatus() = default;
+        InfraredSensorStatus(const std::string& deviceId,
+                             const int type,
+                             const std::string& name,
+                             const InfraredStatus& status);
+        ~InfraredSensorStatus() override = default;
+
+        std::string getStatus();
+    
+    private:
+        InfraredStatus status_;
+
+};
+
+#endif

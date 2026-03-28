@@ -6,15 +6,16 @@
 #include "data_layer/sensor/temp_humid_sensor.h"
 #include "data_layer/sensor/temp_humid_sensor_status.h"
 #include "data_layer/device/device_data.h"
+#include "common/config/config_parser.h"
 class SerialDirectDeviceInstanceSet {
 
     public:
-        SerialDirectDeviceInstanceSet() = default;
         ~SerialDirectDeviceInstanceSet() = default;
-
-        SerialDirectDeviceInstanceSet(std::vector<TempHumidSensor> sensorList);
+        SerialDirectDeviceInstanceSet();
 
         std::vector<TempHumidSensorStatus> getSensorStatusList();
+
+        TempHumidSensorStatus getSensorStatus(const std::string& deviceId);
 
         std::vector<DeviceData> acquisitionTempHumidSensorData();
     

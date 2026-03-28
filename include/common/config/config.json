@@ -1,0 +1,92 @@
+{
+    "device_config": {
+        "box": "1",
+        "devices": {
+            "nvr": {
+                "nvrId": "nvr_001",
+                "brand": "Hikvision",
+                "ip": "192.168.31.102",
+                "username": "admin",
+                "password": "gzh13033676063",
+                "port": 8000
+            },
+            "camera": [
+                {
+                    "id": "10",
+                    "nvrId": "nvr_001",
+                    "name": "camera1",
+                    "url": "rtsp://admin:Wlkjaqxy411@10.9.255.21:554/Streaming/Channels/101"
+                },
+                {
+                    "id": "2",
+                    "nvrId": "nvr_001",
+                    "name": "camera2",
+                    "url": "rtsp://admin:Wlkjaqxy411@10.9.255.21:554/Streaming/Channels/201"
+                }
+            ],
+            "plc": [],
+            "plc_device": [],
+            "serial_direct_devices": {
+                "temp_humid_sensor": {
+                    "serial_config": {
+                        "port": "/dev/ttyS3",
+                        "baud_rate": 9600,
+                        "parity": "none",
+                        "data_bits": 8,
+                        "stop_bits": 1
+                    },
+                    "sensors": [
+                        {
+                            "id": "temp_humidity_01",
+                            "name": "温湿度传感器1",
+                            "slave_addr": "0x01",
+                            "reg_addr": "0x0000",
+                            "read_regs": 2
+                        }
+                    ]
+                }
+            },
+            "gpio_devices": {
+                "door_locks": [
+                    {
+                        "id": "door_lock_1",
+                        "name": "门锁1",
+                        "pin": 96,
+                        "direction": "out"
+                    }
+                ],
+                "infrared_sensors": [
+                    {
+                        "id": "infrared_01",
+                        "name": "红外传感器",
+                        "type": "infrared",
+                        "pin": 62,
+                        "direction": "in"
+                    }
+                ],
+                "smoke_detectors": [
+                    {
+                        "id": "smoke_01",
+                        "name": "烟感传感器",
+                        "type": "smoke",
+                        "pin": 107,
+                        "direction": "in",
+                        "description": "烟雾检测，后台监听触发告警"
+                    }
+                ],
+                "water_level_sensors": [
+                    {
+                        "id": "water_01",
+                        "name": "水浸传感器",
+                        "type": "water_immersion",
+                        "pin": 106,
+                        "direction": "out",
+                        "description": "漏水检测，后台监听触发告警"  
+                    }
+                ]
+            }
+                
+            
+        }
+    }
+}

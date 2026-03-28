@@ -1,7 +1,7 @@
 #include "data_layer/plc/plc_instance_set.h"
 
-PlcInstanceSet::PlcInstanceSet(std::unordered_map<std::string,PlcInstance> plcMap) 
-    : plcMap_(std::move(plcMap) ) {
+PlcInstanceSet::PlcInstanceSet() 
+{
 
 }
 
@@ -48,46 +48,6 @@ std::vector<SolenoidStatus> PlcInstanceSet::getPlcSolenoidStatusList() {
     return solenoidStatusList;
 }
 
-std::vector<InfraredSensorStatus> PlcInstanceSet::getPlcInfraredSensorStatusList() {
-    std::vector<InfraredSensorStatus> infraredStatusList;
-    int listSize = 0;
-    for( auto& [key,plc] : plcMap_) {
-        listSize += plc.getInfraredSensorNum(); 
-    }
-    infraredStatusList.reserve(listSize);
-    for(auto& [key,plc] : plcMap_) {
-        const auto& list = plc.getInfraredSensorStatusList();
-        infraredStatusList.insert(infraredStatusList.end(),list.begin(),list.end());
-    }
-    return infraredStatusList;
-}
-std::vector<PlcSmokeDetectorStatus> PlcInstanceSet::getPlcSmokeDetectorStatusList() {
-    std::vector<PlcSmokeDetectorStatus> smokeStatusList;
-    int listSize = 0;
-    for(auto& [key,plc] : plcMap_) {
-        listSize += plc.getSmokeSensorNum(); 
-    }
-    smokeStatusList.reserve(listSize);
-    for(auto& [key,plc] : plcMap_) {
-        const auto& list = plc.getSmokeDetectorStatusList();
-        smokeStatusList.insert(smokeStatusList.end(),list.begin(),list.end());
-    }
-    return smokeStatusList;
-}
-std::vector<PlcWaterLevelSensorStatus> PlcInstanceSet::getPlcWaterLevelSensorStatusList() {
-    std::vector<PlcWaterLevelSensorStatus> waterLevelSensorStatusList;
-    int listSize = 0;
-    for(auto& [key,plc] : plcMap_) {
-        listSize += plc.getWaterLevelSensorNum(); 
-    }
-    waterLevelSensorStatusList.reserve(listSize);
-    for( auto& [key,plc] : plcMap_) {
-        const auto& list = plc.getWaterLevelStatusList();
-        waterLevelSensorStatusList.insert(waterLevelSensorStatusList.end(),list.begin(),list.end());
-    }
-    return waterLevelSensorStatusList;
-}
-
 std::vector<DeviceData> PlcInstanceSet::acquisitionPlcSolenoidData() {
     std::vector<DeviceData> solenoidDataList;
     int listSize = 0;
@@ -104,56 +64,8 @@ std::vector<DeviceData> PlcInstanceSet::acquisitionPlcSolenoidData() {
     }
     return solenoidDataList;
 }
-std::vector<DeviceData> PlcInstanceSet::acquisitionPlcInfraredSensorData() {
-    std::vector<DeviceData> infraredDataList;
-    int listSize = 0;
-    for(auto& [key,plc] : plcMap_) {
-        listSize += plc.getInfraredSensorNum(); 
-    }
 
-    for( auto& [key,plc] : plcMap_) {
-        std::vector<InfraredSensorStatus> statusList = plc.getInfraredSensorStatusList();
-
-        for (auto& status : statusList) {
-            infraredDataList.push_back( DeviceData(4, status) );
-        }
-    }
-    return infraredDataList;
-}
-std::vector<DeviceData> PlcInstanceSet::acquisitionPlcSmokeDetectorData() {
-    std::vector<DeviceData> smokeDetectorDataList;
-    int listSize = 0;
-    for(auto& [key,plc] : plcMap_) {
-        listSize += plc.getSmokeSensorNum(); 
-    }
-
-    for( auto& [key,plc] : plcMap_) {
-        std::vector<PlcSmokeDetectorStatus> statusList = plc.getSmokeDetectorStatusList();
-
-        for (auto& status : statusList) {
-            smokeDetectorDataList.push_back(DeviceData(5, status) );
-        }
-    }
-    return smokeDetectorDataList;
-}
-std::vector<DeviceData> PlcInstanceSet::acquisitionPlcWaterLevelSensorData() {
-    std::vector<DeviceData> waterLevelSensorDataList;
-    int listSize = 0;
-    for(auto& [key,plc] : plcMap_) {
-        listSize += plc.getSolenoidSensorNum(); 
-    }
-
-    for( auto& [key,plc] : plcMap_) {
-        std::vector<PlcWaterLevelSensorStatus> statusList = plc.getWaterLevelStatusList();
-
-        for (auto& status : statusList) {
-            waterLevelSensorDataList.push_back( DeviceData(6, status) );
-        }
-    }
-    return waterLevelSensorDataList;
-}
-
-SolenoidStatus PlcInstanceSet::getPlcSolenoidStatus(const SolenoidValueInfo& info) {
+SolenoidStatus PlcInstanceSet::getPlcSolenoidStatus(const PlcDeviceInfo& info) {
     auto it = plcMap_.find(info.getPlcId());
 
     if(it == plcMap_.end()) {
@@ -161,32 +73,4 @@ SolenoidStatus PlcInstanceSet::getPlcSolenoidStatus(const SolenoidValueInfo& inf
     }
     PlcInstance& plc = it -> second;
     return plc.getSolenoidValueStatus(info);
-}
-
-InfraredSensorStatus PlcInstanceSet::getPlcInfraredSensorStatus(const PlcDeviceInfo& info) {
-    auto it = plcMap_.find(info.getPlcId());
-
-    if(it == plcMap_.end()) {
-        return InfraredSensorStatus();
-    }
-    PlcInstance& plc = it -> second;
-    return plc.getInfraredSensorStatus(info);
-}
-PlcSmokeDetectorStatus PlcInstanceSet::getPlcSmokeDetectorStatus(const PlcDeviceInfo& info) {
-    auto it = plcMap_.find(info.getPlcId());
-
-    if(it == plcMap_.end()) {
-        return PlcSmokeDetectorStatus();
-    }
-    PlcInstance& plc = it -> second;
-    return plc.getSmokeDetectorStatus(info);
-}
-PlcWaterLevelSensorStatus PlcInstanceSet::getPlcWaterLevelSensorStatus(const PlcDeviceInfo& info) {
-    auto it = plcMap_.find(info.getPlcId());
-
-    if(it == plcMap_.end()) {
-        return PlcWaterLevelSensorStatus();
-    }
-    PlcInstance& plc = it -> second;
-    return plc.getWaterLevelSensorStatus(info);
 }

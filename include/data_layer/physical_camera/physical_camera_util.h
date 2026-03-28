@@ -1,32 +1,28 @@
-#ifndef PHYSICAL_CAMERA_H
-#define PHYSICAL_CAMERA_H
+#ifndef PHYSICAL_CAMERA_UTIL_H
+#define PHYSICAL_CAMERA_UTIL_H
 
 #include <cstdint>
 #include <memory>
 #include <cstddef>
 
-struct FrameData {
+extern "C" {
+    #include <libavcodec/avcodec.h>
+    #include <libavutil/pixfmt.h>
+}
+
+struct KeyFrame {
     std::string cameraId;
+    std::shared_ptr<AVFrame> frame;
     int64_t timestamp;
-    int width;
-    int height;
-    PixelFormat format;
-    std::shared_ptr<FrameBuffer> buffer;
 };
 
-class FrameBuffer {
-    public:
-        uint8_t* data;
-        size_t size;
-
+//生成视频用
+struct VideoPacket {
+    AVPacket pkt;
+    int64_t timestamp;
+    bool isKeyFrame;
 };
 
-enum class PixelFormat {
-    YUV420P,//FFmpeg默认
-    NV12,//硬件解码
-    RGB24,//显示用
-    BGR24,
-    UNKNOWN
-};
+
 
 #endif

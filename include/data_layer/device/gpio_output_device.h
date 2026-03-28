@@ -8,23 +8,14 @@ class GPIOOutputDevice : public GPIODevice {
         GPIOOutputDevice(int type,
                          const std::string& deviceId,
                          const std::string& name,
-                         int gpioGroup,
-                         int gpioPinNum,
                          int pin,
-                         const std::string& chipName,
-                         const std::string& direction,
-                         int initialValue,
-                         const std::string& activeLogic)
-                    : GPIODevice(type,deviceId,name,gpioGroup,gpioPinNum,pin,chipName,direction),
-                      initialValue_(initialValue),
-                      activeLogic_(activeLogic) {}
+                         const std::string& direction)
+                    : GPIODevice(type,deviceId,name,pin,direction) {}
     
     public:
         virtual ~GPIOOutputDevice() = default;
     
     private:
-        int initialValue_;
-        std::string activeLogic_;
 };
 
 #endif

@@ -4,9 +4,8 @@
 #include "business_layer/device/device_status_cache.h"
 #include "business_layer/device/device_acquisition_task.h"
 #include "business_layer/lobby/real_time_frame_cache.h"
-
 #include "data_layer/camera/camera_real_time_frame.h"
-
+#include "data_layer/serial_direct_device/serial_direct_device_info.h"
 #include<thread>
 #include<atomic>
 #include<mutex>
@@ -19,15 +18,11 @@ class IDeviceService{
         // virtual BoxDeviceRealTimeData getBoxDeviceRealTimeData() = 0;
 
         //电磁阀控制
-        virtual DeviceOperationResult openSolenoidValue( const PlcDeviceInfo& info) = 0;
-        virtual DeviceOperationResult closeSolenoidValue( const PlcDeviceInfo& info) = 0;
+        virtual int openSolenoidValue( const PlcDeviceInfo& info) = 0;
+        virtual int closeSolenoidValue( const PlcDeviceInfo& info) = 0;
         
         //小车控制
         // virtual DeviceOperationResult controlCarRotation( const CarControl& car) = 0;
-        
-        //摄像头
-        virtual CameraRealTimeFrame getCameraRealTimeFrame( const CameraInfo& info) = 0;
-        virtual CameraHistoryVideo viewCameraHistoryVideo( const CameraInfo& info) = 0;
 
         //雷达
         // virtual RadarPointCloud getRadarPointCloudData( const RadarInfo& info) = 0;
@@ -52,24 +47,33 @@ class DeviceService : public IDeviceService{
         // BoxDeviceRealTimeData getBoxDeviceRealTimeData() override;
 
         //电磁阀控制
-        DeviceOperationResult openSolenoidValue( const PlcDeviceInfo& info) override;
-        DeviceOperationResult closeSolenoidValue( const PlcDeviceInfo& info) override;
+        int openSolenoidValue( const PlcDeviceInfo& info) override;
+        int closeSolenoidValue( const PlcDeviceInfo& info) override;
 
-        DeviceOperationResult lockDoorLock(const GPIODeviceSimpleInfo& info);
-        DeviceOperationResult unlockDoorLock(const GPIODeviceSimpleInfo& info);
+        int lockDoorLock(const GPIODeviceSimpleInfo& info);
+        int unlockDoorLock(const GPIODeviceSimpleInfo& info);
         
         //小车控制
         // DeviceOperationResult controlCarRotation( const CarControl& car) override;
-        
-        //摄像头
-        CameraRealTimeFrame getCameraRealTimeFrame( const CameraInfo& info) override;
-        CameraHistoryVideo viewCameraHistoryVideo( const CameraInfo& info) override;
 
         //雷达
         // RadarPointCloud getRadarPointCloudData( const RadarInfo& info) override;
 
         //盒子配置
         // BoxConfigResult configBoxDeviceParams( const BoxDeviceParam& params) override;
+
+        SolenoidStatus getSolenoidValueStatus(const PlcDeviceInfo& info);
+        TempHumidSensorStatus getTempHumidSensorStatus(const SerialDirectDeviceInfo& info);
+        InfraredSensorStatus getInfraredSensorStatus(const GPIODeviceSimpleInfo& info);
+        SmokeDetectorStatus getSmokeDetectorStatus(const GPIODeviceSimpleInfo& info);
+        WaterLevelSensorStatus getWaterLevelSensorStatus(const GPIODeviceSimpleInfo& info);
+
+        void updateSolenoidStatus(const SolenoidStatus& status);
+        void updateTempHumidSensorStatus(const TempHumidSensorStatus& status);
+        void updateInfraredSensorStatus(const InfraredSensorStatus& status);
+        void updateSmokeDetectorStatus(const SmokeDetectorStatus& status);
+        void updateWaterLevelSensorStatus(const WaterLevelSensorStatus& status);
+
 
         void startTimer();
         void stopTimer();
@@ -80,8 +84,8 @@ class DeviceService : public IDeviceService{
         //定时器
         void timerLoop();
 
-        DeviceStatusCache& deviceStatusCache_;
         DeviceManageService& deviceManageService_;
+        DeviceStatusCache& deviceStatusCache_;
         DeviceAcquisitionTask& deviceAcquisitionTask_;
         RealTimeFrameCache& realTimeFrameCache_;
         

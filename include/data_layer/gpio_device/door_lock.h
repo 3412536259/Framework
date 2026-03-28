@@ -10,13 +10,8 @@ class DoorLock : public GPIOOutputDevice {
         DoorLock(int type,
                  const std::string& deviceId,
                  const std::string& name,
-                 int gpioGroup,
-                 int gpioPinNum,
                  int pin,
-                 const std::string& chipName,
-                 const std::string& direction,
-                 int initialValue,
-                 const std::string& activeLogic);
+                 const std::string& direction);
         ~DoorLock() override = default;
     
         bool lockDoorLock();
@@ -31,6 +26,8 @@ class DoorLock : public GPIOOutputDevice {
         bool exportGPIO();
         bool setGPIODirection();
         std::string getGPIOSysPath() ;
+        std::string buildGPIOBasePath();
+        std::string buildGPIOPin();
 };
 
 #endif

@@ -8,7 +8,7 @@ class IFrameDispater {
     public:
         virtual ~IFrameDispater() = default;
 
-        virtual bool  onKeyFrame(const FrameData& frame) = 0; 
+        virtual bool  onKeyFrame(const AVFrame* frame) = 0; 
 };
 
 class FrameDispater : public IFrameDispater {
@@ -16,11 +16,11 @@ class FrameDispater : public IFrameDispater {
         FrameDispater();
         ~FrameDispater();
 
-        bool onKeyFrame(const FrameData& frame);
+        bool onKeyFrame(const AVFrame* frame);
 
         void addConsumer(std::shared_ptr<IFrameConsumer> consumer);
 
-        void dispaterKeyFrame(const FrameData& frame);
+        void dispaterKeyFrame(const KeyFrame& frame);
     
     private:
         std::vector<std::weak_ptr<IFrameConsumer> > consumers_;

@@ -3,7 +3,10 @@
 
 #include <queue>
 #include <mutex>
-#include <libavcodec/avcodec.h>
+extern "C" {
+    #include <libavcodec/avcodec.h>
+}
+
 #include <condition_variable>
 class PacketQueue {
     public:

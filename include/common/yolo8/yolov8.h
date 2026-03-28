@@ -17,7 +17,7 @@
 #define _RKNN_DEMO_YOLOV8_H_
 
 #include "rknn_api.h"
-#include "common.h"
+#include "/home/ztl/workspace/Framework/lib/rknn/utils/common.h"
 
 #if defined(RV1106_1103) 
     typedef struct {

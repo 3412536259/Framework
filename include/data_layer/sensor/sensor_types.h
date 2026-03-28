@@ -8,22 +8,21 @@ enum class TempHumidStatus {
 };
 
 enum class InfraredStatus {
-    NORMAL = 0,
-    TRIGGER = 1,
+    NORMAL = 1,
+    TRIGGER = 0,
     UNKNOW = -1
 };
 
-enum class SmokeDetectorStatus {
-    NORMAL = 0,
-    ALARM = 1,
+enum class SmokeStatus {
+    NORMAL = 1,
+    ALARM = 0,
     UNKNOW = -1
 };
 
-enum class WaterLevelSensorStatus {
+enum class WaterLevelStatus {
     NORMAL = 0,
     ABNORMAL = -1,
     UNKNOW = -2,
-    OFFLINE = 1
 };
 
 #endif

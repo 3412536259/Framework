@@ -1,6 +1,6 @@
 #include "data_layer/physical_camera/stream_puller.h"
 
-StreamPuller::StreamPuller(std::string& rtspUrl) {
+StreamPuller::StreamPuller(const std::string& rtspUrl) {
     rtspUrl_ = rtspUrl;
 }
 
@@ -45,6 +45,11 @@ void StreamPuller::setPacketQueue(std::shared_ptr<PacketQueue> queue) {
 
 void StreamPuller::setReconnectTimeout(int seconds) {
     videoStreamIndex_ = seconds;
+}
+
+AVStream* StreamPuller::getVideoStream() {
+    if(videoStreamIndex_ < 0) return nullptr;
+    return formatCtx_ -> streams[videoStreamIndex_];
 }
 
 void StreamPuller::run() {

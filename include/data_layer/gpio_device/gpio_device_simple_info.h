@@ -9,7 +9,7 @@ class GPIODeviceSimpleInfo {
         GPIODeviceSimpleInfo(const std::string& deviceId,const std::string& name);
         ~GPIODeviceSimpleInfo() = default;
     
-        std::string getDeviceId() const;
+        const std::string getDeviceId() const;
     private:
         std::string deviceId_;
         std::string name_;

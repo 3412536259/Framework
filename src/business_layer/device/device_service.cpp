@@ -1,5 +1,6 @@
 #include "business_layer/device/device_service.h"
 #include<optional>
+#include <iostream>
 DeviceService::DeviceService(DeviceManageService& deviceManageService,
                              DeviceStatusCache& deviceStatusCache,
                              DeviceAcquisitionTask& deviceAcuqisitionTask,
@@ -28,43 +29,38 @@ BoxDeviceStatus DeviceService::viewAllDeviceStatus() {
 }
 
 
-DeviceOperationResult DeviceService::openSolenoidValue(const PlcDeviceInfo& info) {
+int DeviceService::openSolenoidValue(const PlcDeviceInfo& info) {
     if(deviceStatusCache_.isSolenoidOpen(info))
-        return DeviceOperationResult(-1,"电磁阀已经打开!");
-    deviceManageService_.openSolenoidValue(info);
-    return DeviceOperationResult(0,"电磁阀打开成功!");
+        return 1;
+    return deviceManageService_.openSolenoidValue(info);
+    
 }
 
-DeviceOperationResult DeviceService::closeSolenoidValue(const PlcDeviceInfo& info) {
+int DeviceService::closeSolenoidValue(const PlcDeviceInfo& info) {
     if(deviceStatusCache_.isSolenoidClose(info))
-        return DeviceOperationResult(-1,"电磁阀已经关闭!");
+        return 1;
 
     return deviceManageService_.closeSolenoidValue(info);
 }
 
-DeviceOperationResult DeviceService::lockDoorLock(const GPIODeviceSimpleInfo& info) {
-    if(deviceStatusCache_.isDoorLockLock(info))
-        return DeviceOperationResult(-1,"门锁已被锁上");
+int DeviceService::lockDoorLock(const GPIODeviceSimpleInfo& info) {
+    if(deviceStatusCache_.isDoorLockLock(info)){
+        std::cout << "执行从缓存中的操作" << std::endl;
+        return 1;
+    }
+        
     return deviceManageService_.lockDoorLock(info);
 }
 
-DeviceOperationResult DeviceService::unlockDoorLock(const GPIODeviceSimpleInfo& info) {
+int DeviceService::unlockDoorLock(const GPIODeviceSimpleInfo& info) {
     if(!deviceStatusCache_.isDoorLockLock(info))
-        return DeviceOperationResult(-1,"门锁已被解锁");
+        return 1;
     return deviceManageService_.unlockDoorLock(info);
 }
 
 // DeviceOperationResult DeviceService::controlCarRotation( const CarControl& car) {
 //     return deviceManageService_.controlCarRotation(car);
 // }
-
-CameraRealTimeFrame DeviceService::getCameraRealTimeFrame( const CameraInfo& info) {
-    return realTimeFrameCache_.getCameraRealTimeFrame(info);
-}
-
-CameraHistoryVideo DeviceService::viewCameraHistoryVideo( const CameraInfo& info) {
-    return deviceManageService_.getCameraHistoryVideo(info);
-}
 
 // RadarPointCloud DeviceService::getRadarPointCloudData( const RadarInfo& info) {
 //     return deviceManageService_.getRadarPointCloudData(info);
@@ -73,6 +69,55 @@ CameraHistoryVideo DeviceService::viewCameraHistoryVideo( const CameraInfo& info
 // BoxConfigResult DeviceService::configBoxDeviceParams( const BoxDeviceParam& params) {
 //     return deviceManageService_.boxDeviceParamsConfig(params);
 // }
+
+SolenoidStatus DeviceService::getSolenoidValueStatus(const PlcDeviceInfo& info) {
+    if(!deviceStatusCache_.findSolenoidStatus(info.getDeviceId()))
+        return deviceManageService_.querySolenoidValueStatus(info);
+    else return deviceStatusCache_.getSolenoidValueStatus(info.getDeviceId());
+}
+TempHumidSensorStatus DeviceService::getTempHumidSensorStatus(const SerialDirectDeviceInfo& info) {
+    if(!deviceStatusCache_.findTempHumidSensorStatus(info.getDeviceId()))
+        return deviceManageService_.queryTempHumidSensorStatus(info.getDeviceId());
+    return deviceStatusCache_.getTempHumidSensorStatus(info.getDeviceId());
+}
+InfraredSensorStatus DeviceService::getInfraredSensorStatus(const GPIODeviceSimpleInfo& info) {
+    if(!deviceStatusCache_.findInfraredSensorStatus(info.getDeviceId())) {
+        return deviceManageService_.queryInfraredSensorStatus(info.getDeviceId());
+    }
+       
+    return deviceStatusCache_.getInfraredSensorStatus(info.getDeviceId());
+}
+SmokeDetectorStatus DeviceService::getSmokeDetectorStatus(const GPIODeviceSimpleInfo& info) {
+    if(!deviceStatusCache_.findSmokeDetectorStatus(info.getDeviceId()))
+        return deviceManageService_.querySmokeDetectorStatus(info.getDeviceId());
+    return deviceStatusCache_.getSmokeDetectorStatus(info.getDeviceId());
+}
+WaterLevelSensorStatus DeviceService::getWaterLevelSensorStatus(const GPIODeviceSimpleInfo& info) {
+    if(!deviceStatusCache_.findWaterLevelSensorStatus(info.getDeviceId()))  
+        return deviceManageService_.queryWaterLevelSensorStatus(info.getDeviceId());
+    return deviceStatusCache_.getWaterLevelSensorStatus(info.getDeviceId());
+}
+
+void DeviceService::updateSolenoidStatus(const SolenoidStatus& status) {
+    deviceStatusCache_.updateSolenoidStatus(status);
+}
+
+void DeviceService::updateTempHumidSensorStatus(const TempHumidSensorStatus& status) {
+    deviceStatusCache_.updateTempHumidSensorStatus(status);
+}
+
+void DeviceService::updateInfraredSensorStatus(const InfraredSensorStatus& status) {
+    deviceStatusCache_.updateInfraredSensorStatus(status);
+}
+
+void DeviceService::updateSmokeDetectorStatus(const SmokeDetectorStatus& status) {
+    deviceStatusCache_.updateSmokeDetectorStatus(status);
+}
+
+void DeviceService::updateWaterLevelSensorStatus(const WaterLevelSensorStatus& status) {
+    deviceStatusCache_.updateWaterLevelSensorStatus(status);
+}
+
 
 void DeviceService::startTimer() {
     _running = true;
@@ -98,6 +143,7 @@ void DeviceService::timerLoop() {
     using namespace std::chrono;
 
     while(_running) {
+        std::cout <<"执行中" <<std::endl;
         auto startTime = steady_clock::now();
 
         for(const auto& task : deviceAcquisitionTask_.getTasks()) {
@@ -106,12 +152,6 @@ void DeviceService::timerLoop() {
         }
         std::this_thread::sleep_for(seconds(1));
 
-        // auto endTime = steady_clock::now();
-        // auto elapsed = duration_cast<milliseconds>(endTime - startTime);
-
-        // auto sleepTime = milliseconds(1000) - elapsed;
-
-        // if(sleepTime > milliseconds(0)) std::this_thread::sleep_for(sleepTime);
     }
 }
 // void DeviceService::timerLoop() {

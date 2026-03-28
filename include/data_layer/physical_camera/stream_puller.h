@@ -4,18 +4,23 @@
 #include <string>
 #include <memory>
 #include <atomic>
-#include <libavformat/avformat.h>
+extern "C" {
+    #include <libavformat/avformat.h>
+}
+
 #include <thread>
 #include "data_layer/physical_camera/packet_queue.h"
 class StreamPuller {
     public:
-        StreamPuller(std::string& rtspUrl);
+        StreamPuller(const std::string& rtspUrl);
         bool open();
         bool start();
         bool stop();
 
         void setPacketQueue(std::shared_ptr<PacketQueue> queue);
         void setReconnectTimeout(int seconds);
+        
+        AVStream* getVideoStream();
     
     private:
         void run();

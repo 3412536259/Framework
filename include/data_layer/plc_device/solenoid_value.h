@@ -13,7 +13,6 @@ class SolenoidValue : public PlcDevice{
                       const std::string& bindSerialPort,
                       const std::string& slaveAddr,
                       const std::string& plcId,
-                      const std::string& plcPort,
                       const std::string& regAddr);
         ~SolenoidValue() override = default ;
 
@@ -38,7 +37,7 @@ class SolenoidValue : public PlcDevice{
         std::array<uint8_t,8> buildCloseCommand() ;
     
         std::string plcId_;
-        std::string plcPort_;
+        // std::string plcPort_;
         // std::string plcSlaveAddr_;
         // std::string type_;
         std::string regAddr_;

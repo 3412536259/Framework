@@ -1,14 +1,12 @@
 #include "data_layer/box/box_device_status.h"
 
 BoxDeviceStatus::BoxDeviceStatus(const std::vector<SolenoidStatus> solenoidStatuses,
-                                 const std::vector<CameraStatus> cameraStatuses,
                                  const std::vector<TempHumidSensorStatus> sensorStatuses,
                                  const std::vector<InfraredSensorStatus> infraredSensorStatuses,
-                                 const std::vector<PlcSmokeDetectorStatus> smokeDetectorStatuses,
-                                 const std::vector<PlcWaterLevelSensorStatus> waterSensorStatuses,
+                                 const std::vector<SmokeDetectorStatus> smokeDetectorStatuses,
+                                 const std::vector<WaterLevelSensorStatus> waterSensorStatuses,
                                  const std::vector<DoorLockStatus> doorLockStatuses)
     : solenoidStatuses_(solenoidStatuses),
-      cameraStatuses_(cameraStatuses),
       sensorStatuses_(sensorStatuses),
       infraredSensorStatuses_(infraredSensorStatuses),
       smokeDetectorStatuses_(smokeDetectorStatuses),
@@ -25,17 +23,13 @@ std::vector<TempHumidSensorStatus> BoxDeviceStatus::getSensorStatusList() const 
   return sensorStatuses_;
 }
 
-std::vector<CameraStatus> BoxDeviceStatus::getCameraStatusList() const {
-  return cameraStatuses_;
-}
-
 std::vector<InfraredSensorStatus> BoxDeviceStatus::getInfraredSensorStatusList() const {
   return infraredSensorStatuses_;
 }
-std::vector<PlcSmokeDetectorStatus> BoxDeviceStatus::getSmokeDetectorStatusList() const {
+std::vector<SmokeDetectorStatus> BoxDeviceStatus::getSmokeDetectorStatusList() const {
   return smokeDetectorStatuses_;
 }
-std::vector<PlcWaterLevelSensorStatus> BoxDeviceStatus::getWaterLevelSensorStatusList() const {
+std::vector<WaterLevelSensorStatus> BoxDeviceStatus::getWaterLevelSensorStatusList() const {
   return waterSensorStatuses_;
 }
 

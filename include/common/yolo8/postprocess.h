@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <vector>
 #include "rknn_api.h"
-#include "common.h"
+#include "/home/ztl/workspace/Framework/lib/rknn/utils/common.h"
 #include "image_utils.h"
 
 #define OBJ_NAME_MAX_SIZE 64

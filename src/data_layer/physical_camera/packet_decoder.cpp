@@ -1,8 +1,5 @@
 #include "data_layer/physical_camera/packet_decoder.h"
 
-PacketDecoder::PacketDecoder() {
-
-}
 
 PacketDecoder::~PacketDecoder() {
 

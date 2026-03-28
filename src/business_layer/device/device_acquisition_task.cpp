@@ -19,9 +19,9 @@ const std::vector< std::unique_ptr<AcquisitionTask> >  DeviceAcquisitionTask::ge
     tasks.push_back(std::make_unique<TempHumidSensorAcquisitionTask> ( serialDirectDeviceTask_.getTempHumidSensorTask()) );
     tasks.push_back(std::make_unique<DoorLockAcquisitionTask> (gpioDeviceTask_.getDoorLockTask()) );
     tasks.push_back(std::make_unique<SolenoidAcquisitionTask> (plcDeviceTask_.getSolenoidAcquisitionTask()) );
-    tasks.push_back(std::make_unique<InfraredSensorAcquisitionTask> (plcDeviceTask_.getInfraredSensorTask())) ;
-    tasks.push_back(std::make_unique<WaterLevelSensorAcquisitionTask> (plcDeviceTask_.getWaterLevelSensorTask())); 
-    tasks.push_back(std::make_unique<SmokeDetectorAcquisitionTask> (plcDeviceTask_.getSmokeDetectorTask()));
+    tasks.push_back(std::make_unique<InfraredSensorAcquisitionTask> (gpioDeviceTask_.getInfraredSensorTask())) ;
+    tasks.push_back(std::make_unique<WaterLevelSensorAcquisitionTask> (gpioDeviceTask_.getWaterLevelSensorTask())); 
+    tasks.push_back(std::make_unique<SmokeDetectorAcquisitionTask> (gpioDeviceTask_.getSmokeDetectorTask()));
 
     return tasks;
 }

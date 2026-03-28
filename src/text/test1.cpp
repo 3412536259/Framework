@@ -1,37 +1,50 @@
 #include <iostream>
-#include "business_layer/lobby/lobby_service.h"
-#include "presentation_layer/http_service.h"
-int main(){
 
-    
-        /// 1. 底层服务
-    SafetyService safetyService;
-    Timer timer;
+#include "business_layer/stream_nvr/stream_service.h"
+int main() {
+    try {
+        // 1. 创建共享帧缓冲区
+        auto frameBuffer = std::make_shared<FrameBuffer>();
 
-    // 2. CommandService 构造时只依赖 ICommandPublisher 接口
-    ICommandPublisher* publisher = nullptr;  // 先不绑定
-    CommandService commandService(publisher);
+        // 2. 创建设备管理服务
+        std::shared_ptr<ICameraManageService> cameraMgr =std::make_shared<CameraManageService>(frameBuffer);
 
-    // 3. LobbyService
-    LobbyService lobbyService(safetyService, commandService, timer);
+        // 3. 创建流服务
+        std::shared_ptr<IStreamService> streamService =std::make_shared<StreamService>(cameraMgr, frameBuffer);
 
-    // 4. Controller
-    MQTTCommandController mqttController(lobbyService);
-    HTTPCommandController httpController(lobbyService);
+        // 4. 初始化设备管理
+        if (!cameraMgr->initialize()) {
+            std::cerr << "[main] CameraManageService initialize failed!" << std::endl;
+            return -1;
+        }
 
-    // 5. Network 层
-    MqttService mqttService("192.168.1.104", 1950, mqttController);
+        // // 5. 初始化流服务
+        // if (!streamService->initialize()) {
+        //     std::cerr << "[main] StreamService initialize failed!" << std::endl;
+        //     return -1;
+        // }
 
-    // 6. 现在 CommandService 可以接收 MqttService 作为 ICommandPublisher
-    // 这里仍然是构造器注入，但通过接口，不破坏对象构造顺序
-    commandService.setPublisher(&mqttService);  // 这里是接口注入，不是 setter逻辑
+        // 6. 启动所有流
+        if (!streamService->startStreamPull()) {
+            std::cerr << "[main] StreamService startAll failed!" << std::endl;
+            return -1;
+        }
 
-    WebService webService("192.168.1.104", 8080, httpController);
+        std::cout << "[main] Stream system is running..." << std::endl;
 
-    // 7. 启动服务
-    mqttService.start();
-    webService.start();
-    
-    
+        // 7. 主线程阻塞（简单版本）
+        while (true) {
+            std::this_thread::sleep_for(std::chrono::seconds(5));
+        }
+
+        // 8. 停止（一般不会走到这里）
+        streamService->stopStreamPull();
+        cameraMgr->stopAll();
+
+    } catch (const std::exception& e) {
+        std::cerr << "[main] Exception: " << e.what() << std::endl;
+        return -1;
+    }
+
     return 0;
-};
+}

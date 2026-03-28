@@ -7,10 +7,9 @@ SolenoidValue::SolenoidValue(const int type,
                              const std::string& bindSerialPort,
                              const std::string& slaveAddr,
                              const std::string& plcId,
-                             const std::string& plcPort,
                              const std::string& regAddr) 
     : PlcDevice(type,deviceId,name,bindSerialPort,slaveAddr), 
-      plcId_(plcId),plcPort_(plcPort),regAddr_(regAddr) {
+      plcId_(plcId),regAddr_(regAddr) {
 
 }
 

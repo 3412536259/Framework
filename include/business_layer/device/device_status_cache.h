@@ -3,10 +3,6 @@
 #include "data_layer/box/box_device_status.h"
 #include "data_layer/plc_device/solenoid_status.h"
 #include "data_layer/sensor/temp_humid_sensor_status.h"
-#include "data_layer/camera/camera_status.h"
-#include "data_layer/plc_device/infrared_sensor_status.h"
-#include "data_layer/plc_device/plc_water_level_sensor_status.h"
-#include "data_layer/plc_device/plc_smoke_detector_status.h"
 #include "data_layer/gpio_device/door_lock_status.h"
 #include "data_layer/plc_device/plc_device_info.h"
 #include "data_layer/gpio_device/gpio_device_simple_info.h"
@@ -28,27 +24,37 @@ class DeviceStatusCache {
 
         BoxDeviceStatus getBoxDeviceStatus();
 
+        SolenoidStatus getSolenoidValueStatus(const std::string& deviceId);
+        TempHumidSensorStatus getTempHumidSensorStatus(const std::string& deviceId);
+        InfraredSensorStatus getInfraredSensorStatus(const std::string& deviceId);
+        SmokeDetectorStatus getSmokeDetectorStatus(const std::string& deviceId);
+        WaterLevelSensorStatus getWaterLevelSensorStatus(const std::string& deviceId);
+
+        bool findSolenoidStatus(const std::string& deviceId);
+        bool findTempHumidSensorStatus(const std::string& deviceId);
+        bool findInfraredSensorStatus(const std::string& deviceId);
+        bool findSmokeDetectorStatus(const std::string& deviceId);
+        bool findWaterLevelSensorStatus(const std::string& deviceId);
+
         bool isBoxDeviceStatusEmpty();
 
         bool isSolenoidOpen( const PlcDeviceInfo& info);
         bool isSolenoidClose( const PlcDeviceInfo& info);
         bool isDoorLockLock(const GPIODeviceSimpleInfo& info);
 
-    private:
         void updateSolenoidStatus( const SolenoidStatus& status);
         void updateTempHumidSensorStatus( const TempHumidSensorStatus& status);
-        void updateCameraStatus( const CameraStatus& status);
         void updateInfraredSensorStatus(const InfraredSensorStatus& status);
-        void updatePlcWaterLevelSensorStatus(const PlcWaterLevelSensorStatus& status);
-        void updatePlcSmokeDetectorStatus(const PlcSmokeDetectorStatus& status);
+        void updateWaterLevelSensorStatus(const WaterLevelSensorStatus& status);
+        void updateSmokeDetectorStatus(const SmokeDetectorStatus& status);
         void updateDoorLockStatus(const DoorLockStatus& status);
 
+    private:
         std::unordered_map<std::string, SolenoidStatus> solenoidStatusMap_;
         std::unordered_map<std::string, TempHumidSensorStatus> sensorStatusMap_;
-        std::unordered_map<std::string, CameraStatus> cameraStatusMap_;
         std::unordered_map<std::string, InfraredSensorStatus> infraredSensorStatusMap_;
-        std::unordered_map<std::string, PlcWaterLevelSensorStatus> waterLevelSensorStatusMap_;
-        std::unordered_map<std::string, PlcSmokeDetectorStatus> smokeDetectorStatusMap_;
+        std::unordered_map<std::string, WaterLevelSensorStatus> waterLevelSensorStatusMap_;
+        std::unordered_map<std::string, SmokeDetectorStatus> smokeDetectorStatusMap_;
         std::unordered_map<std::string, DoorLockStatus> doorLockStatusMap_;
         // std::unordered_map<std::string, std::unique_ptr<RadarStatus> > _radarStatusMap;
         // std::unordered_map<std::string, std::unique_ptr<CarStatus> > _carStatusMap;

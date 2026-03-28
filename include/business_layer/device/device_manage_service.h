@@ -22,12 +22,10 @@ class IDeviceManageService {
         virtual BoxDeviceStatus getDeviceStatus() = 0;
         // virtual BoxDeviceRealTimeData getDeviceRealTimeData() = 0;
 
-        virtual DeviceOperationResult openSolenoidValue(const PlcDeviceInfo& info) = 0;
-        virtual DeviceOperationResult closeSolenoidValue(const PlcDeviceInfo& info) = 0;
+        virtual int openSolenoidValue(const PlcDeviceInfo& info) = 0;
+        virtual int closeSolenoidValue(const PlcDeviceInfo& info) = 0;
 
         // virtual DeviceOperationResult controlCarRotation(const CarControl& car) = 0;
-
-        virtual CameraHistoryVideo getCameraHistoryVideo(const CameraInfo& info) = 0;
 
         // virtual RadarPointCloud getRadarPointCloudData(const RadarInfo& info) = 0;
 
@@ -44,35 +42,37 @@ class DeviceManageService : public IDeviceManageService {
         ~DeviceManageService() ;
         DeviceManageService(
                             PlcInstanceSet&& plcInstances,
-                            CameraInstanceSet&& cameraInstances,
                             GPIODeviceInstanceSet&& gpioInstanceSet,
                             SerialDirectDeviceInstanceSet&& serialInstances);
         DeviceManageService(DeviceManageService&&) = default;
         DeviceManageService& operator=(DeviceManageService&&) = default;
         DeviceManageService(const DeviceManageService&) = delete;
         DeviceManageService& operator=(const DeviceManageService&) = delete;
+
         BoxDeviceStatus getDeviceStatus() override;
-        // BoxDeviceRealTimeData getDeviceRealTimeData() override;
+        SolenoidStatus querySolenoidValueStatus(const PlcDeviceInfo& info);
+        TempHumidSensorStatus queryTempHumidSensorStatus(const std::string& deviceId);
+        InfraredSensorStatus queryInfraredSensorStatus(const std::string& deviceId);
+        SmokeDetectorStatus querySmokeDetectorStatus(const std::string& deviceId);
+        WaterLevelSensorStatus queryWaterLevelSensorStatus(const std::string& deviceId);
 
-        DeviceOperationResult openSolenoidValue(const PlcDeviceInfo& info) override;
-        DeviceOperationResult closeSolenoidValue(const PlcDeviceInfo& info) override;
+        int openSolenoidValue(const PlcDeviceInfo& info) override;
+        int closeSolenoidValue(const PlcDeviceInfo& info) override;
 
-        DeviceOperationResult lockDoorLock(const GPIODeviceSimpleInfo& info);
-        DeviceOperationResult unlockDoorLock(const GPIODeviceSimpleInfo& info);
+        int lockDoorLock(const GPIODeviceSimpleInfo& info);
+        int unlockDoorLock(const GPIODeviceSimpleInfo& info);
+
+        std::vector<DeviceData> deviceDataAcquisition(int deviceType) override;
 
         // DeviceOperationResult controlCarRotation(const CarControl& car) override;
-
-        CameraHistoryVideo getCameraHistoryVideo(const CameraInfo& info) override;
-
+        // BoxDeviceRealTimeData getDeviceRealTimeData() override;
         // RadarPointCloud getRadarPointCloudData(const RadarInfo& info) override;
 
         // BoxConfigResult boxDeviceParamsConfig( const BoxDeviceParams& params) override;
 
-        std::vector<DeviceData> deviceDataAcquisition(int deviceType) override;
-
     private:
 
-        // BoxInstance boxInstance_;
+      
 
         PlcInstanceSet plcInstances_;
 
@@ -80,9 +80,9 @@ class DeviceManageService : public IDeviceManageService {
 
         SerialDirectDeviceInstanceSet serialInstances_;
 
-        CameraInstanceSet cameraInstances_;
+        // CameraInstanceSet cameraInstances_;
 
+        // BoxInstance boxInstance_;
         // RadarInstanceSet _radarInstances;
-
         // CarInstanceSet _carInstances;
 };

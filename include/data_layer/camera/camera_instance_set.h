@@ -24,7 +24,7 @@ class CameraInstanceSet {
 
         CameraHistoryVideo getCameraHistoryVideo(const std::string& cameraId) ;
 
-        std::vector<DeviceData> acquisitionCameraData();
+        // std::vector<DeviceData> acquisitionCameraData();
 
     private:
         std::unordered_map<std::string, std::unique_ptr<Camera> > cameras_; 
